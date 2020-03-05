@@ -46,3 +46,21 @@ Route::post('update', array('as' => 'user.update', 'routegroup' => 'grp_admin_us
 Route::post('search', array('as' => 'user.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@search'));
 Route::get('export', array('as' => 'user.csv', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@csv'));
 //Route::post('/user/adduser', [ 'as' => 'user.adduser', 'uses' => 'admin\UserController@adduser']);
+
+
+Route::get('/banner', 'admin\BannerController@index')->name('banner');
+
+
+//category route
+Route::get('/emacategory', 'admin\CategoryController@index')->name('emacategory');
+Route::post('/addCategory', 'admin\CategoryController@addCategory')->name('addCategory');
+Route::get('categorydelete/{id}', array('as' => 'category.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
+Route::post('categoryupdate', array('as' => 'category.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
+Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
+
+// Area route
+
+Route::get('/area', 'admin\AreaController@index')->name('area');
+Route::post('/addArea', 'admin\AreaController@addArea')->name('addArea');
+Route::get('areadelete/{id}', array('as' => 'area.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AreaController@delete'));
+Route::post('areaupdate', array('as' => 'area.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AreaController@update'));
