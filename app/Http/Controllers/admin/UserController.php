@@ -6,8 +6,11 @@ use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
+use \Maatwebsite\Excel\Exporter;
 use App\User;
 use Datatables;
+use Excel;
+use App\Exports\UserExport;
 
 class UserController extends Controller
 {
@@ -16,18 +19,28 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(\Maatwebsite\Excel\Exporter $excel)
     {
         $this->middleware('auth');
+        $this->excel = $excel;
+
     }
 
-    public function index() {
+    public function index(Request $request) {
 		$auth = Auth::user();
         $return_data = array();
         $this->data['title'] = trans('User Management');
         $this->data['meta_title'] = trans('User Management');
 
-        $return_data['data'] = User::orderBy('id','desc')->sortable()->paginate(10);
+        if($request->per_page)
+        {
+            $perpage = $request->per_page;
+        }
+        else
+        {
+            $perpage = 10;
+        }
+        $return_data['data'] = User::orderBy('id','desc')->sortable()->paginate($perpage);
               //  return view('products',compact('products'));
         
         return View('admin.user.index', array_merge($this->data, $return_data))->render();
@@ -127,6 +140,26 @@ class UserController extends Controller
         return Response()->json($arr);
 
     }
+
+    public function csv()
+    {
+       $users = User::orderBy('id','desc');
+       // echo "<pre>"; print_r($users);
+
+        // Generate and return the spreadsheet
+        return Excel::download(User::get(),'users.xlsx');
+    }
+
+    public function headings(): array
+    {
+        return [
+            'Name',
+            'Surname',
+            'Email',
+            'Twitter',
+        ];
+    }
+
 
     // public function userdetails(Request $request)
     // {

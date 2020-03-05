@@ -47,7 +47,7 @@
                         </button> -->
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="#" tabindex=""     style="background-color:#454d56 !important;">
+                    <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('user.csv')}}" tabindex=""     style="background-color:#454d56 !important;">
                         EXPORT
                     </a>
                         <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
@@ -62,6 +62,11 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title" style="float:left">{{$title}}</h4>
+                  <!-- <select name="per_page" id="per_page" style="float:right;">
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="30">30</option>
+                  </select> -->
                   <div class="box-header ">
                         @if (session()->has('success'))
                         <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
