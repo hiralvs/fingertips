@@ -423,18 +423,18 @@ $(document).ready(function(){
                         columns: 1,
                         placeholder: 'Select Category'
                     });
-                    
-$.each(JSON.parse(areaarray), function (i, elem) { 
-if(elem.id == data.area_id)
-{
-    area = 'selected';
-}
-edithtml +='<option value="'+elem.id+'" '+area+' >'+elem.area_name+'</option>';
-});
+                                        
+                    $.each(JSON.parse(areaarray), function (i, elem) { 
+                    if(elem.id == data.area_id)
+                    {
+                        area = 'selected';
+                    }
+                    edithtml +='<option value="'+elem.id+'" '+area+' >'+elem.area_name+'</option>';
+                    });
 
-edithtml +='</select></div></div><div class="row"><div class="form-group col-md-4"><label for="exampleInputRole">Featured Mall</label><select class="form-control " id="featured_mall" name="featured_mall"><option value="">--Select--</option><option value="yes" '+featured_mall+'>Yes</option><option value="no" '+featured_mall+'>No</option></select></div><div class="form-group col-md-4"><label for="exampleInputStatus">Type</label><select class="form-control" id="type" name="type"><option value="">--Select--</option><option value="mall" '+type+'>Mall</option><option value="shop" '+type+'>Shop</option></select></div></div><div class="row"><div class="form-group col-md-12"><textarea class="form-control ckeditor" id="description1" name="description">{{$value->description}}</textarea></div></div><button type="button" class="btn btn-primary mr-2 editMallsSubmit" data-id="'+data.id+'" id="editAreaSubmit">Submit</button><button type="button" class="btn btn-light" data-dismiss="modal">Close</button></form></div></div></div></div>';
+                    edithtml +='</select></div></div><div class="row"><div class="form-group col-md-4"><label for="exampleInputRole">Featured Mall</label><select class="form-control " id="featured_mall" name="featured_mall"><option value="">--Select--</option><option value="yes" '+featured_mall+'>Yes</option><option value="no" '+featured_mall+'>No</option></select></div><div class="form-group col-md-4"><label for="exampleInputStatus">Type</label><select class="form-control" id="type" name="type"><option value="">--Select--</option><option value="mall" '+type+'>Mall</option><option value="shop" '+type+'>Shop</option></select></div></div><div class="row"><div class="form-group col-md-12"><textarea class="form-control ckeditor" id="description1" name="description">{{$value->description}}</textarea></div></div><button type="button" class="btn btn-primary mr-2 editMallsSubmit" data-id="'+data.id+'" id="editAreaSubmit">Submit</button><button type="button" class="btn btn-light" data-dismiss="modal">Close</button></form></div></div></div></div>';
 
-//$("#mallstableData tbody").append(edithtml);
+                    //$("#mallstableData tbody").append(edithtml);
                     $("#addMallsform")[0].reset();
                 }
                 else
@@ -461,43 +461,37 @@ edithtml +='</select></div></div><div class="row"><div class="form-group col-md-
                     var data = result.data;
                     
                     
-                    var findnorecord = $('#usertableData tr.norecord').length;
+                    var findnorecord = $('#mallstableData tr.norecord').length;
                     if(findnorecord > 0){
-                        $('#usertableData tr.norecord').remove();
+                        $('#mallstableData tr.norecord').remove();
                         }
                     
-                    var profilepic = status = '';
-                    if(data.profile_pic != null)
+                        var image = '';
+                    if(data.image != null)
                     {
-                        profilepic = data.profile_pic;
-                    }
-                    if(data.status == 0)
-                    {
-                        status = 'Active';
-                    }
-                    else
-                    {
-                        status = 'Inactive';
+                        image = data.image;
                     }
                     if(data.created_at)
                     {
                         var cdate = "<?php echo date("d F Y",strtotime($value->created_at)) ?>";
                     }
-                    var deleteurl = '{{ route("user.delete", ":id") }}';
+                    var deleteurl = '{{ route("shopsmalls.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
+                    var imageurl = "{{asset('public/upload/malls')}}";
                     var tr_str = "<tr>"+
-                    "<td>"+profilepic+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
+                    "<td><img src="+imageurl+"/"+image+"></td>" +
                     "<td>"+data.name+"</td>" +
-                    "<td>"+data.email+"</td>"+
-                    "<td>"+data.gender+"</td>" +
-                    "<td>"+data.role+"</td>" +
-                    "<td>"+status+"</td>" +
+                    "<td>"+data.location+"</td>"+
+                    "<td>"+data.openinghrs+"</td>" +
+                    "<td>"+data.contact+"</td>" +
+                    "<td>"+data.type+"</td>" +
+                    "<td>"+data.propertyadmin+"</td>" +
                     "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    "<td>"+data.created_by+"</td>" +
+                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editShopsandmalls'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Mall?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    console.log(tr_str);
-                    $("#usertableData tbody").html(tr_str);
+                    $("#mallstableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else

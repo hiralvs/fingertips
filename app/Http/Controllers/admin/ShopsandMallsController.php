@@ -160,8 +160,9 @@ class ShopsandMallsController extends Controller
      {
          $search = $request->input('search');
  
-         $user = ShopsandMalls::where('name','LIKE',"%{$search}%")
-         ->orWhere('unique_id', 'LIKE',"%{$search}%")
+         $user = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id')->where('shopsandmalls.name','LIKE',"%{$search}%")
+         ->orWhere('users.name','LIKE',"%{$search}%")
+         ->orWhere('shopsandmalls.unique_id', 'LIKE',"%{$search}%")
          ->orWhere('location', 'LIKE',"%{$search}%")
          ->orWhere('type', 'LIKE',"%{$search}%")
          ->orWhere('openinghrs', 'LIKE',"%{$search}%")
