@@ -1,23 +1,19 @@
 <?php
-use App\User;
 
+/* Function used to get unique id*/
 if (!function_exists('get_unique_id')) {
-    /**
-     * Returns a human readable file size
-     *
-     * @param integer $bytes
-     * Bytes contains the size of the bytes to convert
-     *
-     * @param integer $decimals
-     * Number of decimal places to be returned
-     *
-     * @return string a string in human readable format
-     *
-     * */
-    function get_unique_id()
+ 
+    function get_unique_id($table)
     {
-        $user = User::orderby('id', 'desc')->first();
-        $uniqueId = $user->unique_id + 1;
+        $tabledata = DB::table($table)->select('id','unique_id')->orderby('id', 'desc')->first();
+        if(empty($tabledata))
+        {
+            $uniqueId = 10000;
+        }
+        else
+        {
+            $uniqueId = $tabledata->unique_id + 1;
+        }
         return $uniqueId;
     }
 }
