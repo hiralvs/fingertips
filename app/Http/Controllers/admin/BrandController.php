@@ -63,7 +63,7 @@ class BrandController extends Controller
         ]);
         $request->request->remove('_token');
         $input = $request->all();
-        $input['unique_id'] =  get_brand_unique_id();
+        $input['unique_id'] =  get_unique_id('brands');
         if ($request->hasFile('brand_image')) {
 
             $image = $request->File('brand_image');
