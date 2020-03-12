@@ -14,10 +14,23 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('details', 'API\RegisterController@details');
+    Route::get('editProfile', 'API\RegisterController@editProfile');
+    Route::get('events', 'API\HomePageController@eventListing');
+    Route::get('malls', 'API\HomePageController@mallListing');
+    Route::get('attractions', 'API\HomePageController@attractionListing');
+    Route::post('updateProfile','API\RegisterController@updateProfile');
+    Route::get('rewards','API\RewardsController@rewards');
+    //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
+
 });
+
 
 Route::post('login', 'API\RegisterController@login');
 Route::post('register', 'API\RegisterController@register');
-Route::post('editProfile/{id}', 'API\RegisterController@editProfile')->name('editProfile');
+Route::post('otp', 'API\RegisterController@otpverify');
+Route::post('forgot/password', 'API\ForgotPasswordController@forgotPassword');    
+Route::post('changeassword', 'API\ForgotPasswordController@changePassword');    
+Route::post('privacypolicy', 'API\RegisterController@privacypolicy');    
+Route::post('logout', 'API\RegisterController@logout');    
+
 //Route::get('userDetails','RegisterController@details');

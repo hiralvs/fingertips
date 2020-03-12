@@ -8,10 +8,15 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Intervention\Image\Facades\Image;
+use App\Otp;
+use App\Settings;
+use Illuminate\Support\Facades\Config;
+
 
 class RegisterController extends BaseController
 {
     
+    /* Function used to register user in app with otp*/
     
     public function register(Request $request)
     {   
@@ -27,7 +32,7 @@ class RegisterController extends BaseController
         }
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $input['unique_id'] =  get_unique_id();
+        $input['unique_id'] =  get_unique_id('users');
         $input['role'] = $input['role'];
         $input['gender'] = $input['gender'];
         if ($request->hasFile('profilepic')) {
@@ -40,16 +45,43 @@ class RegisterController extends BaseController
             Image::make($image->getRealPath())->resize(50, 50)->save($path);
             $input['profile_pic'] = $filename;
         }
-       
+        $otp = rand(100000,999999);
         
-        //print_r($input); die;
         $user = User::create($input);
+
+        // code to send otp to user
+        if($user->id)
+        {
+            $data = array();
+
+            $otpdata['user_id'] = $user->id;
+            $otpdata['otp'] = $otp;
+            
+            $data['TO'] = $user->email;
+            $data['FROM'] =  Config::get('constants.SMTP_FROM'); 
+            $data['SITE_NAME'] = Config::get('constants.SITE_NAME');
+            $data['SUBJECT'] = 'Fingertips-Otp';
+            $data['VIEW'] = 'mails.otp';
+            $data['PARAM'] = array('name' => $user->name, 'otp' => $otp);
+            $data['name'] = $user->name;
+            $data['otp'] = $otp;
+            $send_mail = send($data);
+            if($send_mail)
+            {
+                Otp::unguard();
+                $otpinsert = Otp::create($otpdata);
+            }
+            
+        }
+        ////////////////////////
+
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         $success['name'] =  $user->name;
    
         return $this->sendResponse($success, 'User register successfully.');
     }
    
+    /* Function  used to login */ 
     public function login(Request $request)
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
@@ -60,60 +92,66 @@ class RegisterController extends BaseController
             return $this->sendResponse($success, 'User login successfully.');
         } 
         else{ 
+            return $this->sendError('Unauthorised.', ['error'=>'The email or password is incorrect, please try again']);
+        } 
+    }
+
+    /* Function  used to login */ 
+    public function otpverify(Request $request)
+    {
+        $userverify = Otp::where('user_id',$request->user_id)->where('status','0')->where('otp',$request->otp)->get();
+        
+        if($userverify->count() > 0){ 
+
+            return $this->sendResponse('', 'User login successfully.');
+        } 
+        else{ 
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         } 
     }
 
-    public function details()
+    /* Function used to insert privacy policy */
+    public function privacypolicy(Request $request)
     {
-        return response()->json(['user' => auth()->user()], 200);
+        $input = $request->all();
+        $input['type'] = 'privacypolicy';
+        $input['value'] = $input['value'];
+        Settings::unguard();
+        $setting = Settings::create($input);
+        $success['data'] = $setting ;
+        return $this->sendResponse($success, 'Privacy Policy Inserted Successfully');
     }
 
-//     public function editProfile(Request $request)
-//     {
-//         $message = trans('api.label_api_invalid_profile');
-//         $data = array();
-//         $user = Auth::user();
+    /* Function  used to get login details */ 
 
-//         $query = User::find($user->id);
-//         echo "<pre>"; print_r($query); die;
-//         if (!empty($request->all()) && !empty($query)) {
-//             if ($request->name) {
-//                 $query->name = $request->name;
-//             }
-//             if ($request->email) {
-//                 $email = $request->email;
-//                 $user_email_exist = ApiUser::select('id')->where('email', $email)->where('id', '<>', $user->id)->count();
-//                 if ($user_email_exist == 0) {
-//                     $query->email = $request->email;
-//                 } else {
-//                     $data = (object) array();
-//                     $status = 0;
-//                     $message = trans('api.label_api_registration_email_exist');
-//                     $response = array('status' => $status, 'message' => $message, 'data' => $data);
-//                     return response()->json($response, 200);
-//                 }
-//             }
-//             $query->updated_at = Carbon::now();
-//             if ($query->save()) {
-//                 $status = 1;
-//                 $message = trans('api.label_api_success_profile');
-//                 $data['user_id'] = $query->id;
-//                 $return_user = $query->toArray();
-//                 $data = ApiCommonController::removeNullValue($return_user);
-//             } else {
-//                 $data = (object) array();
-//                 $status = 0;
-//                 $message = trans('api.label_api_profile_not_successfully_update');
-//                 $data['user_id'] = $query->id;
-//             }
-//         } else {
-//             $data = (object) array();
-//             $status = 0;
-//             $message = trans('api.label_api_profile_para_missing');
-//             $data['user_id'] = $query->id;
-//         }
-//     }
+    public function editProfile()
+    {
+        $success['user'] = auth()->user();
+        return $this->sendResponse($success, 'Data Found Successfully');
+    }
+
+    /* Function  used to update user profile */ 
+    public function updateProfile(Request $request)
+    {
+        // $this->validate($request, [
+        //     'current' => 'required',
+        //     'password' => 'required|confirmed',
+        //     'password_confirmation' => 'required'
+        // ]);
+        $user = User::find(Auth::id());
+
+        $user->name = $request->name;
+        $user->email = $user->email;
+        $user->dob = $request->dob;
+        $user->gender = $request->gender;
+
+        $user->save();
+
+        $success['user'] = $user;
+        return $this->sendResponse($success, 'Data Updated Successfully');
+
+    }
+
 }
 
 ?>

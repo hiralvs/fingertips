@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use App\User;
+use Validator;
 
 class UserController extends Controller
 {
@@ -64,10 +65,22 @@ class UserController extends Controller
     /* Function user to add user data */
     public function adduser(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            //'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:8',
+            'role' => 'required',
+            'status' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return Response()->json(['errors' => $validator->errors()]);      
+        }
         $request->request->remove('_token');
         $input = $request->all();
         $input['password'] = bcrypt('123456');
-        $input['unique_id'] =  get_unique_id();
+        $input['unique_id'] =  get_unique_id('users');
         $input['role'] = $input['role'];
         $input['gender'] = $input['gender'];
         if ($request->hasFile('profile_pic')) {

@@ -245,6 +245,11 @@ $(document).ready(function(){
 
         $('#addUserSubmit').click(function(e){
         var formData = new FormData($("#adduserform")[0]);
+        $( '#name-error' ).html( "" );
+        $( '#email-error' ).html( "" );
+        $( '#password-error' ).html( "" );
+        $( '#role-error' ).html( "" );
+        $( '#status-error' ).html( "" );
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -259,9 +264,28 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.name){
+                        $( '#name-error' ).html( result.errors.name[0] );
+                    }
+                    if(result.errors.email){
+                        $( '#email-error' ).html( result.errors.email[0] );
+                    }
+                    if(result.errors.password){
+                        $( '#password-error' ).html( result.errors.password[0] );
+                    }
+                    if(result.errors.role){
+                        $( '#role-error' ).html( result.errors.role[0] );
+                    }
+                    if(result.errors.status){
+                        $( '#status-error' ).html( result.errors.status[0] );
+                    }
+                    
+                }
                 if(result.status == true)
-                {
-                        var data = result.data;
+                { $(".statusMsg").show();
+                    var data = result.data;
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
@@ -274,9 +298,11 @@ $(document).ready(function(){
                         }
                     
                     var profilepic = status = '';
+                    var imageurl = "{{asset('public/upload/')}}";
+
                     if(data.profile_pic != null)
                     {
-                        profilepic = data.profile_pic;
+                        profilepic = "<img src="+imageurl+"/"+data.profile_pic+">";
                     }
                     if(data.status == 0)
                     {
@@ -292,9 +318,8 @@ $(document).ready(function(){
                     }
                     var deleteurl = '{{ route("user.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
-                    var imageurl = "{{asset('public/upload/')}}";
                     var tr_str = "<tr>"+
-                    "<td><img src="+imageurl+"/"+profilepic+"></td>" +
+                    "<td>"+profilepic+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.name+"</td>" +
                     "<td>"+data.email+"</td>"+
@@ -403,7 +428,6 @@ $(document).ready(function(){
                     "<td>"+cdate+"</td>" +
                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    console.log(tr_str);
                     $("#usertableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
@@ -439,14 +463,26 @@ $(document).ready(function(){
                     <div class="form-group col-md-3">
                         <label for="exampleInputName">Name</label>
                         <input type="text" required class="form-control" Re id="fullname" name="name" placeholder="Name">
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                        <span class="text-danger">
+                            <strong id="name-error"></strong>
+                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleInputEmail1">Email id</label>
                         <input type="email" required class="form-control" id="email" name="email" placeholder="Email">
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        <span class="text-danger">
+                            <strong id="email-error"></strong>
+                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleInputPassword">Password</label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        <span class="text-danger">
+                            <strong id="password-error"></strong>
+                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleSelectGender">Gender</label>
@@ -454,6 +490,7 @@ $(document).ready(function(){
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         </select>
+                        
                     </div>                 
                 </div>
                 <div class="row">
@@ -466,6 +503,10 @@ $(document).ready(function(){
                             <option value="property_admin">Property Admin</option>
                             <option value="customer">Customer</option>
                         </select>
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        <span class="text-danger">
+                            <strong id="role-error"></strong>
+                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleInputStatus">Status</label>
@@ -474,6 +515,10 @@ $(document).ready(function(){
                             <option value="0">Active</option>
                             <option value="1">Inactive</option>
                         </select>
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        <span class="text-danger">
+                            <strong id="status-error"></strong>
+                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleSelectPhoto">Photo</label>

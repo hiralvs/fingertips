@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller as Controller;
 class BaseController extends Controller
 {
  
-    public function sendResponse($result, $message)
+    public function sendResponse($result="", $message)
     {
     	$response = [
             'success' => true,
