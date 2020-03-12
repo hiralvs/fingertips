@@ -175,7 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvider::class,
+       Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*

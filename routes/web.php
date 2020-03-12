@@ -46,3 +46,13 @@ Route::post('update', array('as' => 'user.update', 'routegroup' => 'grp_admin_us
 Route::post('search', array('as' => 'user.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@search'));
 Route::get('export', array('as' => 'user.csv', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@csv'));
 //Route::post('/user/adduser', [ 'as' => 'user.adduser', 'uses' => 'admin\UserController@adduser']);
+
+Route::get('/brandList', 'admin\BrandController@index')->name('brand');
+Route::get('brand/delete/{id}', array('as' => 'brand.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@delete'));
+Route::post('/brand/create', [ 'as' => 'brand.create', 'brand' => 'admin\BrandController@create']);
+Route::post('/addbrand', 'admin\BrandController@addbrand')->name('addbrand');
+// Route::get('delete/{id}', array('as' => 'brand.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@delete'));
+Route::post('brandsearch', array('as' => 'brand.brandsearch', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@search'));
+Route::post('updatebrand', array('as' => 'brand.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@update'));
+Route::get('/excel_export', 'ExportExcelController@index');
+Route::get('/expert_excel/excel','ExportExcelController@excel')->name('export_excel.excel');

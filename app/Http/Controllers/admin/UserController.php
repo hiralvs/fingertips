@@ -48,7 +48,7 @@ class UserController extends Controller
 
     public function create()
     {
-    return view('admin.user.create');
+    return view('admin.user');
     }
 
     public function adduser(Request $request)
@@ -156,99 +156,99 @@ class UserController extends Controller
             'Name',
             'Surname',
             'Email',
-            'Twitter',
+            'Twitter'
         ];
     }
 
 
-    // public function userdetails(Request $request)
-    // {
-    //     $auth = Auth::user();
-    //     $columns = array( 
-    //                         "0" =>'profile_pic', 
-    //                         "1" =>'unique_id', 
-    //                         "2" =>'name', 
-    //                         "3" =>'email',
-    //                         "4"=> 'gender',
-    //                         '5'=> 'role',
-    //                         '6'=> 'status',
-    //                         '7'=> 'created_at',
-    //                         '8'=> 'action'
-    //                     );
+    public function userdetails(Request $request)
+    {
+        $auth = Auth::user();
+        $columns = array( 
+                            "0" =>'profile_pic', 
+                            "1" =>'unique_id', 
+                            "2" =>'name', 
+                            "3" =>'email',
+                            "4"=> 'gender',
+                            '5'=> 'role',
+                            '6'=> 'status',
+                            '7'=> 'created_at',
+                            '8'=> 'action'
+                        );
 
-    //     $userQuery= User::select('id','unique_id','profile_pic','name','gender','role','email','status','created_at')->orderBy('id','desc');
+        $userQuery= User::select('id','unique_id','profile_pic','name','gender','role','email','status','created_at')->orderBy('id','desc');
        
-    //     $totalData = $userQuery->count();
+        $totalData = $userQuery->count();
 
-    //     $totalFiltered = $totalData; 
+        $totalFiltered = $totalData; 
 
-    //     $limit = $request->input('length');
-    //     $start = $request->input('start');
-    //     $order = $columns[$request->input('order.0.column')];
-    //     $dir = $request->input('order.0.dir');
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
 
-    //     if(empty($request->input('search.value')))
-    //     {            
-    //         $userData = $userQuery->offset($start)
-    //                      ->limit($limit)
-    //                      ->orderBy($order,$dir);
-    //     }
-    //     else 
-    //     {
-    //         $search = $request->input('search.value'); 
+        if(empty($request->input('search.value')))
+        {            
+            $userData = $userQuery->offset($start)
+                         ->limit($limit)
+                         ->orderBy($order,$dir);
+        }
+        else 
+        {
+            $search = $request->input('search.value'); 
 
-    //         $userData =  $userQuery->where('name','LIKE',"%{$search}%")
-    //                         ->orWhere('email', 'LIKE',"%{$search}%")
-    //                         ->orWhere('unique_id', 'LIKE',"%{$search}%")
-    //                         ->offset($start)
-    //                         ->limit($limit)
-    //                         ->orderBy($order,$dir);
+            $userData =  $userQuery->where('name','LIKE',"%{$search}%")
+                            ->orWhere('email', 'LIKE',"%{$search}%")
+                            ->orWhere('unique_id', 'LIKE',"%{$search}%")
+                            ->offset($start)
+                            ->limit($limit)
+                            ->orderBy($order,$dir);
 
-    //         $totalFiltered = $userQuery->where('name','LIKE',"%{$search}%")
-    //                          ->orWhere('unique_id', 'LIKE',"%{$search}%")
-    //                          ->orWhere('email', 'LIKE',"%{$search}%")
-    //                          ->count();
-    //     }
-    //     $userData = $userQuery->get();
-    //     $data = array();
-    //     if(!empty($userData))
-    //     {
-    //         $status_array = trans('common.label_common_status_array');
-    //         foreach ($userData as $users)
-    //         {
-    //             $nestedData['profile_pic'] = $users->profile_pic;
-    //             $nestedData['unique_id'] = $users->unique_id;
-    //             $nestedData['name'] = $users->name;
-    //             $nestedData['email'] = $users->email;
-    //             $nestedData['gender'] =$users->gender;
-    //             $nestedData['role'] =$users->role;
+            $totalFiltered = $userQuery->where('name','LIKE',"%{$search}%")
+                             ->orWhere('unique_id', 'LIKE',"%{$search}%")
+                             ->orWhere('email', 'LIKE',"%{$search}%")
+                             ->count();
+        }
+        $userData = $userQuery->get();
+        $data = array();
+        if(!empty($userData))
+        {
+            $status_array = trans('common.label_common_status_array');
+            foreach ($userData as $users)
+            {
+                $nestedData['profile_pic'] = $users->profile_pic;
+                $nestedData['unique_id'] = $users->unique_id;
+                $nestedData['name'] = $users->name;
+                $nestedData['email'] = $users->email;
+                $nestedData['gender'] =$users->gender;
+                $nestedData['role'] =$users->role;
 
-    //             $nestedData['created_at'] = date("d F Y",strtotime($users->created_at));
+                $nestedData['created_at'] = date("d F Y",strtotime($users->created_at));
 
-    //             $nestedData['status'] = '';
-    //             if($users->status == '1')
-    //             {
-    //                 $nestedData['status'] = 'Inactive';
-    //             }
-    //             else
-    //             {
-    //                 $nestedData['status'].='Active';
-    //             }                                            
+                $nestedData['status'] = '';
+                if($users->status == '1')
+                {
+                    $nestedData['status'] = 'Inactive';
+                }
+                else
+                {
+                    $nestedData['status'].='Active';
+                }                                            
               
-    //             $nestedData['action'] = '<a href="'.route('user.delete',['id'=>$users->id]).'"  class="delete" title="Delete" class="btn btn-default btn-xs" ><i class="fa fa-times text-danger text"></i></a>';
-    //             $data[] = $nestedData;
+                $nestedData['action'] = '<a href="'.route('user.delete',['id'=>$users->id]).'"  class="delete" title="Delete" class="btn btn-default btn-xs" ><i class="fa fa-times text-danger text"></i></a>';
+                $data[] = $nestedData;
 
-    //         }
-    //     }
+            }
+        }
           
-    //     $json_data = array(
-    //                 "draw"            => intval($request->input('draw')),  
-    //                 "recordsTotal"    => intval($totalData),  
-    //                 "recordsFiltered" => intval($totalFiltered), 
-    //                 "data"            => $data   
-    //                 );
+        $json_data = array(
+                    "draw"            => intval($request->input('draw')),  
+                    "recordsTotal"    => intval($totalData),  
+                    "recordsFiltered" => intval($totalFiltered), 
+                    "data"            => $data   
+                    );
             
-    //     echo json_encode($json_data); 
-    // }
+        echo json_encode($json_data); 
+    }
 
 }

@@ -1,5 +1,6 @@
 <?php
 use App\User;
+use App\Brand;
 
 if (!function_exists('get_unique_id')) {
     /**
@@ -17,6 +18,12 @@ if (!function_exists('get_unique_id')) {
     function get_unique_id()
     {
         $user = User::orderby('id', 'desc')->first();
+        $uniqueId = $user->unique_id + 1;
+        return $uniqueId;
+    }
+    function get_brand_unique_id()
+    {
+        $user = Brand::orderby('id', 'desc')->first();
         $uniqueId = $user->unique_id + 1;
         return $uniqueId;
     }

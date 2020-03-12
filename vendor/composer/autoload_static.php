@@ -598,8 +598,11 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
     );
 
     public static $classMap = array (
+        'App\\Brand' => __DIR__ . '/../..' . '/app/Brand.php',
+        'App\\Category' => __DIR__ . '/../..' . '/app/Category.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Exports\\UserExport' => __DIR__ . '/../..' . '/app/Exports/UserExport.php',
         'App\\Http\\Controllers\\API\\BaseController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/BaseController.php',
         'App\\Http\\Controllers\\API\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/RegisterController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
@@ -609,9 +612,11 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\Auth\\VerificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerificationController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\ExportExcelController' => __DIR__ . '/../..' . '/app/Http/Controllers/ExportExcelController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductController.php',
         'App\\Http\\Controllers\\ReviewController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReviewController.php',
+        'App\\Http\\Controllers\\admin\\BrandController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BrandController.php',
         'App\\Http\\Controllers\\admin\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/UserController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
@@ -621,6 +626,7 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Http\\Requests\\StoreFormValidation' => __DIR__ . '/../..' . '/app/Http/Requests/StoreFormValidation.php',
         'App\\Product' => __DIR__ . '/../..' . '/app/Product.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
