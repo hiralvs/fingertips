@@ -8,7 +8,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a href="{{route('brand')}}" class="nav-link">
                     <i class="mdi mdi-cube-outline menu-icon"></i>
                     <span class="menu-title">Brand Listing</span>
                     <i class="menu-arrow"></i>

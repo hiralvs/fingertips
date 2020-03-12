@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Brand' => $baseDir . '/app/Brand.php',
     'App\\Area' => $baseDir . '/app/Area.php',
     'App\\Attractions' => $baseDir . '/app/Attractions.php',
     'App\\Banner' => $baseDir . '/app/Banner.php',
@@ -27,9 +28,11 @@ return array(
     'App\\Http\\Controllers\\Auth\\ResetPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ResetPasswordController.php',
     'App\\Http\\Controllers\\Auth\\VerificationController' => $baseDir . '/app/Http/Controllers/Auth/VerificationController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
+    'App\\Http\\Controllers\\ExportExcelController' => $baseDir . '/app/Http/Controllers/ExportExcelController.php',
     'App\\Http\\Controllers\\HomeController' => $baseDir . '/app/Http/Controllers/HomeController.php',
     'App\\Http\\Controllers\\ProductController' => $baseDir . '/app/Http/Controllers/ProductController.php',
     'App\\Http\\Controllers\\ReviewController' => $baseDir . '/app/Http/Controllers/ReviewController.php',
+    'App\\Http\\Controllers\\admin\\BrandController' => $baseDir . '/app/Http/Controllers/admin/BrandController.php',
     'App\\Http\\Controllers\\admin\\AreaController' => $baseDir . '/app/Http/Controllers/admin/AreaController.php',
     'App\\Http\\Controllers\\admin\\BannerController' => $baseDir . '/app/Http/Controllers/admin/BannerController.php',
     'App\\Http\\Controllers\\admin\\CategoryController' => $baseDir . '/app/Http/Controllers/admin/CategoryController.php',

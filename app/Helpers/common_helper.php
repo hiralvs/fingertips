@@ -38,29 +38,7 @@ if (!function_exists('get_unique_id')) {
             
         });
 
-       // $x = Mail::to($to_email)->send(new DemoEmail($objDemo));
         return true;
     }
-
-    // function send($data) {
-
-    //     $objDemo = new \stdClass();
-    //     $to_name = $data['TO'];
-    //     //$objDemo->from = $data['FROM'];
-    //     //$objDemo->from_name = $data['SITE_NAME'];
-    //     $objDemo->view = $data['VIEW'];
-    //     $subject = $data['SUBJECT'];
-    //     //$objDemo->param = $data['PARAM'];
-    //     $to_email = strtolower( trim( $data['TO'] ) );
-    //     $send = Mail::send($objDemo->view, $data, function($message) use ($to_name, $to_email,$subject)
-    //     {
-    //         $message->from('hiral.devtsree@gmail.com','Fingertips');
-    //         $message->to($to_email, $to_name)
-    //         ->subject($subject);
-            
-    //     });
-    //     return true;
-    // }
-}
 
 ?>

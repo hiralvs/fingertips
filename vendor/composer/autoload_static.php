@@ -598,6 +598,7 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
     );
 
     public static $classMap = array (
+        'App\\Brand' => __DIR__ . '/../..' . '/app/Brand.php',
         'App\\Area' => __DIR__ . '/../..' . '/app/Area.php',
         'App\\Attractions' => __DIR__ . '/../..' . '/app/Attractions.php',
         'App\\Banner' => __DIR__ . '/../..' . '/app/Banner.php',
@@ -619,9 +620,11 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\Auth\\VerificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerificationController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\ExportExcelController' => __DIR__ . '/../..' . '/app/Http/Controllers/ExportExcelController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductController.php',
         'App\\Http\\Controllers\\ReviewController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReviewController.php',
+        'App\\Http\\Controllers\\admin\\BrandController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BrandController.php',
         'App\\Http\\Controllers\\admin\\AreaController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/AreaController.php',
         'App\\Http\\Controllers\\admin\\BannerController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BannerController.php',
         'App\\Http\\Controllers\\admin\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/CategoryController.php',
