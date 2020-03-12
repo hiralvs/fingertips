@@ -22,9 +22,23 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="pages/charts/chartjs.html" class="nav-link">
+                  <a href="{{route('shopsmalls')}}" class="nav-link">
                     <i class="mdi mdi-finance menu-icon"></i>
                     <span class="menu-title">Shops & Malls</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="pages/charts/chartjs.html" class="nav-link">
+                    <i class="mdi mdi-finance menu-icon"></i>
+                    <span class="menu-title">Events</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="pages/charts/chartjs.html" class="nav-link">
+                    <i class="mdi mdi-finance menu-icon"></i>
+                    <span class="menu-title">Attractions</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
@@ -45,16 +59,22 @@
               <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="mdi mdi-codepen menu-icon"></i>
-                    <span class="menu-title">Sample Pages</span>
+                    <span class="menu-title">Master</span>
                     <i class="menu-arrow"></i>
                   </a>
                   <div class="submenu">
                       <ul class="submenu-item">
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/login.html">Login</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/login-2.html">Login 2</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/register.html">Register</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/register-2.html">Register 2</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Lockscreen</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('banner')}}">Banner</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Product Category</a></li>
+                          <li class="nav-item"><a class="nav-link" href="pages/samples/register-2.html">Property Images</a></li>
+                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Tax</a></li>
+                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Floor</a></li>
+                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Help</a></li>
+                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Privacy</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('area')}}">Area</a></li>
+                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Reward Setting</a></li>
+                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Login Privacy</a></li>
                       </ul>
                   </div>
               </li>

@@ -22,7 +22,8 @@
         <link rel="stylesheet" href="{{asset('/public/css/dataTables.bootstrap.min.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ asset('/public/css/jquery.multiselect.css')}}"/>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-       
+        <link rel="stylesheet" type="text/css" href="{{ asset('/public/css/jquery.multiselect.css')}}"/>
+        
   </head>
   <body>
     <div class="container-scroller">
@@ -70,6 +71,7 @@
     <script src="{{ asset('/public/js/dataTables.bootstrap.min.js') }}"></script>
 
 <script src="{{ asset('/public/js/jquery.multiselect.js') }}"></script>
+<script src="{{ asset('/public/js/jquery.ui.timepicker.js') }}"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>  
 <script src="https://cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script>
