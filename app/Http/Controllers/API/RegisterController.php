@@ -35,6 +35,8 @@ class RegisterController extends BaseController
         $input['unique_id'] =  get_unique_id('users');
         $input['role'] = $input['role'];
         $input['gender'] = $input['gender'];
+        $input['mobile'] = $input['mobile'];
+        $input['dob'] = date('Y-m-d',$input['dob']);
         if ($request->hasFile('profilepic')) {
 
             $image = $request->File('profilepic');
