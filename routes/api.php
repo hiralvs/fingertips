@@ -20,8 +20,17 @@ Route::middleware('auth:api')->group(function () {
     Route::get('attractions', 'API\HomePageController@attractionListing');
     Route::post('updateProfile','API\RegisterController@updateProfile');
     Route::get('rewards','API\RewardsController@rewards');
+    Route::get('notification','API\NotificationController@notification');
+    Route::get('purchases','API\OrderController@purchases');
+    Route::get('featuredEvents', 'API\HomePageController@featuredEvents');
+    Route::get('featuredShops', 'API\HomePageController@featuredShops');
+    Route::get('featuredMalls', 'API\HomePageController@featuredMalls');
+    Route::get('featuredAttraction', 'API\HomePageController@featuredAttraction');
+    Route::get('highlights/{id}/{type}', 'API\HomePageController@highlights');
+    Route::get('flashsale', 'API\HomePageController@flashsale');
+    Route::get('banners/{type}', 'API\HomePageController@banners');
+    Route::get('eventsdetails/{id}', 'API\HomePageController@eventsDetails');
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
-
 });
 
 

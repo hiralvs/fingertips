@@ -122,24 +122,39 @@
                         </tr>
                         <!-- Edit Modal HTML Markup -->
                         <div id="editBrand{{$value->id}}" class="modal fade">
-                        <div class="modal-dialog  modal-xl" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title">Edit Brand</h1>
-                                </div>
-                                <div class="modal-body">
-                                <p class="statusMsg"></p>
-                                    <form name="addbrandform" id="editbrandform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
-                                            @csrf
-                                        <div class="row">
-                                            <div class="form-group col-md-4">
-                                                <label for="exampleSelectPhoto">Brand Logo</label>
-                                                <input type="file" class="file-upload-default" name="brand_image">
-                                                <div class="input-group col-xs-12">
-                                                    <input type="text" value="{{ $value->brand_image != null ? $value->brand_image : ''}}" class="form-control file-upload-info" disabled placeholder="Upload Image">
-                                                    <span class="input-group-append">
-                                                    <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                                                    </span>
+                            <div class="modal-dialog  modal-xl" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title">Edit Brand</h1>
+                                    </div>
+                                    <div class="modal-body">
+                                    <p class="statusMsg"></p>
+                                        <form name="addbrandform" id="editbrandform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
+                                                @csrf
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="exampleSelectPhoto">Brand Logo</label>
+                                                    <input type="file" class="file-upload-default" name="brand_image">
+                                                    <div class="input-group col-xs-12">
+                                                        <input type="text" value="{{ $value->brand_image != null ? $value->brand_image : ''}}" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                                        <span class="input-group-append">
+                                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="exampleInputName">Name</label>
+                                                    <input type="text" class="form-control" required id="fullname" value="{{$value->name}}" name="name" placeholder="Name">
+                                                    <input type="hidden" name="id" value="{{$value->id}}">
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="exampleInputStatus">Brand Merchant</label>
+                                                    <select name="grand_merchant_user_id" id="grand_merchant_user_id" class="form-control">
+                                                        <option value=""> -- Select One --</option>
+                                                        @foreach ($grand_merchant_user_id as $brand)
+                                                            <option value="{{ $brand->id }}"  {{ (isset($brand->id) || old('id'))? "selected":"" }}>{{ $brand->name }}</option>
+                                                        @endforeach 
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -182,25 +197,29 @@
                                                 <label for="exampleInputFinertip">Fingertips</label>
                                                 <input type="tel" class="form-control" required id="commission32" value="{{$value->commission}}" name="commission" placeholder="Name">
                                             </div>
-                                        </div>
-                                        <div class="form-group col-md-12"> 
-                                            <textarea class="description ckeditor" id="description" name="description"></textarea>
-                                        </div>
-                                        <div class="row">
-                                            <div class="form-group col-md-2" style="text-align:center">
-                                                <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
+                                            <div class="form-group col-md-12"> 
+                                                <textarea class="description ckeditor" id="description" name="description"></textarea>
                                             </div>
-                                            <div class="form-group col-md-2" style="text-align:center">
-                                                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
+                                            <div class="row">
+                                                <div class="form-group col-md-2" style="text-align:center">
+                                                    <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
+                                                </div>
+                                                <div class="form-group col-md-2" style="text-align:center">
+                                                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div><!-- /.modal-content -->
-                        </div><!-- /.modal-dialog -->
-                    </div><!-- edit /.modal -->
+                                        </form>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- edit /.modal -->
                         
                         @endforeach
+                       
+                        @else
+                        <tr>
+                        <td colspan="10">No Records Found</td>
+                        </tr>
                         @endif
 
                       </tbody>
@@ -306,7 +325,9 @@ $(document).ready(function(){
                     }
                     if(data.created_at)
                     {
-                        var cdate = "<?php echo date("d F Y",strtotime($value->created_at)) ?>";
+                        var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
+                        cdate = cdate.replace(':date', data.created_at);
+
                     }
                     var deleteurl = '{{ route("brand.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
@@ -384,7 +405,9 @@ $(document).ready(function(){
                     }
                     if(data.created_at)
                     {
-                        var cdate = "<?php echo date("d F Y",strtotime($value->created_at)) ?>";
+                        var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
+                        cdate = cdate.replace(':date', data.created_at);
+                        //var cdate = "<?php //echo date("d F Y",strtotime($value->created_at)) ?>";
                     }
                     var deleteurl = '{{ route("brand.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
