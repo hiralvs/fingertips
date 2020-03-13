@@ -47,7 +47,7 @@
                         </button> -->
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('user.csv')}}" tabindex=""     style="background-color:#454d56 !important;">
+                    <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('export_excel.excel')}}" tabindex=""     style="background-color:#454d56 !important;">
                         EXPORT
                     </a>
                         <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
@@ -152,8 +152,11 @@
                                                 <select name="grand_merchant_user_id" id="grand_merchant_user_id" class="form-control">
                                                     <option value=""> -- Select One --</option>
                                                     @foreach ($grand_merchant_user_id as $brand)
-                                                        <option value="{{ $brand->id }}"  {{ (isset($brand->id) || old('id'))? "selected":"" }}>{{ $brand->name }}</option>
-                                                    @endforeach 
+                                                        <option value="{{ $brand->id }}"  {{ $value->grand_merchant_user_id ==$brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                                    @endforeach
+                                                     {{-- @foreach ($grand_merchant_user_id as $brand)
+                                                        <option value="{{ $brand->id }}"  {{ $value->category_id ==$cat->id ? 'selected' : ''}}>{{ $cat->category_name }}</option>
+                                                    @endforeach  --}}
                                                 </select>
                                             </div>
                                         </div>
@@ -163,8 +166,8 @@
                                                 <select name="category_id" id="category_id" class="form-control">
                                                     <option value=""> -- Select One --</option>
                                                     @foreach ($category_id as $cat)
-                                                        <option value="{{ $cat->id }}"  {{ (isset($cat->id) || old('id'))? "selected":"" }}>{{ $cat->category_name }}</option>
-                                                    @endforeach 
+                                                        <option value="{{ $cat->id }}"  {{ $value->category_id ==$cat->id ? 'selected' : ''}}>{{ $cat->category_name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-4">
@@ -454,7 +457,7 @@ $(document).ready(function(){
                         <select name="grand_merchant_user_id" id="grand_merchant_user_id" class="form-control">
                             <option value="" selected="">Select One</option>
                             @foreach ($grand_merchant_user_id as $brand)
-                                <option value="{{ $brand->id }}"  {{ (isset($brand->id) || old('id'))? "selected":"" }}>{{ $brand->name }}</option>
+                                <option value="{{ $brand->id }}"  {{ (isset($brand->id) || old('id'))? "":"selected" }}>{{ $brand->name }}</option>
                             @endforeach 
                         </select>
                     </div>
@@ -463,7 +466,7 @@ $(document).ready(function(){
                         <select name="category_id" id="category_id" class="form-control">
                             <option value=""> -- Select One --</option>
                             @foreach ($category_id as $cat)
-                                <option value="{{ $cat->id }}"  {{ (isset($cat->id) || old('id'))? "selected":"" }}>{{ $cat->category_name }}</option>
+                                <option value="{{ $cat->id }}"  {{ (isset($cat->id) || old('id'))? "":"selected" }}>{{ $cat->category_name }}</option>
                             @endforeach 
                         </select>
                     </div>

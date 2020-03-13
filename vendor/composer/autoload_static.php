@@ -175,6 +175,7 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         ),
         'N' => 
         array (
+            'Nyholm\\Psr7\\' => 12,
             'NunoMaduro\\Collision\\' => 21,
         ),
         'M' => 
@@ -209,6 +210,10 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         array (
             'Intervention\\Image\\' => 19,
             'Illuminate\\' => 11,
+        ),
+        'H' => 
+        array (
+            'Http\\Message\\' => 13,
         ),
         'G' => 
         array (
@@ -418,6 +423,10 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         array (
             0 => __DIR__ . '/..' . '/opis/closure/src',
         ),
+        'Nyholm\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nyholm/psr7/src',
+        ),
         'NunoMaduro\\Collision\\' => 
         array (
             0 => __DIR__ . '/..' . '/nunomaduro/collision/src',
@@ -493,6 +502,10 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'Illuminate\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate',
+        ),
+        'Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/message-factory/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -598,10 +611,10 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
     );
 
     public static $classMap = array (
-        'App\\Brand' => __DIR__ . '/../..' . '/app/Brand.php',
         'App\\Area' => __DIR__ . '/../..' . '/app/Area.php',
         'App\\Attractions' => __DIR__ . '/../..' . '/app/Attractions.php',
         'App\\Banner' => __DIR__ . '/../..' . '/app/Banner.php',
+        'App\\Brand' => __DIR__ . '/../..' . '/app/Brand.php',
         'App\\Category' => __DIR__ . '/../..' . '/app/Category.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Events' => __DIR__ . '/../..' . '/app/Events.php',
@@ -624,9 +637,9 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductController.php',
         'App\\Http\\Controllers\\ReviewController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReviewController.php',
-        'App\\Http\\Controllers\\admin\\BrandController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BrandController.php',
         'App\\Http\\Controllers\\admin\\AreaController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/AreaController.php',
         'App\\Http\\Controllers\\admin\\BannerController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BannerController.php',
+        'App\\Http\\Controllers\\admin\\BrandController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BrandController.php',
         'App\\Http\\Controllers\\admin\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/CategoryController.php',
         'App\\Http\\Controllers\\admin\\ShopsandMallsController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/ShopsandMallsController.php',
         'App\\Http\\Controllers\\admin\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/UserController.php',
@@ -638,6 +651,7 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Http\\Requests\\StoreFormValidation' => __DIR__ . '/../..' . '/app/Http/Requests/StoreFormValidation.php',
         'App\\Otp' => __DIR__ . '/../..' . '/app/Otp.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
@@ -944,6 +958,7 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'Facade\\Ignition\\Solutions\\SuggestUsingCorrectDbNameSolution' => __DIR__ . '/..' . '/facade/ignition/src/Solutions/SuggestUsingCorrectDbNameSolution.php',
         'Facade\\Ignition\\Solutions\\UseDefaultValetDbCredentialsSolution' => __DIR__ . '/..' . '/facade/ignition/src/Solutions/UseDefaultValetDbCredentialsSolution.php',
         'Facade\\Ignition\\Support\\ComposerClassMap' => __DIR__ . '/..' . '/facade/ignition/src/Support/ComposerClassMap.php',
+        'Facade\\Ignition\\Support\\FakeComposer' => __DIR__ . '/..' . '/facade/ignition/src/Support/FakeComposer.php',
         'Facade\\Ignition\\Support\\Packagist\\Package' => __DIR__ . '/..' . '/facade/ignition/src/Support/Packagist/Package.php',
         'Facade\\Ignition\\Support\\Packagist\\Packagist' => __DIR__ . '/..' . '/facade/ignition/src/Support/Packagist/Packagist.php',
         'Facade\\Ignition\\Support\\StringComparator' => __DIR__ . '/..' . '/facade/ignition/src/Support/StringComparator.php',
@@ -1559,6 +1574,11 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'Highlight\\RegExMatch' => __DIR__ . '/..' . '/scrivo/highlight.php/Highlight/RegExMatch.php',
         'Highlight\\RegExUtils' => __DIR__ . '/..' . '/scrivo/highlight.php/Highlight/RegExUtils.php',
         'Highlight\\Terminators' => __DIR__ . '/..' . '/scrivo/highlight.php/Highlight/Terminators.php',
+        'Http\\Message\\MessageFactory' => __DIR__ . '/..' . '/php-http/message-factory/src/MessageFactory.php',
+        'Http\\Message\\RequestFactory' => __DIR__ . '/..' . '/php-http/message-factory/src/RequestFactory.php',
+        'Http\\Message\\ResponseFactory' => __DIR__ . '/..' . '/php-http/message-factory/src/ResponseFactory.php',
+        'Http\\Message\\StreamFactory' => __DIR__ . '/..' . '/php-http/message-factory/src/StreamFactory.php',
+        'Http\\Message\\UriFactory' => __DIR__ . '/..' . '/php-http/message-factory/src/UriFactory.php',
         'Illuminate\\Auth\\Access\\AuthorizationException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Access/AuthorizationException.php',
         'Illuminate\\Auth\\Access\\Gate' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Access/Gate.php',
         'Illuminate\\Auth\\Access\\HandlesAuthorization' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Auth/Access/HandlesAuthorization.php',
@@ -3306,6 +3326,16 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'NunoMaduro\\Collision\\Highlighter' => __DIR__ . '/..' . '/nunomaduro/collision/src/Highlighter.php',
         'NunoMaduro\\Collision\\Provider' => __DIR__ . '/..' . '/nunomaduro/collision/src/Provider.php',
         'NunoMaduro\\Collision\\Writer' => __DIR__ . '/..' . '/nunomaduro/collision/src/Writer.php',
+        'Nyholm\\Psr7\\Factory\\HttplugFactory' => __DIR__ . '/..' . '/nyholm/psr7/src/Factory/HttplugFactory.php',
+        'Nyholm\\Psr7\\Factory\\Psr17Factory' => __DIR__ . '/..' . '/nyholm/psr7/src/Factory/Psr17Factory.php',
+        'Nyholm\\Psr7\\MessageTrait' => __DIR__ . '/..' . '/nyholm/psr7/src/MessageTrait.php',
+        'Nyholm\\Psr7\\Request' => __DIR__ . '/..' . '/nyholm/psr7/src/Request.php',
+        'Nyholm\\Psr7\\RequestTrait' => __DIR__ . '/..' . '/nyholm/psr7/src/RequestTrait.php',
+        'Nyholm\\Psr7\\Response' => __DIR__ . '/..' . '/nyholm/psr7/src/Response.php',
+        'Nyholm\\Psr7\\ServerRequest' => __DIR__ . '/..' . '/nyholm/psr7/src/ServerRequest.php',
+        'Nyholm\\Psr7\\Stream' => __DIR__ . '/..' . '/nyholm/psr7/src/Stream.php',
+        'Nyholm\\Psr7\\UploadedFile' => __DIR__ . '/..' . '/nyholm/psr7/src/UploadedFile.php',
+        'Nyholm\\Psr7\\Uri' => __DIR__ . '/..' . '/nyholm/psr7/src/Uri.php',
         'Opis\\Closure\\Analyzer' => __DIR__ . '/..' . '/opis/closure/src/Analyzer.php',
         'Opis\\Closure\\ClosureContext' => __DIR__ . '/..' . '/opis/closure/src/ClosureContext.php',
         'Opis\\Closure\\ClosureScope' => __DIR__ . '/..' . '/opis/closure/src/ClosureScope.php',
@@ -4630,7 +4660,6 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'SebastianBergmann\\Type\\UnknownType' => __DIR__ . '/..' . '/sebastian/type/src/UnknownType.php',
         'SebastianBergmann\\Type\\VoidType' => __DIR__ . '/..' . '/sebastian/type/src/VoidType.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
-        'Symfony\\Bridge\\PsrHttpMessage\\Factory\\DiactorosFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/DiactorosFactory.php',
         'Symfony\\Bridge\\PsrHttpMessage\\Factory\\HttpFoundationFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/HttpFoundationFactory.php',
         'Symfony\\Bridge\\PsrHttpMessage\\Factory\\PsrHttpFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/PsrHttpFactory.php',
         'Symfony\\Bridge\\PsrHttpMessage\\Factory\\UploadedFile' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/UploadedFile.php',

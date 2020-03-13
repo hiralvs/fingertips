@@ -54,8 +54,13 @@ Route::post('/addbrand', 'admin\BrandController@addbrand')->name('addbrand');
 // Route::get('delete/{id}', array('as' => 'brand.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@delete'));
 Route::post('brandsearch', array('as' => 'brand.brandsearch', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@search'));
 Route::post('updatebrand', array('as' => 'brand.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@update'));
+
 Route::get('/excel_export', 'ExportExcelController@index');
 Route::get('/expert_excel/excel','ExportExcelController@excel')->name('export_excel.excel');
+
+Route::get('download', function(){
+    return Excel::download(new BrandsExport, 'brands.csv');
+});
 
 Route::get('/banner', 'admin\BannerController@index')->name('banner');
 
@@ -80,3 +85,8 @@ Route::get('shopsmallsdelete/{id}', array('as' => 'shopsmalls.delete', 'routegro
 Route::post('shopsmallsupdate', array('as' => 'shopsmalls.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@update'));
 Route::post('shopsmallssearch', array('as' => 'shopsmalls.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@search'));
 
+Route::get('/banner', 'admin\BannerController@index')->name('banner');
+Route::post('/addBanner', 'admin\BannerController@addBanner')->name('addBanner');
+Route::post('bannerupdate', array('as' => 'banner.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BannerController@update'));
+Route::get('bannerdelete/{id}', array('as' => 'banner.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BannerController@delete'));
+// Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
