@@ -30,6 +30,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('flashsale', 'API\HomePageController@flashsale');
     Route::get('banners/{type}', 'API\HomePageController@banners');
     Route::get('eventsdetails/{id}', 'API\HomePageController@eventsDetails');
+    Route::get('mallDetails/{id}', 'API\HomePageController@mallDetails');
+    Route::get('attractionDetails/{id}', 'API\HomePageController@attractionDetails');
+    Route::post('addToFavorites/{id}', 'API\FavoriteController@addToFavorites');
+    Route::get('eventFavorites/{id}', 'API\FavoriteController@eventFavorites');
+    Route::get('mallsFavorites/{id}', 'API\FavoriteController@mallsFavorites');
+    Route::get('attractionFavorites/{id}', 'API\FavoriteController@attractionFavorites');
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
 });
 
