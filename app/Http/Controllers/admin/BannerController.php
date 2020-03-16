@@ -52,7 +52,7 @@ class BannerController extends Controller
         $request->request->remove('_token');
         $input = $request->all();
         // $input['banner'] = $input['category_name'];
-        // $input['type'] = $input['type'];
+        $input['type'] = $input['type'];
         if ($request->hasFile('bannerimage')) {
 
             $image = $request->File('bannerimage');

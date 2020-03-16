@@ -47,6 +47,18 @@ Route::post('search', array('as' => 'user.search', 'routegroup' => 'grp_admin_us
 Route::get('export', array('as' => 'user.csv', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@csv'));
 //Route::post('/user/adduser', [ 'as' => 'user.adduser', 'uses' => 'admin\UserController@adduser']);
 
+
+Route::get('/usermanagementList', 'admin\UserController@index')->name('usermanagement');
+//Route::post('/userdetails', 'admin\UserController@userdetails')->name('userData');
+//Route::get('user/delete/{id}', array('as' => 'user.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@delete'));
+//Route::post('/user/create', [ 'as' => 'user.create', 'uses' => 'admin\UserController@create']);
+Route::post('/adduser', 'admin\UserController@adduser')->name('adduser');
+Route::get('delete/{id}', array('as' => 'user.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@delete'));
+Route::post('update', array('as' => 'user.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@update'));
+Route::post('search', array('as' => 'user.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@search'));
+Route::get('export', array('as' => 'user.csv', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\UserController@csv'));
+//Route::post('/user/adduser', [ 'as' => 'user.adduser', 'uses' => 'admin\UserController@adduser']);
+
 Route::get('/brandList', 'admin\BrandController@index')->name('brand');
 Route::get('brand/delete/{id}', array('as' => 'brand.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@delete'));
 Route::post('/brand/create', [ 'as' => 'brand.create', 'brand' => 'admin\BrandController@create']);
@@ -62,7 +74,6 @@ Route::get('download', function(){
     return Excel::download(new BrandsExport, 'brands.csv');
 });
 
-Route::get('/banner', 'admin\BannerController@index')->name('banner');
 
 
 //category route
@@ -85,8 +96,14 @@ Route::get('shopsmallsdelete/{id}', array('as' => 'shopsmalls.delete', 'routegro
 Route::post('shopsmallsupdate', array('as' => 'shopsmalls.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@update'));
 Route::post('shopsmallssearch', array('as' => 'shopsmalls.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@search'));
 
+//
+
 Route::get('/banner', 'admin\BannerController@index')->name('banner');
 Route::post('/addBanner', 'admin\BannerController@addBanner')->name('addBanner');
 Route::post('bannerupdate', array('as' => 'banner.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BannerController@update'));
 Route::get('bannerdelete/{id}', array('as' => 'banner.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BannerController@delete'));
-// Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
+
+Route::get('/events', 'admin\EventsController@index')->name('events');
+Route::post('/addEvents', 'admin\EventsController@addBanner')->name('events');
+Route::post('eventsupdate', array('as' => 'events.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@update'));
+Route::get('eventsdelete/{id}', array('as' => 'events.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@delete'));

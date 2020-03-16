@@ -100,32 +100,36 @@
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-md-4">
-                                                <label for="exampleInputStatus">Type</label>
-                                                <select class="form-control" id="type" name="type">
-                                                    <option value="" selected="">Select</option>
+                                                <label for="exampleInputStatus type">Type</label>
+                                                <select class="form-control type" name="type" data-id="{{$value->id}}">
+                                                    <option value="">Select</option>
                                                     <option value="inapp" {{ $value->type == 'inapp' ? 'selected' : ''}}>In App</option>
-                                                    <option value="outsideapp {{ $value->type == 'outsideapp' ? 'selected' : ''}}">Outside App</option>
+                                                    <option value="outsideapp" {{ $value->type == 'outsideapp' ? 'selected' : ''}}>Outside App</option>
                                                 </select>
                                             </div>
-                                            <div class="form-group col-md-4" id="ema">
-                                                <label for="exampleInputStatus">Select</label>
-                                                <select class="form-control" id="ema" name="ema" >
-                                                    <option value="" selected="">EMA</option>
-                                                    <option value="0" {{ $value->ema == 'event' ? 'selected' : ''}}>Event</option>
-                                                    <option value="1" {{ $value->ema == 'mall' ? 'selected' : ''}}>Mall</option>
-                                                    <option value="2" {{ $value->ema == 'attraction' ? 'selected' : ''}}>Attraction</option>
+                                            <div class="form-group col-md-4 ema" id="ema{{$value->id}}" style="display:{{ $value->type == 'inapp' ? 'block' : 'none'}}">
+                                                <label for="exampleInputStatus">EMA</label>
+                                                <select class="form-control ema" name="ema">
+                                                    <option value="">EMA</option>
+                                                    <option value="event" {{ $value->ema == 'event' ? 'selected' : ''}}>Event</option>
+                                                    <option value="mall" {{ $value->ema == 'mall' ? 'selected' : ''}}>Mall</option>
+                                                    <option value="attraction" {{ $value->ema == 'attraction' ? 'selected' : ''}}>Attraction</option>
                                                 </select>
                                             </div>
-                                            <div class="form-group col-md-4" id="property_user_id">
+                                            <div class="form-group col-md-4 property_user_id" id="property_user_id{{$value->id}}" style="display:{{ $value->type == 'inapp' ? 'block' : 'none'}}">
                                                 <label for="exampleInputStatus">Property</label>
-                                                <select name="property_user_id" id="property_user_id" class="form-control">
+                                                <select name="property_user_id" class="form-control property_user_id">
                                                     <option value="">Select One</option>
                                                     @foreach ($property_user_id as $banner)
                                                         <option value="{{ $banner->id }}"  {{ $value->property_user_id ==$banner->id ? 'selected' : ''}}>{{ $banner->name }}</option>
                                                     @endforeach 
                                                 </select>
                                             </div>
-
+                                            <div class="form-group col-md-4 url" id="url{{$value->id}}" style="display:{{ $value->type == 'outsideapp' ? 'block' : 'none'}}">
+                                                <label for="exampleInputName">URL</label>
+                                                <input type="text" value="{{ $value->url != null ? $value->url : ''}}" required class="form-control url" name="url">
+                                                {{-- <input type="hidden" class="form-control" id="type" name="type" value='url'> --}}
+                                            </div>
                                         </div>
                                         <div class="row">
                                             
@@ -199,195 +203,26 @@
                 }
             });
         });
+    // $(function () {
+    // // alert($('.type').val());
+    //  if ($('.type').val() == 'inapp') {
+    //      alert('hvdsbxjn');
+    //             console.log($('.type').val());
+    //             $(".ema").show();
+    //             $(".property_user_id").show();
+    //             $(".url").hide();
+    //         }else if ($('.type').val() == 'outsideapp'){
+    //             $(".ema").hide();
+    //             $(".property_user_id").hide();
+    //             $(".url").show();
+    //         }else{
+    //             // console.log($(this).val());
+    //             $(".ema").hide();
+    //             $(".property_user_id").hide();
+    //             $(".url").hide();
+    //         }
+    //     });
 
-// $(document).ready(function(){
-//     $('.editUserSubmit').click(function(e){
-//         var id = $(this).data('id');
-//         var formData = new FormData($("#edituserform"+id)[0]);
-//             e.preventDefault();
-//             $.ajaxSetup({
-//                 headers: {
-//                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-//                 }
-//             });
-//             $.ajax({
-//                 url: "{{ route('user.update') }}",
-//                 method: 'post',
-//                 cache: false,
-//                 contentType: false,
-//                 processData: false,
-//                 data: formData,
-//                 success: function(result){
-//                 if(result.status == true)
-//                 {
-//                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
-//                     setInterval(function(){ 
-//                         $('#editUser'+id).modal('hide');
-//                         window.location.reload();
-//                     }, 3000);
-//                 }
-//                 else
-//                 {
-//                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-
-
-//                     // $.each(result.errors, function(key, value){
-//                     //     $('.alert-danger').show();
-//                     //     $('.alert-danger').append('<li>'+value+'</li>');
-//                     // });
-//                 }
-//                 }
-//             });
-//         });
-
-//         $('#addUserSubmit').click(function(e){
-//         var formData = new FormData($("#adduserform")[0]);
-//             e.preventDefault();
-//             $.ajaxSetup({
-//                 headers: {
-//                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-//                 }
-//             });
-//             $.ajax({
-//                 url: "{{ route('adduser') }}",
-//                 method: 'post',
-//                 cache: false,
-//                 contentType: false,
-//                 processData: false,
-//                 data: formData,
-//                 success: function(result){
-//                 if(result.status == true)
-//                 {
-//                         var data = result.data;
-//                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
-//                     setInterval(function(){ 
-//                         $('#addUser').modal('hide');
-//                         //  $('#done-message').addClass('hide');
-//                     }, 3000);
-                    
-//                     var findnorecord = $('#usertableData tr.norecord').length;
-//                     if(findnorecord > 0){
-//                         $('#usertableData tr.norecord').remove();
-//                         }
-                    
-//                     var profilepic = status = '';
-//                     if(data.profile_pic != null)
-//                     {
-//                         profilepic = data.profile_pic;
-//                     }
-//                     if(data.status == 0)
-//                     {
-//                         status = 'Active';
-//                     }
-//                     else
-//                     {
-//                         status = 'Inactive';
-//                     }
-//                     if(data.created_at)
-//                     {
-//                         var cdate = "<?php //echo date("d F Y",strtotime($value->created_at)) ?>";
-//                     }
-//                     var deleteurl = '{{ route("user.delete", ":id") }}';
-//                     deleteurl = deleteurl.replace(':id', data.id);
-//                     var tr_str = "<tr>"+
-//                     "<td>"+profilepic+"</td>" +
-//                     "<td>"+data.unique_id+"</td>" +
-//                     "<td>"+data.name+"</td>" +
-//                     "<td>"+data.email+"</td>"+
-//                     "<td>"+data.gender+"</td>" +
-//                     "<td>"+data.role+"</td>" +
-//                     "<td>"+status+"</td>" +
-//                     "<td>"+cdate+"</td>" +
-//                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-//                     "</tr>";
-//                     console.log(tr_str);
-//                     $("#usertableData tbody").prepend(tr_str);
-//                     $("#adduserform")[0].reset();
-                    
-//                 }
-//                 else
-//                 {
-//                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-
-
-//                     // $.each(result.errors, function(key, value){
-//                     //     $('.alert-danger').show();
-//                     //     $('.alert-danger').append('<li>'+value+'</li>');
-//                     // });
-//                 }
-//                 }
-//             });
-//         });
-//     $(document).on('click','#search',function(){ 
-//         $.ajaxSetup({
-//                 headers: {
-//                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-//                 }
-//             });       
-//         $.ajax({
-//                 url: "{{route('user.search')}}",
-//                 method: 'post',
-//                 data: {'search':$("#searchtext").val()},
-//                 success: function(result){
-//                 if(result.status == true)
-//                 {
-//                     var data = result.data;
-                    
-                    
-//                     var findnorecord = $('#usertableData tr.norecord').length;
-//                     if(findnorecord > 0){
-//                         $('#usertableData tr.norecord').remove();
-//                         }
-                    
-//                     var profilepic = status = '';
-//                     if(data.profile_pic != null)
-//                     {
-//                         profilepic = data.profile_pic;
-//                     }
-//                     if(data.status == 0)
-//                     {
-//                         status = 'Active';
-//                     }
-//                     else
-//                     {
-//                         status = 'Inactive';
-//                     }
-//                     if(data.created_at)
-//                     {
-//                         var cdate = "<?php// echo date("d F Y",strtotime($value->created_at)) ?>";
-//                     }
-//                     var deleteurl = '{{ route("user.delete", ":id") }}';
-//                     deleteurl = deleteurl.replace(':id', data.id);
-//                     var tr_str = "<tr>"+
-//                     "<td>"+profilepic+"</td>" +
-//                     "<td>"+data.unique_id+"</td>" +
-//                     "<td>"+data.name+"</td>" +
-//                     "<td>"+data.email+"</td>"+
-//                     "<td>"+data.gender+"</td>" +
-//                     "<td>"+data.role+"</td>" +
-//                     "<td>"+status+"</td>" +
-//                     "<td>"+cdate+"</td>" +
-//                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-//                     "</tr>";
-//                     console.log(tr_str);
-//                     $("#usertableData tbody").html(tr_str);
-//                     $("#paging").hide();
-//                 }
-//                 else
-//                 {
-//                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-
-
-//                     // $.each(result.errors, function(key, value){
-//                     //     $('.alert-danger').show();
-//                     //     $('.alert-danger').append('<li>'+value+'</li>');
-//                     // });
-//                 }
-//                 }
-//             });
-//     });
-   
-// });
 
 $('#addBannerSubmit').click(function(e){
         var formData = new FormData($("#addBannerform")[0]);
@@ -431,8 +266,6 @@ $('#addBannerSubmit').click(function(e){
                     var tr_str = "<tr>"+
                     // "<td>"+data.category_name+"</td>" +
                     "<td><img src="+imageurl+"/"+bannerimage+"></td>" +
-                    // "<td>"+data.property_user_id+"</td>" +
-                    // "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editBanner'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Category?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
                     $("#bannerstableData tbody").prepend(tr_str);
                     $("#bannerstableData tbody").append('<div id="editBanner'+data.id+'" class="modal fade"><div class="modal-dialog  modal-xl" role="document"><div class="modal-content"><div class="modal-header"><h1 class="modal-title">Edit Banner</h1></div><div class="modal-body"><p class="statusMsg"></p><form name="editBanner" id="editBannerform'+data.id+'" role="form" method="POST" enctype= "multipart/form-data">@csrf<div class="row"><div class="form-group col-md-4"><label for="exampleInputName">Banner Name</label><input type="text" class="form-control" required id="Banner_name" value="'+data.banner_name+'" name="banner_name" placeholder="Name"><input type="hidden" name="id" value="'+data.id+'"><input type="hidden" name="type" value="banner"></div><div class="form-group col-md-4"><label for="exampleSelectPhoto">Photo</label><input type="file" name="bannerimage" class="file-upload-default"><div class="input-group col-xs-12"><input type="text" value="'+bannerpic+'" class="form-control file-upload-info" disabled placeholder="Upload Image"><span class="input-group-append"><button class="file-upload-browse btn btn-primary" type="button">Upload</button></span></div></div></div><button type="button" class="btn btn-primary mr-2 editBannerSubmit" data-id="'+data.id+'" id="editBannerSubmit">Submit</button><button type="button" class="btn btn-light" data-dismiss="modal">Close</button></form></div></div></div></div>');
@@ -447,23 +280,53 @@ $('#addBannerSubmit').click(function(e){
             });
         }); 
 $(function () {
-        $("#type").change(function () {
+        $(".type").change(function () {
+            var id = $(this).data('id');
+
             // alert($(this).val());
             if ($(this).val() == 'inapp') {
-                // console.log($(this).val());
+                console.log($(this).val());
+                $("#ema"+id).show();
+                $("#property_user_id"+id).show();
+                $("#url"+id).hide();
+            }else if ($(this).val() == 'outsideapp'){
+                console.log($(this).val());
+
+                $("#ema"+id).hide();
+                $("#property_user_id"+id).hide();
+                $("#url"+id).show();
+            }
+            // else if ($(this).val() == ''){
+            //     console.log($(this).val());
+            //     $(".ema").hide();
+            //     $(".property_user_id").hide();
+            //     $(".url").hide();
+            // } 
+        });
+    });
+$(function () {
+        $("#type").change(function () {
+            var id = $(this).data('id');
+
+            // alert($(this).val());
+            if ($(this).val() == 'inapp') {
+                console.log($(this).val());
                 $("#ema").show();
                 $("#property_user_id").show();
                 $("#url").hide();
             }else if ($(this).val() == 'outsideapp'){
+                console.log($(this).val());
+
                 $("#ema").hide();
                 $("#property_user_id").hide();
                 $("#url").show();
-            }else{
-                // console.log($(this).val());
-                $("#ema").hide();
-                $("#property_user_id").hide();
-                $("#url").hide();
-            } 
+            }
+            // else if ($(this).val() == ''){
+            //     console.log($(this).val());
+            //     $(".ema").hide();
+            //     $(".property_user_id").hide();
+            //     $(".url").hide();
+            // } 
         });
     });
 </script>
@@ -481,21 +344,10 @@ $(function () {
                 <form name="addBanner" id="addBannerform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                 <div class="row">
-                    {{-- <div class="form-group col-md-3">
-                        <label for="exampleInputName">Location</label>
-                        <input type="text" required class="form-control" Re id="fullname" name="name" placeholder="Name">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="exampleInputEmail1">Email id</label>
-                        <input type="email" required class="form-control" id="email" name="email" placeholder="Email">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="exampleInputPassword">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                    </div> --}}
+
                     <div class="form-group col-md-3">
                         <label for="exampleSelectGender">Location</label>
-                        <select class="form-control" name="location" id="exampleSelectLocation">
+                        <select class="form-control " name="location" id="exampleSelectLocation">
                             <option value="" selected="">Location</option>
                             <option value="home">Home</option>
                             <option value="event">Event</option>
@@ -509,25 +361,25 @@ $(function () {
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-4">
-                        <label for="exampleInputStatus">Type</label>
-                        <select class="form-control" id="type" name="type">
+                    <div class="form-group col-md-4 type">
+                        <label for="exampleInputStatus type">Type</label>
+                        <select class="form-control type" id="type" name="type">
                             <option value="">--Select--</option>
                             <option value="inapp">In App</option>
                             <option value="outsideapp">Outside App</option>
                         </select>
                     </div>
-                        <div class="form-group col-md-4" id="ema" style="display:none;">
-                            <label for="exampleInputStatus">EMA</label>
-                            <select class="form-control" id="ema" name="ema" >
+                        <div class="form-group col-md-4 ema" id="ema" style="display:none;">
+                            <label for="exampleInputStatus ema">EMA</label>
+                            <select class="form-control" id="ema" name="ema">
                                 <option value="" selected="">EMA</option>
                                 <option value="0">Event</option>
                                 <option value="1">Mall</option>
                                 <option value="2">Attraction</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-4" id="property_user_id" style="display:none;">
-                            <label for="exampleInputStatus">Property</label>
+                        <div class="form-group col-md-4 property_user_id" id="property_user_id" style="display:none;">
+                            <label for="exampleInputStatus property_user_id">Property</label>
                             <select name="property_user_id" id="property_user_id" class="form-control">
                                 <option value="" selected="">Property</option>
                                 @foreach ($property_user_id as $brand)
@@ -535,10 +387,10 @@ $(function () {
                                 @endforeach 
                             </select>
                         </div>
-                        <div class="form-group col-md-4" id="url" style="display:none;">
-                            <label for="exampleInputName">URL</label>
+                        <div class="form-group col-md-4 url" id="url" style="display:none;">
+                            <label for="exampleInputName url">URL</label>
                             <input type="text" required class="form-control" id="url" name="url" placeholder="url">
-                            <input type="hidden" class="form-control" id="type" name="type" value='url'>
+                            {{-- <input type="hidden" class="form-control" id="type" name="type" value='url'> --}}
                         </div> 
                 </div>
                 </div>

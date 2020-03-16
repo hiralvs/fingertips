@@ -55,7 +55,7 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="mallstableData">
+                    <table class="table table-hover" id="eventstableData">
                       <thead>
                         <tr>
                             <th>@sortablelink('id')</th>
@@ -64,9 +64,7 @@
                             <th>@sortablelink('location')</th>
                             <th>@sortablelink('openingdate','Opening Date')</th>
                             <th>@sortablelink('openinghrs','Opening Hours')</th>
-                            <th>@sortablelink('contact','Contact Info')</th>
-                            <th>@sortablelink('type','Mall Type')</th>
-                            <th>@sortablelink('','Mall Admin')</th>
+                            <th>@sortablelink('description','Description')</th>
                             <th>@sortablelink('created_at','Created On')</th>
                             <th>@sortablelink('','Created By')</th>
                             <th>Action</th>
@@ -77,13 +75,12 @@
                             @foreach($data as $key => $value)
                         <tr>
                           <td>{{$value->unique_id}}</td>
-                          <td><img src="{{asset('public/upload/malls/')}}/{{$value->image}}" alt=""></td>
+                          <td><img src="{{asset('public/upload/events/')}}/{{$value->image}}" alt=""></td>
                           <td>{{$value->name}}</td>
                           <td>{{$value->location}}</td>
+                          <td>{{$value->openingdate}}</td>
                           <td>{{$value->openinghrs}}</td>
-                          <td>{{$value->contact}}</td>
-                          <td>{{$value->type}}</td>
-                          <td>{{$value->propertyadmin}}</td>
+                          <td>{{$value->description}}</td>
                           <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                           <td>{{$value->created_by}}</td>
                           <td><a class="edit open_modal" data-toggle="modal" data-target="#editShopsandmalls{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
@@ -517,11 +514,11 @@ $(document).ready(function(){
     <div class="modal-dialog  modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add Malls</h1>
+                <h1 class="modal-title">Add Events</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
-                <form name="addMallsform" id="addMallsform" role="form" method="POST" enctype= "multipart/form-data">
+                <form name="addEventsform" id="addEventsform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-4">
@@ -596,11 +593,19 @@ $(document).ready(function(){
                     </div>
                     <div class="row">
                         <div class="form-group col-md-4">
-                            <label for="exampleInputRole">Featured Event</label>
+                            <label for="exampleInputRole">Featured Mall</label>
                             <select class="form-control" id="featured_mall" name="featured_mall">
                                 <option value="">--Select--</option>
                                 <option value="yes">Yes</option>
                                 <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="exampleInputStatus">Type</label>
+                            <select class="form-control" id="type" name="type">
+                                <option value="">--Select--</option>
+                                <option value="mall">Mall</option>
+                                <option value="shop">Shop</option>
                             </select>
                         </div>
                     </div>
