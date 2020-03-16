@@ -32,10 +32,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get('eventsdetails/{id}', 'API\HomePageController@eventsDetails');
     Route::get('mallDetails/{id}', 'API\HomePageController@mallDetails');
     Route::get('attractionDetails/{id}', 'API\HomePageController@attractionDetails');
-    Route::post('addToFavorites/{id}', 'API\FavoriteController@addToFavorites');
-    Route::get('eventFavorites/{id}', 'API\FavoriteController@eventFavorites');
-    Route::get('mallsFavorites/{id}', 'API\FavoriteController@mallsFavorites');
-    Route::get('attractionFavorites/{id}', 'API\FavoriteController@attractionFavorites');
+    Route::post('addToFavorites', 'API\FavoriteController@addToFavorites');
+    Route::get('eventFavorites', 'API\FavoriteController@eventFavorites');
+    Route::get('mallsFavorites', 'API\FavoriteController@mallsFavorites');
+    Route::get('attractionFavorites', 'API\FavoriteController@attractionFavorites');
+    Route::get('products', 'API\FavoriteController@products');
+    Route::get('products_variant', 'API\FavoriteController@products_variant');
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
 });
 
