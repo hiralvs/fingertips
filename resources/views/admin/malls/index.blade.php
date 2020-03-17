@@ -62,6 +62,7 @@
                             <th>Image</th>
                             <th>@sortablelink('name')</th>
                             <th>@sortablelink('location')</th>
+                            <th>@sortablelink('openingdate','Opening Date')</th>
                             <th>@sortablelink('openinghrs','Opening Hours')</th>
                             <th>@sortablelink('contact','Contact Info')</th>
                             <th>@sortablelink('type','Mall Type')</th>
@@ -606,19 +607,11 @@ $(document).ready(function(){
                     </div>
                     <div class="row">
                         <div class="form-group col-md-4">
-                            <label for="exampleInputRole">Featured Mall</label>
+                            <label for="exampleInputRole">Featured Event</label>
                             <select class="form-control" id="featured_mall" name="featured_mall">
                                 <option value="">--Select--</option>
                                 <option value="yes">Yes</option>
                                 <option value="no">No</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Type</label>
-                            <select class="form-control" id="type" name="type">
-                                <option value="">--Select--</option>
-                                <option value="mall">Mall</option>
-                                <option value="shop">Shop</option>
                             </select>
                         </div>
                     </div>
