@@ -19,6 +19,8 @@ use App\Photos;
 use App\Map_images;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use DB;
+
 
 class HomePageController extends BaseController
 {
@@ -259,6 +261,63 @@ class HomePageController extends BaseController
             $success['mallData']['deals'] = $deals;
             $success['mallData']['photos'] =  $photos ;
             $success['mallData']['floormap'] =  $floormap ;
+            return $this->sendResponse($success, 'Data Found successfully.');
+        }
+        else
+        {   
+            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+        }
+    }
+
+    /* Function used to search in whole database */
+    public function search(Request $request)
+    {
+        $search = $request->search;
+        $out = "";
+
+        $sql = "show tables";
+        $tables = DB::select('SHOW TABLES');
+       
+        if(count($tables) > 0){
+            foreach($tables as $k=>$r)
+            {
+                $table = $r->Tables_in_fingertips;
+                //$out .= $table.";";
+                $sql_search = "select * from ".$table." where ";
+                $sql_search_fields = Array();
+                $sql2 = "SHOW COLUMNS FROM ".$table;
+                $rs2 = DB::select($sql2);
+                if(count($rs2) > 0){
+                    foreach($rs2 as $r2)
+                    {
+                        $colum = $r2->Field;
+                        $sql_search_fields[] = $colum." like('%".$search."%')";
+                    }
+                }
+                $sql_search .= implode(" OR ", $sql_search_fields);
+                $rs3 = DB::select($sql_search);
+
+                //$out .= count($rs3)."\n";
+                print_r($rs3 );
+                if(count($rs3) >0)
+                {
+                    $success[$table] = $rs3;
+                }
+            }
+        }
+
+        //return $out;
+        return $this->sendResponse($success, 'Data Found successfully.');
+
+    }
+
+    /* Function used to insert privacy policy */
+    public function privacypolicy(Request $request)
+    {
+        $privacy = DB::table('settings')->where('type','privacypolicy')->get();
+        if($privacy->count() > 0)
+        {
+            $success['privacy'] = $privacy;
             return $this->sendResponse($success, 'Data Found successfully.');
         }
         else

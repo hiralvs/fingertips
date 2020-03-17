@@ -1,0 +1,4 @@
+ALTER TABLE `rewards` CHANGE `earned` `earned` VARCHAR(200) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL, CHANGE `used` `used` VARCHAR(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL, CHANGE `redeem` `redeem` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+
+ALTER TABLE `settings`  ADD `deleted_at` TIMESTAMP NULL DEFAULT NULL  AFTER `updated_at`;
+

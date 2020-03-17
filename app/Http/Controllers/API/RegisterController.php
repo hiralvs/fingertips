@@ -10,8 +10,10 @@ use Validator;
 use Intervention\Image\Facades\Image;
 use App\Otp;
 use App\Settings;
+use App\Rewards;
 use Illuminate\Support\Facades\Config;
-
+use DB;
+use Stripe;
 
 class RegisterController extends BaseController
 {
@@ -36,7 +38,7 @@ class RegisterController extends BaseController
         $input['role'] = $input['role'];
         $input['gender'] = $input['gender'];
         $input['mobile'] = $input['mobile'];
-        $input['dob'] = date('Y-m-d',$input['dob']);
+        $input['dob'] = date('Y-m-d',strtotime($input['dob']));
         if ($request->hasFile('profilepic')) {
 
             $image = $request->File('profilepic');
@@ -74,6 +76,32 @@ class RegisterController extends BaseController
                 $otpinsert = Otp::create($otpdata);
             }
             
+            if($otpinsert)
+            {
+                $point = Settings::where('type','Signup')->get();
+                $rewards = array();
+                $rewards['user_id'] = $user->id;
+                $rewards['earned'] = $point[0]->value;
+                $setting = Rewards::create($rewards);
+            }
+
+            Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $create = \Stripe\Customer::create([
+                'email' => $user->email,
+                'name' => $user->name,
+                'description' => 'My First Test Customer (created for API docs)',
+            ]);
+
+            if($create)
+            {
+                $success['create'] = $create;
+            }
+            else{
+                return $this->sendError('Unauthorised.', ['error'=>$create]);
+
+            }
+                            
         }
         ////////////////////////
 
@@ -112,17 +140,6 @@ class RegisterController extends BaseController
         } 
     }
 
-    /* Function used to insert privacy policy */
-    public function privacypolicy(Request $request)
-    {
-        $input = $request->all();
-        $input['type'] = 'privacypolicy';
-        $input['value'] = $input['value'];
-        Settings::unguard();
-        $setting = Settings::create($input);
-        $success['data'] = $setting ;
-        return $this->sendResponse($success, 'Privacy Policy Inserted Successfully');
-    }
 
     /* Function  used to get login details */ 
 

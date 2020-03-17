@@ -12,18 +12,20 @@ use Illuminate\Support\Facades\Auth;
 
 class RewardsController extends BaseController
 {
-     /*Function Used to get events*/
-     public function rewards(Request $request)
-     {
-         $rewards = Rewards::all();
-         if($rewards->count() > 0)
-         {
-             $success['data'] = $rewards;
-             return $this->sendResponse($success, 'Data Found successfully.');
-         }
-         else
-         {   
-             return $this->sendError('No Data.', ['error'=>'No Data Found']);
-         }
-     }
+    /*Function Used to get events*/
+    public function rewards(Request $request)
+    {
+        $userid = Auth::guard('api')->user()->id;
+
+        $rewards = Rewards::where('user_id',$userid)->get();
+        if($rewards->count() > 0)
+        {
+            $success['data'] = $rewards;
+            return $this->sendResponse($success, 'Data Found successfully.');
+        }
+        else
+        {   
+            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+        }
+    }
 }

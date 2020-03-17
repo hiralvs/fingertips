@@ -5,10 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Http\Request;
-use App\User;
-use App\ShopsandMalls;
-use App\Attractions;
-use App\Events;
 use App\Favorites;
 use Illuminate\Support\Facades\Auth;
 
@@ -76,18 +72,18 @@ class FavoriteController extends BaseController
         }
     }
 
-      /* Function used to get favorite attraction */
-      public function attractionFavorites(Request $request)
-      {
-          $eventFav = Favorites::select('attractions.id','unique_id','attraction_image','attraction_name','location','opening_time','closing_time','description')->join('attractions','attractions.id','=','favorites.common_id')->where('favorites.type','attraction')->get();
-          if($eventFav->count() > 0)
-          {
-              $success['data'] = $eventFav;
-              return $this->sendResponse($success, 'Data Found successfully.');
-          }
-          else
-          {   
-              return $this->sendError('No Data.', ['error'=>'No Data Found']);
-          }
-      }
+    /* Function used to get favorite attraction */
+    public function attractionFavorites(Request $request)
+    {
+        $eventFav = Favorites::select('attractions.id','unique_id','attraction_image','attraction_name','location','opening_time','closing_time','description')->join('attractions','attractions.id','=','favorites.common_id')->where('favorites.type','attraction')->get();
+        if($eventFav->count() > 0)
+        {
+            $success['data'] = $eventFav;
+            return $this->sendResponse($success, 'Data Found successfully.');
+        }
+        else
+        {   
+            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+        }
+    }
 }

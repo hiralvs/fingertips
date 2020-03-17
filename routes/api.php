@@ -36,8 +36,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('eventFavorites', 'API\FavoriteController@eventFavorites');
     Route::get('mallsFavorites', 'API\FavoriteController@mallsFavorites');
     Route::get('attractionFavorites', 'API\FavoriteController@attractionFavorites');
-    Route::get('products', 'API\FavoriteController@products');
-    Route::get('products_variant', 'API\FavoriteController@products_variant');
+    Route::get('products', 'API\ProductController@products');
+    Route::get('products_variant/{id}', 'API\ProductController@products_variant');
+    Route::post('search', 'API\HomePageController@search');
+    Route::get('privacypolicy', 'API\HomePageController@privacypolicy');    
+
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
 });
 
@@ -47,7 +50,6 @@ Route::post('register', 'API\RegisterController@register');
 Route::post('otp', 'API\RegisterController@otpverify');
 Route::post('forgot/password', 'API\ForgotPasswordController@forgotPassword');    
 Route::post('changeassword', 'API\ForgotPasswordController@changePassword');    
-Route::post('privacypolicy', 'API\RegisterController@privacypolicy');    
 Route::post('logout', 'API\RegisterController@logout');    
 
 //Route::get('userDetails','RegisterController@details');
