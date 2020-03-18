@@ -29,7 +29,7 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="pages/charts/chartjs.html" class="nav-link">
+                  <a href="{{route('event')}}" class="nav-link">
                     <i class="mdi mdi-finance menu-icon"></i>
                     <span class="menu-title">Events</span>
                     <i class="menu-arrow"></i>
@@ -43,9 +43,9 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="pages/tables/basic-table.html" class="nav-link">
-                    <i class="mdi mdi-grid menu-icon"></i>
-                    <span class="menu-title">Tables</span>
+                  <a href="{{route('rewards')}}" class="nav-link">
+                    <i class="mdi mdi-finance menu-icon"></i>
+                    <span class="menu-title">Rewards</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
@@ -71,7 +71,7 @@
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Tax</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Floor</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Help</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Privacy</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('privacy')}}">Privacy</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('area')}}">Area</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Reward Setting</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Login Privacy</a></li>
