@@ -103,7 +103,18 @@ Route::post('/addBanner', 'admin\BannerController@addBanner')->name('addBanner')
 Route::post('bannerupdate', array('as' => 'banner.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BannerController@update'));
 Route::get('bannerdelete/{id}', array('as' => 'banner.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BannerController@delete'));
 
-Route::get('/events', 'admin\EventsController@index')->name('events');
-Route::post('/addEvents', 'admin\EventsController@addBanner')->name('events');
+
+Route::get('/event', 'admin\EventsController@index')->name('event');
+Route::post('/addEvents', 'admin\EventsController@addEvents')->name('addEvents');
 Route::post('eventsupdate', array('as' => 'events.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@update'));
 Route::get('eventsdelete/{id}', array('as' => 'events.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@delete'));
+Route::post('eventssearch', array('as' => 'events.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@search'));
+
+Route::get('/rewards', 'admin\RewardsController@index')->name('rewards');
+Route::get('rewardsdelete/{id}', array('as' => 'rewards.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardsController@delete'));
+Route::post('rewardssearch', array('as' => 'rewards.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardsController@search'));
+
+Route::get('/privacy', 'admin\PrivacyController@index')->name('privacy');
+Route::post('/addPrivacy', 'admin\PrivacyController@addPrivacy')->name('addPrivacy');
+Route::post('privacyupdate', array('as' => 'privacy.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\PrivacyController@update'));
+Route::get('privacydelete/{id}', array('as' => 'privacy.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\PrivacyController@delete'));

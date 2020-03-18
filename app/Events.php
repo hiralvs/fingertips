@@ -12,5 +12,5 @@ class Events extends Model
     use SoftDeletes;
     protected $table="events";
 
-    public $sortable = ['name', 'location'];
+    public $sortable = ['event_name', 'location'];
 }

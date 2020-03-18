@@ -78,7 +78,7 @@
                                         <div class="row">
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputLocation">Location</label>
-                                                <select class="form-control" id="location" name="location">
+                                                <select class="form-control location" id="location" name="location">
                                                     <option value="" selected="">Location</option>
                                                     <option value="home" {{ $value->location == 'home' ? 'selected' : ''}}>Home</option>
                                                     <option value="event" {{ $value->location == 'event' ? 'selected' : ''}}>Event</option>
@@ -86,14 +86,20 @@
                                                     <option value="attraction {{ $value->location == 'attraction' ? 'selected' : ''}}">Attraction</option>
                                                 </select>
                                             <input  type="hidden" name="id" value="{{$value->id}}"> 
+                                            <span class="text-danger">
+                                                <strong class="location-error"></strong>
+                                            </span>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleSelectPhoto">Banner Photo</label>
-                                                <input type="file" class="file-upload-default" name="bannerimage">
+                                                <input type="file" class="file-upload-default bannerimage" name="bannerimage">
                                                 <div class="input-group col-xs-12">
                                                     <input type="text" value="{{ $value->bannerimage != null ? $value->bannerimage : ''}}" class="form-control file-upload-info" disabled placeholder="Upload Image">
                                                     <span class="input-group-append">
                                                     <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                                    </span>
+                                                    <span class="text-danger">
+                                                        <strong class="bannerimage-error"></strong>
                                                     </span>
                                                 </div>
                                             </div>
@@ -106,6 +112,9 @@
                                                     <option value="inapp" {{ $value->type == 'inapp' ? 'selected' : ''}}>In App</option>
                                                     <option value="outsideapp" {{ $value->type == 'outsideapp' ? 'selected' : ''}}>Outside App</option>
                                                 </select>
+                                                <span class="text-danger">
+                                                        <strong class="type-error"></strong>
+                                                </span>
                                             </div>
                                             <div class="form-group col-md-4 ema" id="ema{{$value->id}}" style="display:{{ $value->type == 'inapp' ? 'block' : 'none'}}">
                                                 <label for="exampleInputStatus">EMA</label>
@@ -115,6 +124,9 @@
                                                     <option value="mall" {{ $value->ema == 'mall' ? 'selected' : ''}}>Mall</option>
                                                     <option value="attraction" {{ $value->ema == 'attraction' ? 'selected' : ''}}>Attraction</option>
                                                 </select>
+                                                <span class="text-danger">
+                                                    <strong class="ema-error"></strong>
+                                                </span>
                                             </div>
                                             <div class="form-group col-md-4 property_user_id" id="property_user_id{{$value->id}}" style="display:{{ $value->type == 'inapp' ? 'block' : 'none'}}">
                                                 <label for="exampleInputStatus">Property</label>
@@ -124,11 +136,17 @@
                                                         <option value="{{ $banner->id }}"  {{ $value->property_user_id ==$banner->id ? 'selected' : ''}}>{{ $banner->name }}</option>
                                                     @endforeach 
                                                 </select>
+                                                <span class="text-danger">
+                                                    <strong class="property_user_id-error"></strong>
+                                                </span>
                                             </div>
                                             <div class="form-group col-md-4 url" id="url{{$value->id}}" style="display:{{ $value->type == 'outsideapp' ? 'block' : 'none'}}">
                                                 <label for="exampleInputName">URL</label>
                                                 <input type="text" value="{{ $value->url != null ? $value->url : ''}}" required class="form-control url" name="url">
                                                 {{-- <input type="hidden" class="form-control" id="type" name="type" value='url'> --}}
+                                                <span class="text-danger">
+                                                    <strong class="url-error"></strong>
+                                                </span>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -170,6 +188,11 @@
     $('.editBannerSubmit').click(function(e){
         var id = $(this).data('id');
         var formData = new FormData($("#editbannerform"+id)[0]);
+        $( '.location-error' ).html( "" );
+        $( '.type-error' ).html( "" );
+        $( '.url-error' ).html( "" );
+        $( '.ema-error' ).html( "" );
+        $( '.property_user_id-error' ).html( "" );
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -184,6 +207,24 @@
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.location){
+                        $( '.location-error' ).html( result.errors.location[0] );
+                    }
+                    if(result.errors.type){
+                        $( '.type-error' ).html( result.errors.type[0] );
+                    }
+                    if(result.errors.url){
+                        $( '.url-error' ).html( result.errors.url[0] );
+                    }
+                    if(result.errors.ema){
+                        $( '.ema-error' ).html( result.errors.ema[0] );
+                    }  
+                    if(result.errors.property_user_id){
+                        $( '.property_user_id-error' ).html( result.errors.property_user_id[0] );
+                    }  
+                }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
@@ -226,6 +267,12 @@
 
 $('#addBannerSubmit').click(function(e){
         var formData = new FormData($("#addBannerform")[0]);
+        $( '#location-error' ).html( "" );
+        $( '#bannerimage-error' ).html( "" );
+        $( '#type-error' ).html( "" );
+        $( '#url-error' ).html( "" );
+        $( '#ema-error' ).html( "" );
+        $( '#property_user_id-error' ).html( "" );
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -240,6 +287,27 @@ $('#addBannerSubmit').click(function(e){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.location){
+                        $( '#location-error' ).html( result.errors.location[0] );
+                    }
+                    if(result.errors.bannerimage){
+                        $( '#bannerimage-error' ).html( result.errors.bannerimage[0] );
+                    }
+                    if(result.errors.type){
+                        $( '#type-error' ).html( result.errors.type[0] );
+                    }
+                    if(result.errors.url){
+                        $( '#url-error' ).html( result.errors.url[0] );
+                    }
+                    if(result.errors.ema){
+                        $( '#ema-error' ).html( result.errors.ema[0] );
+                    }  
+                    if(result.errors.property_user_id){
+                        $( '#property_user_id-error' ).html( result.errors.property_user_id[0] );
+                    }  
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -347,17 +415,23 @@ $(function () {
 
                     <div class="form-group col-md-3">
                         <label for="exampleSelectGender">Location</label>
-                        <select class="form-control " name="location" id="exampleSelectLocation">
+                        <select class="form-control " name="location" id="location">
                             <option value="" selected="">Location</option>
                             <option value="home">Home</option>
                             <option value="event">Event</option>
                             <option value="mall">Mall</option>
                             <option value="attraction">Attraction</option>
                         </select>
+                        <span class="text-danger">
+                            <strong id="location-error"></strong>
+                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleSelectPhoto">Banner Photo</label>
-                        <input type="file" class="form-control" id="photo" name="bannerimage" placeholder="Photo">
+                        <input type="file" class="form-control" id="bannerimage" name="bannerimage" placeholder="Photo">
+                        <span class="text-danger">
+                            <strong id="bannerimage-error"></strong>
+                        </span>
                     </div>
                 </div>
                 <div class="row">
@@ -368,6 +442,9 @@ $(function () {
                             <option value="inapp">In App</option>
                             <option value="outsideapp">Outside App</option>
                         </select>
+                         <span class="text-danger">
+                            <strong id="type-error"></strong>
+                        </span>
                     </div>
                         <div class="form-group col-md-4 ema" id="ema" style="display:none;">
                             <label for="exampleInputStatus ema">EMA</label>
@@ -377,6 +454,9 @@ $(function () {
                                 <option value="1">Mall</option>
                                 <option value="2">Attraction</option>
                             </select>
+                        <span class="text-danger">
+                            <strong id="ema-error"></strong>
+                        </span>
                         </div>
                         <div class="form-group col-md-4 property_user_id" id="property_user_id" style="display:none;">
                             <label for="exampleInputStatus property_user_id">Property</label>
@@ -386,11 +466,17 @@ $(function () {
                                     <option value="{{ $brand->id }}"  {{ (isset($brand->id) || old('id'))? "":"selected" }}>{{ $brand->name }}</option>
                                 @endforeach 
                             </select>
+                        <span class="text-danger">
+                            <strong id="property_user_id-error"></strong>
+                        </span>
                         </div>
                         <div class="form-group col-md-4 url" id="url" style="display:none;">
                             <label for="exampleInputName url">URL</label>
-                            <input type="text" required class="form-control" id="url" name="url" placeholder="url">
+                            <input type="text" class="form-control" id="url" name="url" placeholder="url">
                             {{-- <input type="hidden" class="form-control" id="type" name="type" value='url'> --}}
+                            <span class="text-danger">
+                                <strong id="url-error"></strong>
+                            </span>
                         </div> 
                 </div>
                 </div>

@@ -157,24 +157,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="exampleInputName">Name</label>
-                                                <input type="text" class="form-control" required id="fullname" value="{{$value->name}}" name="name" placeholder="Name">
-                                                <input type="hidden" name="id" value="{{$value->id}}">
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="exampleInputStatus">Brand Merchant</label>
-                                                <select name="grand_merchant_user_id" id="grand_merchant_user_id" class="form-control">
-                                                    <option value=""> -- Select One --</option>
-                                                    @foreach ($grand_merchant_user_id as $brand)
-                                                        <option value="{{ $brand->id }}"  {{ $value->grand_merchant_user_id ==$brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
-                                                    @endforeach
-                                                     {{-- @foreach ($grand_merchant_user_id as $brand)
-                                                        <option value="{{ $brand->id }}"  {{ $value->category_id ==$cat->id ? 'selected' : ''}}>{{ $cat->category_name }}</option>
-                                                    @endforeach  --}}
-                                                </select>
-                                            </div>
-                                        </div>
                                         <div class="row">
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputStatus">Category</label>
@@ -195,7 +177,7 @@
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputFinertip">Fingertips</label>
-                                                <input type="tel" class="form-control" required id="commission32" value="{{$value->commission}}" name="commission" placeholder="Name">
+                                                <input type="tel" class="form-control" required id="commission" value="{{$value->commission}}" name="commission" placeholder="Name">
                                             </div>
                                             <div class="form-group col-md-12"> 
                                                 <textarea class="description ckeditor" id="description" name="description"></textarea>
@@ -280,7 +262,10 @@ $(document).ready(function(){
         var formData = new FormData($("#addbrandform")[0]);
         var message = CKEDITOR.instances['desc'].getData();
         console.log(message);
-        
+        $( '#category_id-error' ).html( "" );
+        $( '#status-error' ).html( "" );
+        $( '#commission-error' ).html( "" );
+
             formData.append('description',message);
             e.preventDefault();
             $.ajaxSetup({
@@ -296,11 +281,24 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.category_id){
+                        $( '#category_id-error' ).html( result.errors.category_id[0] );
+                    }
+                    if(result.errors.status){
+                        $( '#status-error' ).html( result.errors.status[0] );
+                    }
+                    if(result.errors.commission){
+                        $( '#commission-error' ).html( result.errors.commission[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setInterval(function(){ 
+                         $('.statusMsg').html('');
                         $('#addBrand').modal('hide');
                         //  $('#done-message').addClass('hide');
                     }, 3000);
@@ -492,6 +490,9 @@ $(document).ready(function(){
                                 <option value="{{ $cat->id }}"  {{ (isset($cat->id) || old('id'))? "":"selected" }}>{{ $cat->category_name }}</option>
                             @endforeach 
                         </select>
+                        <span class="text-danger">
+                            <strong id="category_id-error"></strong>
+                        </span>
                     </div>
          
                     <div class="form-group col-md-4">
@@ -501,18 +502,22 @@ $(document).ready(function(){
                             <option value="0">Active</option>
                             <option value="1">Inactive</option>
                         </select>
+                        <span class="text-danger">
+                            <strong id="status-error"></strong>
+                        </span>
                     </div>
 
                     
                     <div class="form-group col-md-4">
                         {{-- <label for="exampleFingertipsCommissione">Fingertips Commission </label> --}}
                         <label for="exampleFingertipsCommissione">Fingertips Commission</label>
-                        <input style="" id="commission32" type="tel" class="form-control input numberonly" name="commission" maxlength="" value="">
+                        <input style="" id="commission" type="tel" class="form-control input numberonly" name="commission" maxlength="" value="">
                          {{-- <input type="text" required class="form-control" Re id="fullname" name="name" placeholder="Name"> --}}
-                         <div id="commission32_error" status="0" class="error_message undefined" style="display: none; color: red;">Fingertips Commission is required
-                        </div>
-					</div>
-                    <div>{{ $errors->first('commission') }}</div>
+                        <span class="text-danger">
+                            <strong id="commission-error"></strong>
+                        </span>
+                    </div>
+                    
 				
                 </div>
                 <div class="form-group col-md-12"> 

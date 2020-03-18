@@ -13,6 +13,7 @@ use App\Category;
 use Datatables;
 use Excel;
 use App\Exports\UserExport;
+use Validator;
 
 class BrandController extends Controller
 {
@@ -57,10 +58,14 @@ class BrandController extends Controller
 
     public function addbrand(Request $request)
     {
-        $rules = request()->validate([
-            'name' => 'required|min:2',
-            'commission' => 'required'
+       $validator = Validator::make($request->all(), [
+            'category_id' => 'required',
+            'status' => 'required',
+            'commission' => 'required',
         ]);
+        if($validator->fails()){
+            return Response()->json(['errors' => $validator->errors()]);      
+        }
         $request->request->remove('_token');
         $input = $request->all();
         $input['unique_id'] =  get_unique_id('brands');
@@ -80,7 +85,7 @@ class BrandController extends Controller
         if($check){ 
         $data = Brand::find($check);
         
-        $arr = array('msg' => 'User Added Successfully', 'status' => true,'data'=> $data);
+        $arr = array('msg' => 'Brand Added Successfully', 'status' => true,'data'=> $data);
         }
         return Response()->json($arr);
     }

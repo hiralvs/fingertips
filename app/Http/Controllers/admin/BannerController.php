@@ -8,6 +8,8 @@ use Intervention\Image\Facades\Image;
 use App\Banner;
 use Datatables;
 use App\User;
+use Validator;
+
 
 class BannerController extends Controller
 {
@@ -19,7 +21,6 @@ class BannerController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-
     }
 
     public function index(Request $request) {
@@ -49,6 +50,28 @@ class BannerController extends Controller
     }
     public function addBanner(Request $request)
     {
+                $input = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'location' => 'required',
+            'bannerimage' => 'required',
+            'type' => 'required',          
+        ]);
+        $validator->sometimes('ema', 'required', function ($input) {
+            return $input->type == 'inapp';
+        });
+        $validator->sometimes('property_user_id', 'required', function ($input) {
+            return $input->type == 'inapp';
+        });
+        $validator->sometimes('url', 'required', function ($input) {
+            return $input->type == 'outsideapp';
+        });
+
+
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
+
         $request->request->remove('_token');
         $input = $request->all();
         // $input['banner'] = $input['category_name'];
@@ -87,15 +110,31 @@ class BannerController extends Controller
  
     public function update(Request $request)
     {
+        // $input = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'location' => 'required',
+            'type' => 'required',
+        ]);
+        $validator->sometimes('ema', 'required', function ($input) {
+            return $input->type == 'inapp';
+        });
+        $validator->sometimes('property_user_id', 'required', function ($input) {
+            return $input->type == 'inapp';
+        });
+        $validator->sometimes('url', 'required', function ($input) {
+            return $input->type == 'outsideapp';
+        });
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
+        
         $banner = Banner::find($request->id);
         $banner->location = $request->location;
         $banner->url = $request->url;
         $banner->type = $request->type;
         $banner->ema = $request->ema;
         $banner->property_user_id = $request->property_user_id;
-
-        
-
 
         if ($request->hasFile('bannerimage')) 
         {
