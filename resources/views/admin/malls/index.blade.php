@@ -85,7 +85,7 @@
                           <td>{{$value->propertyadmin}}</td>
                           <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                           <td>{{$value->created_by}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-target="#editShopsandmalls{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editShopsandmalls{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
                           <a class="delete" onclick="return confirm('Are you sure you want to delete this Mall?')" href="{{route('shopsmalls.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->
@@ -117,10 +117,7 @@
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputEmail1">Location</label>
-                                                    <input type="email" required class="form-control" id="location" value="{{$value->location}}" name="location" placeholder="location">
-                                                    <input id="autocomplete_search" name="autocomplete_search" type="text" class="form-control" placeholder="Search" />
-                                            <input type="hidden" name="lat">
-                                            <input type="hidden" name="long">
+                                                    <input type="email" required class="form-control" id="location{{$value->id}}" value="{{$value->location}}" name="location" placeholder="location">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -251,6 +248,20 @@
 
 $(document).ready(function(){
   
+    $(".edit").click(function(){
+        var sid = $(this).data('id');
+  
+        var input = document.getElementById('location'+sid);
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            // place variable will have all the information you are looking for.
+            //   $('#lat').val(place.geometry['location'].lat());
+            //   $('#long').val(place.geometry['location'].lng());
+            $('#my-modal').modal('show');
+        });      
+    });
+
     setTimeout(function(){
            $("h4.mess").remove();
         }, 5000 ); // 5 secs
@@ -539,7 +550,7 @@ $(document).ready(function(){
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputEmail1">Location</label>
-                            <input type="email" required class="form-control" id="location" name="location" placeholder="location">
+                            <input type="email" required class="form-control location" id="location" name="location" placeholder="location">
                     <!-- <input type="hidden" name="lat">
                     <input type="hidden" name="long"> -->
                         </div>

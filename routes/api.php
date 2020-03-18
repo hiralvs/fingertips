@@ -30,6 +30,17 @@ Route::middleware('auth:api')->group(function () {
     Route::get('flashsale', 'API\HomePageController@flashsale');
     Route::get('banners/{type}', 'API\HomePageController@banners');
     Route::get('eventsdetails/{id}', 'API\HomePageController@eventsDetails');
+    Route::get('mallDetails/{id}', 'API\HomePageController@mallDetails');
+    Route::get('attractionDetails/{id}', 'API\HomePageController@attractionDetails');
+    Route::post('addToFavorites', 'API\FavoriteController@addToFavorites');
+    Route::get('eventFavorites', 'API\FavoriteController@eventFavorites');
+    Route::get('mallsFavorites', 'API\FavoriteController@mallsFavorites');
+    Route::get('attractionFavorites', 'API\FavoriteController@attractionFavorites');
+    Route::get('products', 'API\ProductController@products');
+    Route::get('products_variant/{id}', 'API\ProductController@products_variant');
+    Route::post('search', 'API\HomePageController@search');
+    Route::get('privacypolicy', 'API\HomePageController@privacypolicy');    
+
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
 });
 
@@ -39,7 +50,6 @@ Route::post('register', 'API\RegisterController@register');
 Route::post('otp', 'API\RegisterController@otpverify');
 Route::post('forgot/password', 'API\ForgotPasswordController@forgotPassword');    
 Route::post('changeassword', 'API\ForgotPasswordController@changePassword');    
-Route::post('privacypolicy', 'API\RegisterController@privacypolicy');    
 Route::post('logout', 'API\RegisterController@logout');    
 
 //Route::get('userDetails','RegisterController@details');
