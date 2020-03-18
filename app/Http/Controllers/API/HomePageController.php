@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\API\BaseController as BaseController;
+use App\Http\Controllers\Controller as Controller;
 use App\User;
 use App\ShopsandMalls;
 use App\Attractions;
@@ -22,256 +21,294 @@ use Illuminate\Http\Request;
 use DB;
 
 
-class HomePageController extends BaseController
+
+class HomePageController extends Controller
 {
-    
     /*Function Used to get events*/
     public function eventListing(Request $request)
     {
-        $events = Events::select('id','unique_id','event_image','event_name','start_time','end_time')->get();
+        $url =env('APP_URL');
+        $events = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->get();
         if($events->count() > 0)
         {
-            $success['data'] = $events;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$events];
         }
         else
-        {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+        {  
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
         }
+        return response()->json($response);
     }
 
     /*Function Used to get featured events*/
     public function featuredEvents(Request $request)
     {
-        $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time')->where('featured_event','yes')->limit(20)->get();
+        $url =env('APP_URL');
+        $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->limit(20)->get();
         if($featuredevents->count() > 0)
         {
-            $success['data'] = $featuredevents;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredevents];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
         }
+        return response()->json($response);
     }
 
     /*Function Used to get featured shops*/
     public function featuredShops(Request $request)
     {
-        $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs')->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
+        $url =env('APP_URL');
+        $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
         if($featuredShops->count() > 0)
         {
-            $success['data'] = $featuredShops;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredShops];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
         }
+        return response()->json($response);
     }
 
       /*Function Used to get featured malls*/
       public function featuredMalls(Request $request)
       {
-          $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs')->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
-          if($featuredmalls->count() > 0)
-          {
-              $success['data'] = $featuredmalls;
-              return $this->sendResponse($success, 'Data Found successfully.');
-          }
-          else
-          {   
-              return $this->sendError('No Data.', ['error'=>'No Data Found']);
-          }
+        $url =env('APP_URL');
+        $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
+        if($featuredmalls->count() > 0)
+        {
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredmalls];
+        }
+        else
+        {   
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
+        }
+        return response()->json($response);
       }
 
         /*Function Used to get malls*/
     public function mallListing(Request $request)
     {
-        $malls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs')->get();
+        $url =env('APP_URL');
+        $malls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->get();
         if($malls->count() > 0)
         {
-            $success['data'] = $malls;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$malls];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
         }
+        return response()->json($response);
     }
 
    /*Function Used to get attraction*/
     public function attractionListing(Request $request)
     {
-        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time')->get();
+        $url =env('APP_URL');
+        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->get();
         if($attraction->count() > 0)
         {
-            $success['data'] = $attraction;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$attraction];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
         }
+        return response()->json($response);
     }
 
     /*Function Used to get featured attraction*/
     public function featuredAttraction(Request $request)
     {
-        $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time')->where('featured_mall','yes')->limit(20)->get();
+        $url =env('APP_URL');
+        $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
         if($featuredAttraction->count() > 0)
         {
-            $success['data'] = $featuredAttraction;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredAttraction];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
     }
 
     /*Function Used to get featrued attraction*/
     public function highlights(Request $request)
     {
+        $url =env('APP_URL');
         $id = $request->route('id');
         $type = $request->route('type');
         $highlights = array();
         if($type == 'event')
         {
-            $highlights = Highlights::select('highlights.*','events.description')->leftjoin('events','events.id','=','highlights.common_id')->where(['common_id'=>$id,'type'=>$type])->get();
+            $highlights = Highlights::select('highlights.*','events.description',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('events','events.id','=','highlights.common_id')->where(['common_id'=>$id,'type'=>$type])->get();
         }
         if($type == 'malls')
         {
-            $highlights = Highlights::select('highlights.*','shopsandmalls.description')->leftjoin('shopsandmalls','shopsandmalls.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
+            $highlights = Highlights::select('highlights.*','shopsandmalls.description',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('shopsandmalls','shopsandmalls.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
         }
         if($type == 'attraction')
         {
-            $highlights = Highlights::select('highlights.*','attractions.description')->leftjoin('attractions','attractions.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
+            $highlights = Highlights::select('highlights.*','attractions.description',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('attractions','attractions.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
         }
         
         if($highlights->count() > 0)
         {
-            $success['data'] = $highlights;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            unset($highlights[0]->deleted_at,$highlights[0]->updated_at);
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$highlights];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
     }
 
     /*Function Used to get featrued attraction*/
     public function flashsale(Request $request)
     {
-        $flashsale = FlashSale::all();
+        $url =env('APP_URL');
+        $flashsale = FlashSale::select('flash_sales.*',DB::raw("CONCAT('','$url/public/upload/flashsale/',image) as image"))->get();
         if($flashsale->count() > 0)
         {
-            $success['data'] = $flashsale;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $flashsale[0]->total_revenue = is_null($flashsale[0]->total_revenue) ? "":$flashsale[0]->total_revenue;
+            unset($flashsale[0]->deleted_at,$flashsale[0]->updated_at,$flashsale[0]->created_at);
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$flashsale];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
     }
 
     /*Function Used to get banner image of each tab*/
     public function banners(Request $request)
     {
+        $url =env('APP_URL');
         $type = $request->route('type'); // type can be event, malls and attraction
-        $banners = Banner::where('location',$type)->get();
+        $banners = Banner::select('banners.*',DB::raw("CONCAT('','$url/public/upload/banners/',bannerimage) as bannerimage"))->where('location',$type)->get();
         if($banners->count() > 0)
         {
-            $success['data'] = $banners;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $banners[0]->url = is_null($banners[0]->url) ? "":$banners[0]->url;
+            $banners[0]->ema = is_null($banners[0]->ema) ? "":$banners[0]->ema;
+            $banners[0]->property_user_id = is_null($banners[0]->property_user_id) ? "":$banners[0]->property_user_id;
+            unset($banners[0]->deleted_at,$banners[0]->updated_at);
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$banners];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
     }
 
     /*Function Used to get eventdetails page*/
     public function eventsDetails(Request $request)
     {
+        $url =env('APP_URL');
         $id = $request->route('id'); // type can be event, malls and attraction
-        $events = Events::where('id',$id)->get();
-        $slider = Slider::where(['common_id'=>$id,"type"=>'event'])->get();
-        $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'event'])->get();
-        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name')->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'event'])->get();
-        $photos = Photos::where(['common_id'=>$id,"type"=>'event'])->get();
-        $floormap = Map_images::where(['common_id'=>$id,"type"=>'event'])->get();
+        $events = Events::select('events.*',DB::raw("CONCAT('','$url/public/upload/events/',event_image) as event_image"))->where('id',$id)->get();
+        $slider = Slider::select('sliders.*',DB::raw("CONCAT('','$url/public/upload/slider/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
+        $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image',DB::raw("CONCAT('','$url/public/upload/brands/',brands.brand_image) as brand_image"))->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'event'])->get();
+        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'event'])->get();
+        $photos = Photos::select('photos.*',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
+         $floormap = Map_images::select('map_images.*',DB::raw("CONCAT('','$url/public/upload/map_images/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
         if($events->count() > 0)
         {
+            unset($events[0]->deleted_at,$events[0]->updated_at,$floormap[0]->deleted_at,$floormap[0]->updated_at);
+            if($floormap->count() > 0)
+                unset($floormap[0]->deleted_at,$floormap[0]->updated_at);
             $success['eventData'] = $events;
-            $success['eventData']['slider'] =$slider;
-            $success['eventData']['brands'] =$featuredBrand;
-            $success['eventData']['deals'] = $deals;
-            $success['eventData']['photos'] =  $photos ;
-            $success['eventData']['floormap'] =  $floormap ;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $success['slider'] =$slider;
+            $success['brands'] =$featuredBrand;
+            $success['deals'] = $deals;
+            $success['photos'] =  $photos ;
+            $success['floormap'] =  $floormap ;
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
+
+           // return $this->sendResponse($success, 'Data Found successfully.');
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
     }
 
     /*Function Used to get malldetails page*/
     public function mallDetails(Request $request)
     {
+        $url =env('APP_URL');
         $id = $request->route('id'); // type can be event, malls and attraction
-        $malls = ShopsandMalls::where('id',$id)->get();
-        $slider = Slider::where(['common_id'=>$id,"type"=>'malls'])->get();
-        $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'malls'])->get();
-        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name')->leftjoin('brands','products.brand_id','=','brands.id')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'malls'])->get();
-        $photos = Photos::where(['common_id'=>$id,"type"=>'malls'])->get();
-        $floormap = Map_images::where(['common_id'=>$id,"type"=>'malls'])->get();
+        $malls = ShopsandMalls::select('shopsandmalls.*',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('id',$id)->get();
+        $slider = Slider::select('sliders.*',DB::raw("CONCAT('','$url/public/upload/slider/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
+        $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image',DB::raw("CONCAT('','$url/public/upload/brands/',brands.brand_image) as brand_image"))->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'malls'])->get();
+        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->leftjoin('brands','products.brand_id','=','brands.id')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'malls'])->get();
+        $photos = Photos::select('photos.*',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
+        $floormap = Map_images::select('map_images.*',DB::raw("CONCAT('','$url/public/upload/map_images/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
         if($malls->count() > 0)
         {
+            unset($malls[0]->deleted_at,$malls[0]->updated_at);
+            if($floormap->count() > 0)
+                unset($floormap[0]->deleted_at,$floormap[0]->updated_at);
+            
             $success['mallData'] = $malls;
-            $success['mallData']['slider'] =$slider;
-            $success['mallData']['brands'] =$featuredBrand;
-            $success['mallData']['deals'] = $deals;
-            $success['mallData']['photos'] =  $photos ;
-            $success['mallData']['floormap'] =  $floormap ;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            $success['slider'] =$slider;
+            $success['brands'] =$featuredBrand;
+            $success['deals'] = $deals;
+            $success['photos'] =  $photos ;
+            $success['floormap'] =  $floormap ;
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
+
+            //return $this->sendResponse($success, 'Data Found successfully.');
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
     }
 
     /*Function Used to get malldetails page*/
     public function attractionDetails(Request $request)
     {
+        $url =env('APP_URL');
         $id = $request->route('id'); // type can be event, malls and attraction
-        $malls = Attractions::where('id',$id)->get();
-        $slider = Slider::where(['common_id'=>$id,"type"=>'attraction'])->get();
-        $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'attraction'])->get();
-        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name')->leftjoin('brands','products.brand_id','=','brands.id')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'attraction'])->get();
-        $photos = Photos::where(['common_id'=>$id,"type"=>'attraction'])->get();
-        $floormap = Map_images::where(['common_id'=>$id,"type"=>'attraction'])->get();
-        if($malls->count() > 0)
+        $attraction = Attractions::select('attractions.*',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"))->where('id',$id)->get();
+        $slider = Slider::select('sliders.*',DB::raw("CONCAT('','$url/public/upload/slider/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
+        $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image',DB::raw("CONCAT('','$url/public/upload/brands/',brands.brand_image) as brand_image"))->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'attraction'])->get();
+        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->leftjoin('brands','products.brand_id','=','brands.id')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'attraction'])->get();
+        $photos = Photos::select('photos.*',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
+        $floormap = Map_images::select('map_images.*',DB::raw("CONCAT('','$url/public/upload/map_images/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
+        if($attraction->count() > 0)
         {
-            $success['mallData'] = $malls;
-            $success['mallData']['slider'] =$slider;
-            $success['mallData']['brands'] =$featuredBrand;
-            $success['mallData']['deals'] = $deals;
-            $success['mallData']['photos'] =  $photos ;
-            $success['mallData']['floormap'] =  $floormap ;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            unset($attraction[0]->deleted_at,$attraction[0]->updated_at);
+            if($floormap->count() > 0)
+                unset($floormap[0]->deleted_at,$floormap[0]->updated_at);
+            $success['attractionData'] = $attraction;
+            $success['slider'] =$slider;
+            $success['brands'] =$featuredBrand;
+            $success['deals'] = $deals;
+            $success['photos'] =  $photos ;
+            $success['floormap'] =  $floormap ;
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
     }
 
     /* Function used to search in whole database */
     public function search(Request $request)
     {
+        $url =env('APP_URL');
         $search = $request->search;
         $out = "";
 
@@ -298,16 +335,68 @@ class HomePageController extends BaseController
                 $rs3 = DB::select($sql_search);
 
                 //$out .= count($rs3)."\n";
-                print_r($rs3 );
                 if(count($rs3) >0)
                 {
+                    if($table == 'events')
+                    {
+                        $rs3[0]->event_image =  $url.'public/upload/events/'.$rs3[0]->event_image;
+                    }
+                    if($table == 'attractions')
+                    {
+                        $rs3[0]->attraction_image =  $url.'public/upload/attractions/'.$rs3[0]->attraction_image;
+                    }
+                    if($table == 'shopsandmalls')
+                    {
+                        $rs3[0]->image =  $url.'public/upload/malls/'.$rs3[0]->image;
+                    }
+                    if($table == 'highlights')
+                    {
+                        $rs3[0]->image =  $url.'public/upload/highlights/'.$rs3[0]->image;
+                    }
+                    if($table == 'users')
+                    {
+                        $rs3[0]->profile_pic =  $url.'public/upload/'.$rs3[0]->profile_pic;
+                    }
+                    if($table == 'sliders')
+                    {
+                        $rs3[0]->slider_image_name =  $url.'public/upload/sliders/'.$rs3[0]->slider_image_name;
+                    }
+                    if($table == 'products')
+                    {
+                        $rs3[0]->product_image =  $url.'public/upload/products/'.$rs3[0]->product_image;
+                    }
+                    if($table == 'photos')
+                    {
+                        $rs3[0]->image_name =  $url.'public/upload/photos/'.$rs3[0]->image_name;
+                    }
+                    if($table == 'map_images')
+                    {
+                        $rs3[0]->map_image_name =  $url.'public/upload/map_images/'.$rs3[0]->map_image_name;
+                    }
+                    if($table == 'flash_sales')
+                    {
+                        $rs3[0]->map_image_name =  $url.'public/upload/flashsale/'.$rs3[0]->map_image_name;
+                    }
+                    if($table == 'brands')
+                    {
+                        $rs3[0]->brand_image =  $url.'public/upload/brands/'.$rs3[0]->brand_image;
+                    }
+                    if($table == 'banners')
+                    {
+                        $rs3[0]->bannerimage =  $url.'public/upload/banners/'.$rs3[0]->bannerimage;
+                    }
+                    unset($rs3[0]->deleted_at,$rs3[0]->updated_at);
                     $success[$table] = $rs3;
                 }
             }
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
         }
-
+        else
+        {
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
+        }
         //return $out;
-        return $this->sendResponse($success, 'Data Found successfully.');
+        return response()->json($response);
 
     }
 
@@ -317,13 +406,15 @@ class HomePageController extends BaseController
         $privacy = DB::table('settings')->where('type','privacypolicy')->get();
         if($privacy->count() > 0)
         {
-            $success['privacy'] = $privacy;
-            return $this->sendResponse($success, 'Data Found successfully.');
+            unset($privacy[0]->deleted_at);
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$privacy];
         }
         else
         {   
-            return $this->sendError('No Data.', ['error'=>'No Data Found']);
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+        return response()->json($response);
+
     }
 
 

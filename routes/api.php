@@ -40,7 +40,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('products_variant/{id}', 'API\ProductController@products_variant');
     Route::post('search', 'API\HomePageController@search');
     Route::get('privacypolicy', 'API\HomePageController@privacypolicy');    
-
+    Route::post('changepassword', 'API\RegisterController@changePassword');    
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
 });
 
@@ -49,7 +49,6 @@ Route::post('login', 'API\RegisterController@login');
 Route::post('register', 'API\RegisterController@register');
 Route::post('otp', 'API\RegisterController@otpverify');
 Route::post('forgot/password', 'API\ForgotPasswordController@forgotPassword');    
-Route::post('changeassword', 'API\ForgotPasswordController@changePassword');    
 Route::post('logout', 'API\RegisterController@logout');    
 
 //Route::get('userDetails','RegisterController@details');
