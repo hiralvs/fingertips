@@ -2,3 +2,11 @@ ALTER TABLE `rewards` CHANGE `earned` `earned` VARCHAR(200) CHARACTER SET latin1
 
 ALTER TABLE `settings`  ADD `deleted_at` TIMESTAMP NULL DEFAULT NULL  AFTER `updated_at`;
 
+ALTER TABLE `users` ADD `customer_id` VARCHAR(255) NOT NULL COMMENT 'stripe customer id' AFTER `profile_pic`;
+
+ALTER TABLE `flash_sales` CHANGE `image` `image` VARCHAR(200) NULL DEFAULT NULL;
+
+ALTER TABLE `notifications` ADD `created_by` VARCHAR(200) NOT NULL AFTER `description`;
+
+ALTER TABLE `notifications` CHANGE `title` `title` VARCHAR(255) NOT NULL;
+
