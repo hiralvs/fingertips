@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use App\Category;
-
+use Validator;
 
 class CategoryController extends Controller
 {
@@ -65,6 +65,14 @@ class CategoryController extends Controller
     /* Function used to add ema category */
     public function addCategory(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'category_name' => 'required',
+            'cat_image' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
         $request->request->remove('_token');
         $input = $request->all();
         $input['category_name'] = $input['category_name'];
@@ -102,6 +110,14 @@ class CategoryController extends Controller
     /* Function used to update ema category */
     public function update(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'category_name' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
+
         $category = Category::find($request->id);
         $category->category_name = $request->category_name;
         $category->type = $request->type;

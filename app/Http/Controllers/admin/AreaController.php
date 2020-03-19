@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use App\Area;
+use Validator;
 
 
 class AreaController extends Controller
@@ -65,6 +66,12 @@ class AreaController extends Controller
     /* Function used to add area */
     public function addArea(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'area_name' => 'required',          
+        ]);
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
         $request->request->remove('_token');
         $input = $request->all();
         $input['area_name'] = $input['area_name'];
@@ -91,6 +98,13 @@ class AreaController extends Controller
     /* Function used to update area */
     public function update(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'area_name' => 'required',          
+        ]);
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
+
         $area = Area::find($request->id);
         $area->area_name = $request->area_name;
 

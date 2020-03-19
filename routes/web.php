@@ -118,3 +118,25 @@ Route::get('/privacy', 'admin\PrivacyController@index')->name('privacy');
 Route::post('/addPrivacy', 'admin\PrivacyController@addPrivacy')->name('addPrivacy');
 Route::post('privacyupdate', array('as' => 'privacy.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\PrivacyController@update'));
 Route::get('privacydelete/{id}', array('as' => 'privacy.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\PrivacyController@delete'));
+
+Route::get('/attractions', 'admin\AttractionController@index')->name('attractions');
+Route::post('/addAttractions', 'admin\AttractionController@addAttractions')->name('addAttractions');
+Route::post('attractionsupdate', array('as' => 'attraction.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@update'));
+Route::get('attractionsdelete/{id}', array('as' => 'attraction.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@delete'));
+Route::post('attractionssearch', array('as' => 'attraction.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@search'));
+
+Route::get('/notifications', 'admin\NotificationController@index')->name('notifications');
+Route::get('notificationsdelete/{id}', array('as' => 'notifications.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\NotificationController@delete'));
+Route::post('/addNotifications', 'admin\NotificationController@addNotifications')->name('addNotifications');
+Route::post('notificationsupdate', array('as' => 'notifications.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\NotificationController@update'));
+Route::post('notificationssearch', array('as' => 'notifications.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\NotificationController@search'));
+
+Route::get('/tax', 'admin\TaxController@index')->name('tax');
+Route::get('taxdelete/{id}', array('as' => 'tax.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TaxController@delete'));
+Route::post('/addTax', 'admin\TaxController@addTax')->name('addTax');
+Route::post('taxupdate', array('as' => 'tax.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TaxController@update'));
+
+Route::get('/rewardsetting', 'admin\RewardSettingController@index')->name('rewardsetting');
+Route::get('rewardsettingdelete/{id}', array('as' => 'rewardsetting.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardSettingController@delete'));
+Route::post('/addRewardSetting', 'admin\RewardSettingController@addRewardSetting')->name('addRewardSetting');
+Route::post('rewardsettingupdate', array('as' => 'rewardsetting.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardSettingController@update'));

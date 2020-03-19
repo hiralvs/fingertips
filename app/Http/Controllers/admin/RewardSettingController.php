@@ -10,9 +10,7 @@ use Datatables;
 use App\User;
 use Validator;
 
-
-class PrivacyController extends Controller
-{
+class RewardSettingController extends Controller{
     /**
      * Create a new controller instance.
      *
@@ -22,46 +20,47 @@ class PrivacyController extends Controller
     {
         $this->middleware('auth');
     }
-
-    public function index(Request $request)
-    {
-        $auth = Auth::user();
+    public function index(Request $request) {
+		$auth = Auth::user();
         $return_data = array();
-        $this->data['title'] = trans('Privacy Listing');
-        $this->data['meta_title'] = trans('Privacy Listing');
+        $this->data['title'] = trans('Tax Percentage');
+        $this->data['meta_title'] = trans('Tax Percentage');
 
-        if ($request->per_page) {
+        if($request->per_page)
+        {
             $perpage = $request->per_page;
-        } else {
+        }
+        else
+        {
             $perpage = 10;
         }
-        $return_data['data'] = Settings::orderBy('id', 'desc')->sortable()->paginate($perpage);
-        $return_data['property_user_id'] = User::select('id', 'name')->where('role', 'property_admin')->get();        
-        return View('admin.privacy.index', $return_data)->render();
+        $return_data['data'] = Settings::where('type', 'rewardpoint')->orderBy('id', 'desc')->sortable()->paginate($perpage);
+        // 
+        // $return_data['property_admin'] = User::select('id', 'name')->where('role', 'property_admin')->get();
+        return View('admin.rewardsetting.index', $return_data)->render();
     }
-    public function addPrivacy(Request $request)
+    public function addRewardSetting(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'value' => 'required',
+            'title' => 'required',          
+            'point' => 'required',          
         ]);
-        
         if ($validator->fails()) {
             return Response()->json(['errors' => $validator->errors()]);
         }
-
         $request->request->remove('_token');
+
         $input = $request->all();
-        $input['type'] = 'privacypolicy';
+        $input['type'] = 'rewardpoint';
 
         Settings::unguard();
         $check = Settings::create($input)->id;
 
         $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
-        if ($check) {
-            $data = Settings::find($check);
+        if($check){ 
+        $data = Settings::find($check);
         
-            $arr = array('msg' => 'Privacy Added Successfully', 'status' => true,'data'=> $data);
+        $arr = array('msg' => 'Rewadsetting Added Successfully', 'status' => true,'data'=> $data);
         }
         return Response()->json($arr);
     }
@@ -69,19 +68,13 @@ class PrivacyController extends Controller
     {
         $query = Settings::where('id', $request->id);
         $query->delete();
-        return redirect()->route('privacy')->with('success', 'Privacy Deleted Successfully');
+        return redirect()->route('rewardsetting')->with('success', 'RewardSetting Deleted Successfully');
     }
-    public function edit(Request $request)
-    {
-        $query = Settings::where('id', $request->id);
-        return View('admin.privacy.edit', $query)->render();
-    }
- 
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'value' => 'required',
+            'title' => 'required',          
+            'points' => 'required', 
         ]);
         
         if ($validator->fails()) {
@@ -89,8 +82,8 @@ class PrivacyController extends Controller
         }
 
         $settings = Settings::find($request->id);
-        $settings->title = $request->title;
-        $settings->value =  $request->value;
+        $settings->title =  $request->title;
+        $settings->value =  $request->points;
 
         Settings::unguard();
                
@@ -98,7 +91,7 @@ class PrivacyController extends Controller
        
         if (!empty($settings)) {
             $data = Settings::find($request->id);
-            $arr = array('msg' => 'Privacy Updated Successfully', 'status' => true,'data'=> $data);
+            $arr = array('msg' => 'RewardSetting Updated Successfully', 'status' => true,'data'=> $data);
         } else {
             $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         }

@@ -59,6 +59,7 @@ class BrandController extends Controller
     public function addbrand(Request $request)
     {
        $validator = Validator::make($request->all(), [
+            'name' => 'required',
             'category_id' => 'required',
             'status' => 'required',
             'commission' => 'required',
@@ -101,6 +102,16 @@ class BrandController extends Controller
     }
  public function update(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'category_id' => 'required',
+            'status' => 'required',
+            'commission' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
+
         $brand = Brand::find($request->id);
         $brand->name = $request->name;
         $brand->grand_merchant_user_id = $request->grand_merchant_user_id;
