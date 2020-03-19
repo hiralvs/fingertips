@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Settings extends Model
 {
-        use Sortable;
+    use Sortable;
     use SoftDeletes;
-        public $sortable = ['title','value'];
-
+    public $sortable = ['title','value'];
 
 }

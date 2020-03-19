@@ -71,6 +71,9 @@
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputName">Area Name</label>
                                                 <input type="text" class="form-control" required id="area_name" value="{{$value->area_name}}" name="area_name" placeholder="Name">
+                                                <span class="text-danger">
+                                                    <strong class="area_name-error"></strong>
+                                                </span>
                                                 <input type="hidden" name="id" value="{{$value->id}}">
                                             </div>                                       
                                         </div>
@@ -112,6 +115,7 @@ $(document).ready(function(){
         }, 5000 ); // 5 secs
     $(document).on('click','.editAreaSubmit',function(e){
         var id = $(this).data('id');
+             $( '.area_name-error' ).html( "" );
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -123,6 +127,12 @@ $(document).ready(function(){
                 method: 'post',
                 data: $("#editAreaform"+id).serialize(),
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.area_name){
+                        $( '.area_name-error' ).html( result.errors.area_name[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
@@ -140,6 +150,7 @@ $(document).ready(function(){
         });
 
         $('#addAreaSubmit').click(function(e){
+            $( '#area_name-error' ).html( "" );
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -151,6 +162,12 @@ $(document).ready(function(){
                 method: 'post',
                 data: $("#addAreaform").serialize(),
                 success: function(result){
+                 if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.area_name){
+                        $( '#area_name-error' ).html( result.errors.area_name[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -202,6 +219,9 @@ $(document).ready(function(){
                     <div class="form-group col-md-6">
                         <label for="exampleInputName">Area Name</label>
                         <input type="text" required class="form-control" id="area_name" name="area_name" placeholder="Name">
+                        <span class="text-danger">
+                            <strong id="area_name-error"></strong>
+                        </span>
                     </div>               
                 </div>
                 <button type="button" class="btn btn-primary mr-2" id="addAreaSubmit">Submit</button>

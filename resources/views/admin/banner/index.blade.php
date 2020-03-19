@@ -14,10 +14,6 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addBanner" tabindex="" style="">
                         ADD NEW
                     </a>
-                        <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                            Print
-                            <i class="mdi mdi-printer btn-icon-append"></i>                          
-                        </button> -->
                 </div>               
             </div>
         </div>
@@ -27,11 +23,6 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
-                  <!-- <select name="per_page" id="per_page" style="float:right;">
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  </select> -->
                   <div class="box-header ">
                         @if (session()->has('success'))
                         <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
@@ -143,7 +134,6 @@
                                             <div class="form-group col-md-4 url" id="url{{$value->id}}" style="display:{{ $value->type == 'outsideapp' ? 'block' : 'none'}}">
                                                 <label for="exampleInputName">URL</label>
                                                 <input type="text" value="{{ $value->url != null ? $value->url : ''}}" required class="form-control url" name="url">
-                                                {{-- <input type="hidden" class="form-control" id="type" name="type" value='url'> --}}
                                                 <span class="text-danger">
                                                     <strong class="url-error"></strong>
                                                 </span>
@@ -226,34 +216,10 @@
                 else
                 {
                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-                    // $.each(result.errors, function(key, value){
-                    //     $('.alert-danger').show();
-                    //     $('.alert-danger').append('<li>'+value+'</li>');
-                    // });
                 }
                 }
             });
         });
-    // $(function () {
-    // // alert($('.type').val());
-    //  if ($('.type').val() == 'inapp') {
-    //      alert('hvdsbxjn');
-    //             console.log($('.type').val());
-    //             $(".ema").show();
-    //             $(".property_user_id").show();
-    //             $(".url").hide();
-    //         }else if ($('.type').val() == 'outsideapp'){
-    //             $(".ema").hide();
-    //             $(".property_user_id").hide();
-    //             $(".url").show();
-    //         }else{
-    //             // console.log($(this).val());
-    //             $(".ema").hide();
-    //             $(".property_user_id").hide();
-    //             $(".url").hide();
-    //         }
-    //     });
-
 
 $('#addBannerSubmit').click(function(e){
         var formData = new FormData($("#addBannerform")[0]);
@@ -354,12 +320,6 @@ $(function () {
                 $("#property_user_id"+id).hide();
                 $("#url"+id).show();
             }
-            // else if ($(this).val() == ''){
-            //     console.log($(this).val());
-            //     $(".ema").hide();
-            //     $(".property_user_id").hide();
-            //     $(".url").hide();
-            // } 
         });
     });
 $(function () {
@@ -378,13 +338,7 @@ $(function () {
                 $("#ema").hide();
                 $("#property_user_id").hide();
                 $("#url").show();
-            }
-            // else if ($(this).val() == ''){
-            //     console.log($(this).val());
-            //     $(".ema").hide();
-            //     $(".property_user_id").hide();
-            //     $(".url").hide();
-            // } 
+            } 
         });
     });
 </script>

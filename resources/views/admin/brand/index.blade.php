@@ -127,8 +127,11 @@
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputName">Name</label>
-                                                    <input type="text" class="form-control" required id="fullname" value="{{$value->name}}" name="name" placeholder="Name">
+                                                    <input type="text" class="form-control name" required id="fullname" value="{{$value->name}}" name="name" placeholder="Name">
                                                     <input type="hidden" name="id" value="{{$value->id}}">
+                                                    <span class="text-danger">
+                                                        <strong class="name-error"></strong>
+                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Brand Merchant</label>
@@ -143,24 +146,33 @@
                                         <div class="row">
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputStatus">Category</label>
-                                                <select name="category_id" id="category_id" class="form-control">
+                                                <select name="category_id" id="category_id" class="form-control category_id">
                                                     <option value=""> -- Select One --</option>
                                                     @foreach ($category_id as $cat)
                                                         <option value="{{ $cat->id }}"  {{ $value->category_id ==$cat->id ? 'selected' : ''}}>{{ $cat->category_name }}</option>
                                                     @endforeach
                                                 </select>
+                                                <span class="text-danger">
+                                                        <strong class="category_id-error"></strong>
+                                                </span>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputStatus">Status</label>
-                                                <select class="form-control" id="status" name="status">
+                                                <select class="form-control status" id="status" name="status">
                                                     <option value="" selected="">Status</option>
                                                     <option value="0" {{ $value->status == '0' ? 'selected' : ''}}>Active</option>
                                                     <option value="1" {{ $value->status == '1' ? 'selected' : ''}}>Inactive</option>
                                                 </select>
+                                                <span class="text-danger">
+                                                        <strong class="status-error"></strong>
+                                                </span>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputFinertip">Fingertips</label>
-                                                <input type="tel" class="form-control" required id="commission" value="{{$value->commission}}" name="commission" placeholder="Name">
+                                                <input type="tel" class="form-control commission" required id="commission" value="{{$value->commission}}" name="commission" placeholder="Name">
+                                                <span class="text-danger">
+                                                    <strong class="commission-error"></strong>
+                                                </span>
                                             </div>
                                             <div class="form-group col-md-12"> 
                                                 <textarea class="description ckeditor" id="description" name="description"></textarea>
@@ -203,6 +215,11 @@ $(document).ready(function(){
     $('.editBrandSubmit').click(function(e){
         var id = $(this).data('id');
         var formData = new FormData($("#editbrandform"+id)[0]);
+        $('.name-error' ).html( "" );
+        $('.category_id-error' ).html( "" );
+        $('.status-error' ).html( "" );
+        $('.commission-error' ).html( "" );
+        
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -217,6 +234,21 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.name){
+                        $( '.name-error' ).html( result.errors.name[0] );
+                    }
+                    if(result.errors.category_id){
+                        $( '.category_id-error' ).html( result.errors.category_id[0] );
+                    }
+                    if(result.errors.status){
+                        $( '.status-error' ).html( result.errors.status[0] );
+                    }
+                    if(result.errors.commission){
+                        $( '.commission-error' ).html( result.errors.commission[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
@@ -241,6 +273,7 @@ $(document).ready(function(){
         var formData = new FormData($("#addbrandform")[0]);
         var message = CKEDITOR.instances['desc'].getData();
         console.log(message);
+        $( '#name-error' ).html( "" );
         $( '#category_id-error' ).html( "" );
         $( '#status-error' ).html( "" );
         $( '#commission-error' ).html( "" );
@@ -262,6 +295,9 @@ $(document).ready(function(){
                 success: function(result){
                 if(result.errors) {
                     $(".statusMsg").hide();
+                    if(result.errors.name){
+                        $( '#name-error' ).html( result.errors.name[0] );
+                    }
                     if(result.errors.category_id){
                         $( '#category_id-error' ).html( result.errors.category_id[0] );
                     }
@@ -407,12 +443,6 @@ $(document).ready(function(){
                 else
                 {
                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-
-
-                    // $.each(result.errors, function(key, value){
-                    //     $('.alert-danger').show();
-                    //     $('.alert-danger').append('<li>'+value+'</li>');
-                    // });
                 }
                 }
             });
@@ -448,7 +478,10 @@ $(document).ready(function(){
                     </div>
                     <div class="form-group col-md-4">
                         <label for="exampleInputName">Name</label>
-                        <input type="text" required class="form-control" Re id="fullname" name="name" placeholder="Name">
+                        <input type="text" required class="form-control" Re id="name" name="name" placeholder="Name">
+                        <span class="text-danger">
+                            <strong id="name-error"></strong>
+                        </span>
                     </div>
                     {{-- <div>{{ $errors->first('name') }}</div> --}}
                     

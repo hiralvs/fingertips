@@ -5,13 +5,13 @@
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
-            <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
+                <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
             </div>
         </div>
         <div class="col-sm-6">
 			<div class="d-flex align-items-center justify-content-md-end">
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addPrivacy" tabindex="" style="">
+                    <a id="addnew15" class="waves-effect waves-light btn btn_box_shadow btn element" data-toggle="modal" data-target="#addTax" tabindex="" style="">
                         ADD NEW
                     </a>
                 </div>               
@@ -23,11 +23,6 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
-                  <!-- <select name="per_page" id="per_page" style="float:right;">
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  </select> -->
                   <div class="box-header ">
                         @if (session()->has('success'))
                         <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
@@ -37,55 +32,43 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="privacyData">
+                    <table class="table table-hover" id="taxtableData">
                       <thead>
                         <tr>
-                          <th>@sortablelink('title')</th>
-                          <th>@sortablelink('value')</th>
+                          <th>@sortablelink('Tax Percentage')</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         @if(!empty($data) && $data->count() > 0)
                             @foreach($data as $key => $value)
-                        <tr>   
-                            <td>{{$value->title}}</td>
-                           <td>{{$value->value}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-target="#editBrand{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Privacy?')" href="{{route('privacy.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                        <tr>
+                            <td>{{$value->value}}</td>
+                            <td><a class="edit open_modal" data-toggle="modal" data-target="#editTax{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Tax?')" href="{{route('tax.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
-                        <!-- Edit Modal HTML Markup -->
-                        <div id="editBrand{{$value->id}}" class="modal fade">
-                            <div class="modal-dialog  modal-xl" role="document">
+                         <!-- Edit Modal HTML Markup -->
+                        <div id="editTax{{$value->id}}" class="modal fade">
+                            <div class="modal-dialog  modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit Brand</h1>
+                                        <h1 class="modal-title">Edit Tax</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
-                                        <form name="addbrandform" id="editprivacyform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
+                                        <form name="addbrandform" id="edittaxform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
                                                 @csrf
                                             <div class="row">
-                                                <div class="form-group col-md-12 title">
-                                                    {{-- <label for="exampleInputName"> Title </label>
-                                                    <input type="text" required class="form-control" Re id="title" name="title" placeholder="Title"> --}}
-                                                    <label for="exampleInputName"> Title </label>
-                                                    <input type="text" class="form-control " required id="title" value="{{$value->title}}" name="title" placeholder="Title">
+                                                <div class="form-group col-md-6 title">
+                                                    <label for="exampleInputName"> Tax Percentage </label>
+                                                    <input type="text" class="form-control value" required id="value" value="{{$value->value}}" name="value" placeholder="Title">
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <span class="text-danger">
-                                                        <strong class="title-error"></strong>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-12"> 
-                                                     <textarea class="form-control ckeditor" id="value{{$value->id}}" name="value">{{$value->value}}</textarea>
                                                     <span class="text-danger">
                                                         <strong class="value-error"></strong>
                                                     </span>
                                                 </div>
                                             </div>
-                                            <button type="button" class="btn btn-primary mr-2 editPrivacySubmit" data-id="{{$value->id}}" id="editPrivacySubmit">Submit</button>
+                                            <button type="button" class="btn btn-primary mr-2 editTaxSubmit" data-id="{{$value->id}}" id="editPrivacySubmit">Submit</button>
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                         </form>
                                     </div>
@@ -94,11 +77,6 @@
                         </div><!-- edit /.modal -->
                         
                         @endforeach
-                       
-                        @else
-                        <tr>
-                        <td colspan="10">No Records Found</td>
-                        </tr>
                         @endif
 
                       </tbody>
@@ -119,14 +97,10 @@
 <script>
 $(document).ready(function(){
 
-    $('.editPrivacySubmit').click(function(e){
+    $('.editTaxSubmit').click(function(e){
         var id = $(this).data('id');
-        var formData = new FormData($("#editprivacyform"+id)[0]);
-        $( '.title-error' ).html( "" );
+        var formData = new FormData($("#edittaxform"+id)[0]);
         $( '.value-error' ).html( "" );
-
-        var message = CKEDITOR.instances['value'+id].getData();
-         formData.append('value',message);
             var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
@@ -135,7 +109,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('privacy.update') }}",
+                url: "{{ route('tax.update') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -144,9 +118,6 @@ $(document).ready(function(){
                 success: function(result){
                 if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.title){
-                        $( '.title-error' ).html( result.errors.title[0] );
-                    }
                     if(result.errors.value){
                         $( '.value-error' ).html( result.errors.value[0] );
                     }
@@ -155,7 +126,7 @@ $(document).ready(function(){
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setInterval(function(){ 
-                        $('#editPrivacy'+id).modal('hide');
+                        $('#editTax'+id).modal('hide');
                         window.location.reload();
                     }, 3000);
                 }
@@ -167,13 +138,13 @@ $(document).ready(function(){
             });
         });
 
-$('#addPrivacySubmit').click(function(e){
-        var formData = new FormData($("#addPrivacyform")[0]);
-        $( '#title-error' ).html( "" );
+$('#addTaxSubmit').click(function(e){
+        var formData = new FormData($("#addTaxform")[0]);
+        
         $( '#value-error' ).html( "" );
-        var message = CKEDITOR.instances['value'].getData();
+        // var message = CKEDITOR.instances['value'].getData();
 
-        formData.append('value',message);
+        // formData.append('value',message);
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -181,7 +152,7 @@ $('#addPrivacySubmit').click(function(e){
                 }
             });
             $.ajax({
-                url: "{{ route('addPrivacy') }}",
+                url: "{{ route('addTax') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -191,9 +162,6 @@ $('#addPrivacySubmit').click(function(e){
                 
                 if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.title){
-                        $( '#title-error' ).html( result.errors.title[0] );
-                    }
                     if(result.errors.value){
                         $( '#value-error' ).html( result.errors.value[0] );
                     }
@@ -204,25 +172,24 @@ $('#addPrivacySubmit').click(function(e){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
-                        $('#addprivacy').modal('hide');
+                        $('#addTax').modal('hide');
                          window.location.reload(); 
                     }, 3000);
                     
-                    var findnorecord = $('#privacytableData tr.norecord').length;
+                    var findnorecord = $('#taxtableData tr.norecord').length;
                     if(findnorecord > 0)
                     {
-                        $('#privacytableData tr.norecord').remove();
+                        $('#taxtableData tr.norecord').remove();
                     }
-                   var deleteurl = '{{ route("privacy.delete", ":id") }}';
+                   var deleteurl = '{{ route("tax.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
-
                     "<td>"+data.title+"</td>" +
                     "<td>"+data.value+"</td>" +
                     "</tr>";
                     console.log(tr_str);
-                    $("#privacyData tbody").prepend(tr_str);
-                    $("#addprivacyform")[0].reset();
+                    $("#taxtableData tbody").prepend(tr_str);
+                    $("#addTaxform")[0].reset();
                 }
                 else
                 {
@@ -234,35 +201,28 @@ $('#addPrivacySubmit').click(function(e){
     }); 
 </script>
 @endsection
+
 <!-- Modal HTML Markup -->
-<div id="addPrivacy" class="modal fade">
-    <div class="modal-dialog  modal-xl" role="document">
+<div id="addTax" class="modal fade">
+    <div class="modal-dialog  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add Privacy</h1>
+                <h1 class="modal-title">Add Tax</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
-                <form name="addPrivacy" id="addPrivacyform" role="form" method="POST" enctype= "multipart/form-data">
+                <form name="addTaxform" id="addTaxform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="form-group col-md-12">
-                            <label for="exampleInputName"> Title </label>
-                            <input type="text" required class="form-control" Re id="title" name="title" placeholder="Title">
-                            <span class="text-danger">
-                                <strong id="title-error"></strong>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-12"> 
-                            <textarea class="description ckeditor" id="value" name="value"></textarea>
+                        <div class="form-group col-md-6">
+                            <label for="exampleInputName">Tax Percentage</label>
+                            <input type="text" required class="form-control" Re id="value" name="Value" placeholder="Tax Percentage">
                             <span class="text-danger">
                                 <strong id="value-error"></strong>
                             </span>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary mr-2" id="addPrivacySubmit">Submit</button>
+                    <button type="button" class="btn btn-primary mr-2" id="addTaxSubmit">Submit</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                 </form>
             </div>

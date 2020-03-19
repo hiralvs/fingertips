@@ -77,6 +77,9 @@
                                                 <input type="text" class="form-control" required id="category_name" value="{{$value->category_name}}" name="category_name" placeholder="Name">
                                                 <input type="hidden" name="id" value="{{$value->id}}">
                                                 <input type="hidden" name="type" value="product">
+                                                <span class="text-danger">
+                                                    <strong class="category_name-error"></strong>
+                                                </span>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleSelectPhoto">Photo</label>
@@ -125,6 +128,7 @@ $(document).ready(function(){
     $(document).on('click','.editCategorySubmit',function(e){
         var id = $(this).data('id');
         var formData = new FormData($("#editcategoryform"+id)[0]);
+         $( '.category_name-error' ).html( "" );    
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -139,6 +143,12 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.category_name){
+                        $( '.category_name-error' ).html( result.errors.category_name[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
@@ -157,6 +167,8 @@ $(document).ready(function(){
 
         $('#addCategorySubmit').click(function(e){
         var formData = new FormData($("#addCategoryform")[0]);
+         $( '#category_name-error').html( "" );    
+         $( '#cat_image-error').html( "" );    
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -171,6 +183,15 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.category_name){
+                        $( '#category_name-error' ).html( result.errors.category_name[0] );
+                    }
+                    if(result.errors.cat_image){
+                        $( '#cat_image-error' ).html( result.errors.cat_image[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -230,6 +251,9 @@ $(document).ready(function(){
                         <label for="exampleInputName">Category Name</label>
                         <input type="text" required class="form-control" id="category_name" name="category_name" placeholder="Name">
                         <input type="hidden" class="form-control" id="type" name="type" value='product'>
+                        <span class="text-danger">
+                            <strong id="category_name-error"></strong>
+                        </span>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="exampleSelectPhoto">Photo</label>
@@ -240,6 +264,9 @@ $(document).ready(function(){
                             <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                             </span>
                         </div>
+                        <span class="text-danger">
+                            <strong id="cat_image-error"></strong>
+                        </span>
                     </div>                
                 </div>
                 <button type="button" class="btn btn-primary mr-2" id="addCategorySubmit">Submit</button>
