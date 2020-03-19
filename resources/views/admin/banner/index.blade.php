@@ -11,7 +11,7 @@
         <div class="col-sm-6">
 			<div class="d-flex align-items-center justify-content-md-end">
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="waves-effect waves-light btn btn_box_shadow btn element" data-toggle="modal" data-target="#addBanner" tabindex="" style="">
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addBanner" tabindex="" style="">
                         ADD NEW
                     </a>
                         <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
@@ -149,18 +149,8 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            
-                                        </div>
-                                    </div>
-                                        <div class="row">
-                                            <div class="form-group col-md-2" style="text-align:center">
-                                            <button type="button" class="btn btn-primary mr-2 editBannerSubmit" data-id="{{$value->id}}" id="editBannerSubmit">Submit</button>
-                                            </div>
-                                            <div class="form-group col-md-2" >
-                                                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
-                                            </div>
-                                        </div>
+                                        <button type="button" class="btn btn-primary mr-2 editBannerSubmit" data-id="{{$value->id}}" id="editBannerSubmit">Submit</button>
+                                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                                         </form>
                                     </div>
                                 </div><!-- /.modal-content -->
@@ -412,7 +402,6 @@ $(function () {
                 <form name="addBanner" id="addBannerform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                 <div class="row">
-
                     <div class="form-group col-md-3">
                         <label for="exampleSelectGender">Location</label>
                         <select class="form-control " name="location" id="location">
@@ -446,48 +435,41 @@ $(function () {
                             <strong id="type-error"></strong>
                         </span>
                     </div>
-                        <div class="form-group col-md-4 ema" id="ema" style="display:none;">
-                            <label for="exampleInputStatus ema">EMA</label>
-                            <select class="form-control" id="ema" name="ema">
-                                <option value="" selected="">EMA</option>
-                                <option value="0">Event</option>
-                                <option value="1">Mall</option>
-                                <option value="2">Attraction</option>
-                            </select>
-                        <span class="text-danger">
-                            <strong id="ema-error"></strong>
-                        </span>
-                        </div>
-                        <div class="form-group col-md-4 property_user_id" id="property_user_id" style="display:none;">
-                            <label for="exampleInputStatus property_user_id">Property</label>
-                            <select name="property_user_id" id="property_user_id" class="form-control">
-                                <option value="" selected="">Property</option>
-                                @foreach ($property_user_id as $brand)
-                                    <option value="{{ $brand->id }}"  {{ (isset($brand->id) || old('id'))? "":"selected" }}>{{ $brand->name }}</option>
-                                @endforeach 
-                            </select>
-                        <span class="text-danger">
-                            <strong id="property_user_id-error"></strong>
-                        </span>
-                        </div>
-                        <div class="form-group col-md-4 url" id="url" style="display:none;">
-                            <label for="exampleInputName url">URL</label>
-                            <input type="text" class="form-control" id="url" name="url" placeholder="url">
-                            {{-- <input type="hidden" class="form-control" id="type" name="type" value='url'> --}}
-                            <span class="text-danger">
-                                <strong id="url-error"></strong>
-                            </span>
-                        </div> 
-                </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-2" style="text-align:center">
-                    <button type="button" class="btn btn-primary mr-2" id="addBannerSubmit">Submit</button>
+                    <div class="form-group col-md-4 ema" id="ema" style="display:none;">
+                        <label for="exampleInputStatus ema">EMA</label>
+                        <select class="form-control" id="ema" name="ema">
+                            <option value="" selected="">EMA</option>
+                            <option value="0">Event</option>
+                            <option value="1">Mall</option>
+                            <option value="2">Attraction</option>
+                        </select>
+                    <span class="text-danger">
+                        <strong id="ema-error"></strong>
+                    </span>
                     </div>
-                    <div class="form-group col-md-2" >
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>   
+                    <div class="form-group col-md-4 property_user_id" id="property_user_id" style="display:none;">
+                        <label for="exampleInputStatus property_user_id">Property</label>
+                        <select name="property_user_id" id="property_user_id" class="form-control">
+                            <option value="" selected="">Property</option>
+                            @foreach ($property_user_id as $brand)
+                                <option value="{{ $brand->id }}"  {{ (isset($brand->id) || old('id'))? "":"selected" }}>{{ $brand->name }}</option>
+                            @endforeach 
+                        </select>
+                    <span class="text-danger">
+                        <strong id="property_user_id-error"></strong>
+                    </span>
                     </div>
+                    <div class="form-group col-md-4 url" id="url" style="display:none;">
+                        <label for="exampleInputName url">URL</label>
+                        <input type="text" class="form-control" id="url" name="url" placeholder="url">
+                        {{-- <input type="hidden" class="form-control" id="type" name="type" value='url'> --}}
+                        <span class="text-danger">
+                            <strong id="url-error"></strong>
+                        </span>
+                    </div> 
                 </div>
+                <button type="button" class="btn btn-primary mr-2" id="addBannerSubmit">Submit</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button> 
                 </form>
             </div>
         </div><!-- /.modal-content -->

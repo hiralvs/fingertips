@@ -2,7 +2,7 @@
         <div class="container">
             <ul class="nav page-navigation">
               <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="{{route('dashboard')}}">
                   <i class="mdi mdi-file-document-box menu-icon"></i>
                   <span class="menu-title">Dashboard</span>
                 </a>
@@ -10,7 +10,14 @@
               <li class="nav-item">
                   <a href="{{route('brand')}}" class="nav-link">
                     <i class="mdi mdi-cube-outline menu-icon"></i>
-                    <span class="menu-title">Brand Listing</span>
+                    <span class="menu-title">Brands</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{route('products')}}" class="nav-link">
+                    <i class="mdi mdi-cube-outline menu-icon"></i>
+                    <span class="menu-title">Products</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
@@ -67,7 +74,6 @@
                           <li class="nav-item"><a class="nav-link" href="{{route('banner')}}">Banner</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Product Category</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/register-2.html">Property Images</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Tax</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Floor</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Help</a></li>

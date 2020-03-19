@@ -50,9 +50,6 @@ class BrandController extends Controller
         $return_data['data'] = brand::orderBy($sort,$direction)->sortable()->paginate($perpage);
         $return_data['category_id'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         $return_data['grand_merchant_user_id'] = User::select('id', 'name')->where('role','brand_merchant')->get();
-        // echo "<pre>";
-        // print_r($return_data['category_id']);
-        // exit;
         return View('admin.brand.index', $return_data)->render();
     }
 
@@ -74,7 +71,7 @@ class BrandController extends Controller
             $image = $request->File('brand_image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
 
-            $path = public_path('upload/' . $filename);
+            $path = public_path('upload/brands/' . $filename);
 
             Image::make($image->getRealPath())->resize(50, 50)->save($path);
             $input['brand_image'] = $filename;

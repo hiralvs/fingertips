@@ -79,13 +79,13 @@ class EventsController extends Controller
     }
      public function addEvents(Request $request) {
             $validator = Validator::make($request->all(), [
-            'event_image' => 'required',
+            'event_image' => 'required|image',
             'event_name' => 'required|max:255',
             'event_start_date' => 'required',
             'start_time' => 'required',
-            'event_end_date' => 'required',
+            'event_end_date' => 'required|after:event_start_date',
             'end_time' => 'required',
-            'contact' => 'required',
+            'contact' => 'required|numeric',
             'property_admin_user_id' => 'required',
             'category_id' => 'required',
             'area_id' => 'required',

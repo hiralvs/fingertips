@@ -19,7 +19,7 @@
         <div class="container-fluid">
           <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between">
             <div class="navbar-brand-wrapper d-flex align-items-center justify-content-center">
-                <a class="navbar-brand brand-logo" href="index.html"><img src="{{asset('/public/images/logo.png')}}" alt="logo"/></a>
+                <a class="navbar-brand brand-logo" href="index.html"><img src="{{asset('/public/images/fingertips.png')}}" style="margin-bottom:5px;" alt="logo"/></a>
                 <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{asset('/public/images/logo-mini.svg')}}" alt="logo"/></a>
             </div>
             <ul class="navbar-nav navbar-nav-right">

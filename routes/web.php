@@ -67,6 +67,11 @@ Route::post('/addbrand', 'admin\BrandController@addbrand')->name('addbrand');
 Route::post('brandsearch', array('as' => 'brand.brandsearch', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@search'));
 Route::post('updatebrand', array('as' => 'brand.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@update'));
 
+Route::get('/dashboard', 'admin\DashboardController@index')->name('dashboard');
+
+Route::get('/products', 'admin\ProductController@index')->name('products');
+
+
 Route::get('/excel_export', 'ExportExcelController@index');
 Route::get('/expert_excel/excel','ExportExcelController@excel')->name('export_excel.excel');
 

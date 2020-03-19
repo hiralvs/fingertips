@@ -109,11 +109,19 @@
                                                         <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                                                         </span>
                                                     </div>
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="image-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputName">Name</label>
                                                     <input type="text" required class="form-control" Re id="fullname" value="{{$value->name}}" name="name" placeholder="Name">
                                                     <input type="hidden" name="id" value="{{$value->id}}">
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="name-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputEmail1">Location</label>
@@ -124,20 +132,32 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputPassword">Opening Hours</label>
                                                     <input type="text" class="form-control timepicker" value="{{$value->openinghrs}}"  id="openinghrs" name="openinghrs" placeholder="Opening Houres">
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="openinghrs-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleSelectGender">Closing Hours</label>
                                                     <input type="text" class="form-control timepicker" value="{{$value->closinghrs}}" id="closinghrs" name="closinghrs" placeholder="Closing Hours">
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="closinghrs-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>                 
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleSelectGender">Contact Info</label>
                                                     <input type="text" class="form-control" id="contact" value="{{$value->contact}}" name="contact" placeholder="Contact">
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="contact-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div> 
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputRole">Property Admin</label>
-                                                    <select class="form-control" id="property_admin_user_id" name="property_admin_user_id">
+                                                    <select class="form-control" id="property_admin" name="property_admin">
                                                     <option value="">--Select--</option>
                                                     @if(!empty($property_admin) && $property_admin->count() > 0)
                                                         @foreach($property_admin as $key => $pd)
@@ -145,10 +165,14 @@
                                                         @endforeach
                                                     @endif
                                                     </select>
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="property_admin-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Category</label>
-                                                    <select class="form-control category_id" multiple name="category_id[]" id="category_id">
+                                                    <label for="exampleInputStatus">Filter</label>
+                                                    <select class="form-control category_id" multiple name="filter[]" id="filter">
                                                     <!-- <option value="">--Select--</option> -->
                                                     @if(!empty($category) && $category->count() > 0)
                                                         @foreach($category as $key => $cat)
@@ -156,10 +180,14 @@
                                                         @endforeach
                                                     @endif
                                                     </select>
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="category-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleSelectPhoto">Area</label>
-                                                    <select class="form-control " id="area_id" name="area_id">
+                                                    <select class="form-control " id="area" name="area">
                                                     <option value="">--Select--</option>
                                                     @if(!empty($area) && $area->count() > 0)
                                                         @foreach($area as $key => $avalue)
@@ -167,6 +195,10 @@
                                                         @endforeach
                                                     @endif
                                                     </select>
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="area-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -177,14 +209,22 @@
                                                         <option value="yes" {{ $value->featured_mall == 'yes' ? 'selected' : ''}}>Yes</option>
                                                         <option value="no" {{ $value->featured_mall == 'no' ? 'selected' : ''}}>No</option>
                                                     </select>
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="featured_mall-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Type</label>
-                                                    <select class="form-control" id="type" name="type">
+                                                    <label for="exampleInputStatus">Layer</label>
+                                                    <select class="form-control" id="layer" name="layer">
                                                         <option value="">--Select--</option>
                                                         <option value="mall" {{ $value->type == 'mall' ? 'selected' : ''}}>Mall</option>
                                                         <option value="shop" {{ $value->type == 'shop' ? 'selected' : ''}}>Shop</option>
                                                     </select>
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="type-error{{$value->id}}"></strong>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -284,6 +324,17 @@ $(document).ready(function(){
         var message = CKEDITOR.instances['description'+id].getData();
 
         formData.append('description',message);
+        $( '#image-error' ).html( "" );
+            $( '#name-error'+id ).html( "" );
+            $( '#openinghrs-error'+id ).html( "" );
+            $( '#closinghrs-error'+id ).html( "" );
+            $( '#contact-error'+id ).html( "" );
+            $( '#propertyadmin-error'+id ).html( "" );
+            $( '#category-error'+id ).html( "" );
+            $( '#area-error'+id ).html( "" );
+            $("#featured_mall-error"+id).html("");
+            $( '#type-error'+id ).html("");
+
         var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
@@ -299,6 +350,39 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.area){
+                        $( '#area-error'+id ).html( result.errors.area[0] );
+                    }
+                    if(result.errors.filter){
+                        $( '#category-error' ).html( result.errors.filter[0] );
+                    }
+                    if(result.errors.closinghrs){
+                        $( '#closinghrs-error'+id ).html( result.errors.closinghrs[0] );
+                    }
+                    if(result.errors.contact){
+                        $( '#contact-error'+id ).html( result.errors.contact[0] );
+                    }
+                    if(result.errors.featured_mall){
+                        $( '#featured_mall-error'+id ).html( result.errors.featured_mall[0] );
+                    }
+                    if(result.errors.image){
+                        $( '#image-error'+id ).html( result.errors.image[0] );
+                    }
+                    if(result.errors.name){
+                        $( '#name-error'+id ).html( result.errors.name[0] );
+                    }  
+                    if(result.errors.openinghrs){
+                        $( '#openinghrs-error'+id ).html( result.errors.openinghrs[0] );
+                    }   
+                    if(result.errors.property_admin){
+                        $( '#propertyadmin-error'+id ).html( result.errors.property_admin[0] );
+                    }     
+                    if(result.errors.layer){
+                        $( '#type-error'+id ).html( result.errors.layer[0] );
+                    }                
+                }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
@@ -319,7 +403,16 @@ $(document).ready(function(){
             var formData = new FormData($("#addMallsform")[0]);
             var message = CKEDITOR.instances['description'].getData();
             formData.append('description',message);
-                
+            $( '#image-error' ).html( "" );
+            $( '#name-error' ).html( "" );
+            $( '#openinghrs-error' ).html( "" );
+            $( '#closinghrs-error' ).html( "" );
+            $( '#contact-error' ).html( "" );
+            $( '#propertyadmin-error' ).html( "" );
+            $( '#category-error' ).html( "" );
+            $( '#area-error' ).html( "" );
+            $("#featured_mall-error").html("");
+            $( '#type-error' ).html("");
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -334,6 +427,39 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                    if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.area){
+                        $( '#area-error' ).html( result.errors.area[0] );
+                    }
+                    if(result.errors.filter){
+                        $( '#category-error' ).html( result.errors.filter[0] );
+                    }
+                    if(result.errors.closinghrs){
+                        $( '#closinghrs-error' ).html( result.errors.closinghrs[0] );
+                    }
+                    if(result.errors.contact){
+                        $( '#contact-error' ).html( result.errors.contact[0] );
+                    }
+                    if(result.errors.featured_mall){
+                        $( '#featured_mall-error' ).html( result.errors.featured_mall[0] );
+                    }
+                    if(result.errors.image){
+                        $( '#image-error' ).html( result.errors.image[0] );
+                    }
+                    if(result.errors.name){
+                        $( '#name-error' ).html( result.errors.name[0] );
+                    }  
+                    if(result.errors.openinghrs){
+                        $( '#openinghrs-error' ).html( result.errors.openinghrs[0] );
+                    }   
+                    if(result.errors.property_admin){
+                        $( '#propertyadmin-error' ).html( result.errors.property_admin[0] );
+                    } 
+                    if(result.errors.layer){
+                        $( '#type-error' ).html( result.errors.layer[0] );
+                    }                   
+                }
                 if(result.status == true)
                 {
                     var data = result.data.malls;
@@ -536,17 +662,25 @@ $(document).ready(function(){
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="exampleSelectPhoto">Photo</label>
-                            <input type="file" name="image" class="file-upload-default">
+                            <input type="file" name="image" id="image" class="file-upload-default">
                             <div class="input-group col-xs-12">
                                 <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
                                 <span class="input-group-append">
                                 <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                                 </span>
                             </div>
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="image-error"></strong>
+                            </span>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputName">Name</label>
-                            <input type="text" required class="form-control"  id="fullname" name="name" placeholder="Name">
+                            <input type="text" required class="form-control"  id="name" name="name" placeholder="Name">
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="name-error"></strong>
+                            </span>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputEmail1">Location</label>
@@ -559,20 +693,32 @@ $(document).ready(function(){
                         <div class="form-group col-md-4">
                             <label for="exampleInputPassword">Opening Hours</label>
                             <input type="text" class="form-control timepicker" id="openinghrs" name="openinghrs" placeholder="Opening Houres">
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="openinghrs-error"></strong>
+                            </span>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleSelectGender">Closing Hours</label>
                             <input type="text" class="form-control timepicker" id="closinghrs" name="closinghrs" placeholder="Closing Hours">
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="closinghrs-error"></strong>
+                            </span>
                         </div>                 
                         <div class="form-group col-md-4">
                             <label for="exampleSelectGender">Contact Info</label>
                             <input type="text" class="form-control" id="contact" name="contact" placeholder="Contact">
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="contact-error"></strong>
+                            </span>
                         </div> 
                     </div>
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="exampleInputRole">Property Admin</label>
-                            <select class="form-control" id="property_admin_user_id" name="property_admin_user_id">
+                            <select class="form-control" id="property_admin" name="property_admin_user_id">
                             <option value="">--Select--</option>
                             @if(!empty($property_admin) && $property_admin->count() > 0)
                                 @foreach($property_admin as $key => $pd)
@@ -580,10 +726,14 @@ $(document).ready(function(){
                                 @endforeach
                             @endif
                             </select>
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="propertyadmin-error"></strong>
+                            </span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Category</label>
-                            <select class="form-control category_id" multiple name="category_id[]" id="category_id">
+                            <label for="exampleInputStatus">Filter</label>
+                            <select class="form-control category_id" multiple name="filter[]" id="filter">
                             <!-- <option value="">--Select--</option> -->
                             @if(!empty($category) && $category->count() > 0)
                                 @foreach($category as $key => $cat)
@@ -591,10 +741,14 @@ $(document).ready(function(){
                                 @endforeach
                             @endif
                             </select>
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="category-error"></strong>
+                            </span>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleSelectPhoto">Area</label>
-                            <select class="form-control" id="area_id" name="area_id">
+                            <select class="form-control" id="area" name="area_id">
                             <option value="">--Select--</option>
                             @if(!empty($area) && $area->count() > 0)
                                 @foreach($area as $key => $avalue)
@@ -602,6 +756,10 @@ $(document).ready(function(){
                                 @endforeach
                             @endif
                             </select>
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="area-error"></strong>
+                            </span>
                         </div>
                     </div>
                     <div class="row">
@@ -612,6 +770,22 @@ $(document).ready(function(){
                                 <option value="yes">Yes</option>
                                 <option value="no">No</option>
                             </select>
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="featured_mall-error"></strong>
+                            </span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="exampleInputStatus">Layer</label>
+                            <select class="form-control" id="layer" name="layer">
+                                <option value="">--Select--</option>
+                                <option value="mall">Mall</option>
+                                <option value="shop">Shop</option>
+                            </select>
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                            <span class="text-danger">
+                                <strong id="type-error"></strong>
+                            </span>
                         </div>
                     </div>
                     <div class="row">

@@ -10,7 +10,7 @@ use App\ShopsandMalls;
 use App\User;
 use App\Category;
 use App\Area;
-
+use Validator;
 
 class ShopsandMallsController extends Controller
 {
@@ -39,7 +39,7 @@ class ShopsandMallsController extends Controller
         }
         else
         {
-            $perpage = 3;
+            $perpage = 10;
         }
 
         if($request->sort)
@@ -73,6 +73,22 @@ class ShopsandMallsController extends Controller
     public function addShopsandMalls(Request $request)
     {
         $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image',
+            'name' => 'required|max:255',
+            'openinghrs' => 'required',
+            //'closinghrs' => 'required|after:openinghrs',
+            'closinghrs' => 'required',
+            'property_admin' => 'required',
+            'filter' => 'required',
+            'area' => 'required',
+            'layer' => 'required',
+            'featured_mall' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return Response()->json(['errors' => $validator->errors()]);      
+        }
         $username = "";
         if(!empty($user))
         {
@@ -84,8 +100,9 @@ class ShopsandMallsController extends Controller
         $request->request->remove('desc');
         $input = $request->all();
         $input['unique_id'] =  get_unique_id("shopsandmalls");
-        $input['category_id'] =  implode(",",$input['category_id']);
+        $input['category_id'] =  implode(",",$input['filter']);
         $input['created_by'] =  $username ;
+        $input['type'] =  $request->type ;
         if ($request->hasFile('image')) {
 
             $image = $request->File('image');
@@ -121,17 +138,37 @@ class ShopsandMallsController extends Controller
     public function update(Request $request)
     {
         $malls = ShopsandMalls::find($request->id);
-        $categoryid = implode(",",$request->category_id);
+
+        $validator = Validator::make($request->all(), [
+            'image' => 'image',
+            'name' => 'required|max:255',
+            'openinghrs' => 'required',
+            'layer' => 'required',
+            'closinghrs' => 'required',
+            'property_admin' => 'required',
+            'filter' => 'required',
+            'area' => 'required',
+            'featured_mall' => 'required',
+        ]);
+
+        if ($malls->notHavingImageInDb()){
+            $rules['image'] = 'required|image';
+        }
+
+        if($validator->fails()){
+            return Response()->json(['errors' => $validator->errors()]);      
+        }
+        $categoryid = implode(",",$request->filter);
         $malls->name =  $request->name;
         $malls->location =  $request->location;
         $malls->openinghrs =  $request->openinghrs;
         $malls->closinghrs =  $request->closinghrs;
         $malls->contact =  $request->contact;
-        $malls->property_admin_user_id =  $request->property_admin_user_id;
+        $malls->property_admin_user_id =  $request->property_admin;
         $malls->category_id =  $categoryid;
-        $malls->area_id =  $request->area_id;
+        $malls->area_id =  $request->area;
         $malls->featured_mall =  $request->featured_mall;
-        $malls->type =  $request->type;
+        $malls->type =  $request->layer;
         $malls->description =  $request->description;
         if ($request->hasFile('image')) {
 
