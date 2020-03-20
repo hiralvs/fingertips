@@ -56,7 +56,19 @@ class UserController extends Controller
             $direction='desc';
         }
 
-        $return_data['data'] = User::orderBy($sort,$direction)->sortable()->paginate($perpage);
+        if($request->role)
+        {
+            $return_data['role'] = $request->role;
+        }
+        else
+        {
+            $return_data['role'] = 'admin';
+        }
+
+        $return_data['admindata'] = User::where('role','admin')->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['customerdata'] = User::where('role','customer')->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['propertyadmindata'] = User::where('role','property_admin')->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['brandmerchantdata'] = User::where('role','brand_merchant')->orderBy($sort,$direction)->sortable()->paginate($perpage);
               //  return view('products',compact('products'));
         
         return View('admin.user.index', array_merge($this->data, $return_data))->render();
@@ -68,10 +80,11 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            //'password' => 'required|min:8|confirmed',
             'password' => 'required|min:8',
             'role' => 'required',
             'status' => 'required',
+            'dob' => 'required',
+            'contact' => 'required|numeric',
         ]);
 
         if($validator->fails()){
@@ -83,6 +96,8 @@ class UserController extends Controller
         $input['unique_id'] =  get_unique_id('users');
         $input['role'] = $input['role'];
         $input['gender'] = $input['gender'];
+        $input['mobile'] = $input['contact'];
+        $input['dob'] = date('Y-m-d',strtotime($input['dob']));
         if ($request->hasFile('profile_pic')) {
 
             $image = $request->File('profile_pic');
@@ -119,12 +134,27 @@ class UserController extends Controller
     /* Function user to update user data */
     public function update(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'role' => 'required',
+            'status' => 'required',
+            'dob' => 'required',
+            'contact' => 'required|numeric',
+        ]);
+
+        if($validator->fails()){
+            return Response()->json(['errors' => $validator->errors()]);      
+        }
         $user = User::find($request->id);
         $user->name = $request->name;
         $user->gender = $request->gender;
         $user->email = $request->email;
         $user->role = $request->role;
         $user->status = $request->status;
+        $user->mobile = $request->contact;
+        $user->dob = date('Y-m-d',strtotime($request->dob));
+        
         if ($request->hasFile('profile_pic')) {
 
             $image = $request->File('profile_pic');

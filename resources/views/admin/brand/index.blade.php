@@ -21,38 +21,21 @@
                     </div>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                <a id="search" class="waves-effect waves-light btn btn_box_shadow btn element"  tabindex="" style="">
-                        FILTER
-                    </a>
-                        <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                            Help
-                            <i class="mdi mdi-help-circle-outline btn-icon-append"></i>                          
-                    </button> -->
+                    <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="waves-effect waves-light btn btn_box_shadow btn element" href="{{route('brand')}}" tabindex="" style="background-color:#454d56 !important;">
-                        CLEAR
-                    </a>
-                        <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                            Feedback
-                        </button> -->
+                    <a id="clear16" class="btn btn-secondary" href="{{route('brand')}}" tabindex="" >CLEAR</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="waves-effect waves-light btn btn_box_shadow btn element" data-toggle="modal" data-target="#addBrand" tabindex="" style="">
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addBrand" tabindex="">
                         ADD NEW
                     </a>
-                        <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                            Print
-                            <i class="mdi mdi-printer btn-icon-append"></i>                          
-                        </button> -->
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('export_excel.excel')}}" tabindex=""     style="background-color:#454d56 !important;">
+                <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">
+                    <!-- <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('export_excel.excel')}}" tabindex=""     style="background-color:#454d56 !important;"> -->
                         EXPORT
                     </a>
-                        <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                            Feedback
-                        </button> -->
                 </div>                
             </div>
         </div>
@@ -194,14 +177,10 @@
                                             <div class="form-group col-md-12"> 
                                                 <textarea class="description ckeditor" id="description" name="description"></textarea>
                                             </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-2" style="text-align:center">
-                                                    <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
-                                                </div>
-                                                <div class="form-group col-md-2" style="text-align:center">
-                                                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
-                                                </div>
-                                            </div>
+                                        </div>
+                                            <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
+                                            <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
+
                                         </form>
                                     </div>
                                 </div><!-- /.modal-content -->
@@ -556,14 +535,8 @@ $(document).ready(function(){
                 <div class="form-group col-md-12"> 
                     <textarea class="description ckeditor" id="desc" name="desc"></textarea>
                 </div>
-                <div class="row">
-                    <div class="form-group col-md-2" style="text-align:center">
-                    <button type="button" class="btn btn-primary mr-2" id="addBrandSubmit">Submit</button>
-                    </div>
-                    <div class="form-group col-md-2" >
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>   
-                    </div>
-                </div>
+                <button type="button" class="btn btn-primary mr-2" id="addBrandSubmit">Submit</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button> 
                 </form>
             </div>
         </div><!-- /.modal-content -->

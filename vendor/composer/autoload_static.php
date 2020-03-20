@@ -248,8 +248,13 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'C' => 
         array (
             'Cron\\' => 5,
+            'ConsoleTVs\\Charts\\' => 18,
             'Complex\\' => 8,
             'Carbon\\' => 7,
+        ),
+        'B' => 
+        array (
+            'Balping\\JsonRaw\\' => 16,
         ),
         'A' => 
         array (
@@ -585,6 +590,10 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
         ),
+        'ConsoleTVs\\Charts\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/consoletvs/charts/src',
+        ),
         'Complex\\' => 
         array (
             0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
@@ -592,6 +601,10 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+        ),
+        'Balping\\JsonRaw\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/balping/json-raw-encoder/src',
         ),
         'App\\' => 
         array (
@@ -630,11 +643,11 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Events' => __DIR__ . '/../..' . '/app/Events.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Exports\\BrandsExport' => __DIR__ . '/../..' . '/app/Exports/BrandsExport.php',
         'App\\Exports\\UserExport' => __DIR__ . '/../..' . '/app/Exports/UserExport.php',
         'App\\Favorites' => __DIR__ . '/../..' . '/app/Favorites.php',
         'App\\FlashSale' => __DIR__ . '/../..' . '/app/FlashSale.php',
         'App\\Highlights' => __DIR__ . '/../..' . '/app/Highlights.php',
-        'App\\Http\\Controllers\\API\\BaseController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/BaseController.php',
         'App\\Http\\Controllers\\API\\FavoriteController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/FavoriteController.php',
         'App\\Http\\Controllers\\API\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/ForgotPasswordController.php',
         'App\\Http\\Controllers\\API\\HomePageController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/HomePageController.php',
@@ -643,6 +656,7 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Http\\Controllers\\API\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/ProductController.php',
         'App\\Http\\Controllers\\API\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/RegisterController.php',
         'App\\Http\\Controllers\\API\\RewardsController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/RewardsController.php',
+        'App\\Http\\Controllers\\API\\StripePaymentController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/StripePaymentController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
@@ -658,6 +672,10 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\Http\\Controllers\\admin\\BannerController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BannerController.php',
         'App\\Http\\Controllers\\admin\\BrandController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/BrandController.php',
         'App\\Http\\Controllers\\admin\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/CategoryController.php',
+        'App\\Http\\Controllers\\admin\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/DashboardController.php',
+        'App\\Http\\Controllers\\admin\\EventsController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/EventsController.php',
+        'App\\Http\\Controllers\\admin\\PrivacyController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/PrivacyController.php',
+        'App\\Http\\Controllers\\admin\\RewardsController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/RewardsController.php',
         'App\\Http\\Controllers\\admin\\ShopsandMallsController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/ShopsandMallsController.php',
         'App\\Http\\Controllers\\admin\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/UserController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -685,6 +703,9 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'App\\ShopsandMalls' => __DIR__ . '/../..' . '/app/ShopsandMalls.php',
         'App\\Slider' => __DIR__ . '/../..' . '/app/Slider.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
+        'Balping\\JsonRaw\\Encoder' => __DIR__ . '/..' . '/balping/json-raw-encoder/src/Encoder.php',
+        'Balping\\JsonRaw\\Raw' => __DIR__ . '/..' . '/balping/json-raw-encoder/src/Raw.php',
+        'Balping\\JsonRaw\\Replacer' => __DIR__ . '/..' . '/balping/json-raw-encoder/src/Replacer.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonImmutable' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonImmutable.php',
         'Carbon\\CarbonInterface' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterface.php',
@@ -724,6 +745,34 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'Carbon\\Translator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Translator.php',
         'Complex\\Complex' => __DIR__ . '/..' . '/markbaker/complex/classes/src/Complex.php',
         'Complex\\Exception' => __DIR__ . '/..' . '/markbaker/complex/classes/src/Exception.php',
+        'ConsoleTVs\\Charts\\ChartsServiceProvider' => __DIR__ . '/..' . '/consoletvs/charts/src/ChartsServiceProvider.php',
+        'ConsoleTVs\\Charts\\Classes\\BaseChart' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/BaseChart.php',
+        'ConsoleTVs\\Charts\\Classes\\C3\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/C3/Chart.php',
+        'ConsoleTVs\\Charts\\Classes\\C3\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/C3/Dataset.php',
+        'ConsoleTVs\\Charts\\Classes\\Chartjs\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Chartjs/Chart.php',
+        'ConsoleTVs\\Charts\\Classes\\Chartjs\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Chartjs/Dataset.php',
+        'ConsoleTVs\\Charts\\Classes\\DatasetClass' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/DatasetClass.php',
+        'ConsoleTVs\\Charts\\Classes\\Echarts\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Echarts/Chart.php',
+        'ConsoleTVs\\Charts\\Classes\\Echarts\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Echarts/Dataset.php',
+        'ConsoleTVs\\Charts\\Classes\\Frappe\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Frappe/Chart.php',
+        'ConsoleTVs\\Charts\\Classes\\Frappe\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Frappe/Dataset.php',
+        'ConsoleTVs\\Charts\\Classes\\Fusioncharts\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Fusioncharts/Chart.php',
+        'ConsoleTVs\\Charts\\Classes\\Fusioncharts\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Fusioncharts/Dataset.php',
+        'ConsoleTVs\\Charts\\Classes\\Highcharts\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Highcharts/Chart.php',
+        'ConsoleTVs\\Charts\\Classes\\Highcharts\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Classes/Highcharts/Dataset.php',
+        'ConsoleTVs\\Charts\\Commands\\ChartsCommand' => __DIR__ . '/..' . '/consoletvs/charts/src/Commands/ChartsCommand.php',
+        'ConsoleTVs\\Charts\\Features\\C3\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/C3/Chart.php',
+        'ConsoleTVs\\Charts\\Features\\C3\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/C3/Dataset.php',
+        'ConsoleTVs\\Charts\\Features\\Chartjs\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Chartjs/Chart.php',
+        'ConsoleTVs\\Charts\\Features\\Chartjs\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Chartjs/Dataset.php',
+        'ConsoleTVs\\Charts\\Features\\Echarts\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Echarts/Chart.php',
+        'ConsoleTVs\\Charts\\Features\\Echarts\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Echarts/Dataset.php',
+        'ConsoleTVs\\Charts\\Features\\Frappe\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Frappe/Chart.php',
+        'ConsoleTVs\\Charts\\Features\\Frappe\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Frappe/Dataset.php',
+        'ConsoleTVs\\Charts\\Features\\Fusioncharts\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Fusioncharts/Chart.php',
+        'ConsoleTVs\\Charts\\Features\\Fusioncharts\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Fusioncharts/Dataset.php',
+        'ConsoleTVs\\Charts\\Features\\Highcharts\\Chart' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Highcharts/Chart.php',
+        'ConsoleTVs\\Charts\\Features\\Highcharts\\Dataset' => __DIR__ . '/..' . '/consoletvs/charts/src/Features/Highcharts/Dataset.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
         'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',
@@ -981,7 +1030,6 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'Facade\\Ignition\\Solutions\\SuggestUsingCorrectDbNameSolution' => __DIR__ . '/..' . '/facade/ignition/src/Solutions/SuggestUsingCorrectDbNameSolution.php',
         'Facade\\Ignition\\Solutions\\UseDefaultValetDbCredentialsSolution' => __DIR__ . '/..' . '/facade/ignition/src/Solutions/UseDefaultValetDbCredentialsSolution.php',
         'Facade\\Ignition\\Support\\ComposerClassMap' => __DIR__ . '/..' . '/facade/ignition/src/Support/ComposerClassMap.php',
-        'Facade\\Ignition\\Support\\FakeComposer' => __DIR__ . '/..' . '/facade/ignition/src/Support/FakeComposer.php',
         'Facade\\Ignition\\Support\\Packagist\\Package' => __DIR__ . '/..' . '/facade/ignition/src/Support/Packagist/Package.php',
         'Facade\\Ignition\\Support\\Packagist\\Packagist' => __DIR__ . '/..' . '/facade/ignition/src/Support/Packagist/Packagist.php',
         'Facade\\Ignition\\Support\\StringComparator' => __DIR__ . '/..' . '/facade/ignition/src/Support/StringComparator.php',
@@ -4822,7 +4870,6 @@ class ComposerStaticInita991e83ef6ed1645edbb9b44b590c788
         'Stripe\\Webhook' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Webhook.php',
         'Stripe\\WebhookEndpoint' => __DIR__ . '/..' . '/stripe/stripe-php/lib/WebhookEndpoint.php',
         'Stripe\\WebhookSignature' => __DIR__ . '/..' . '/stripe/stripe-php/lib/WebhookSignature.php',
-        'Symfony\\Bridge\\PsrHttpMessage\\Factory\\DiactorosFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/DiactorosFactory.php',
         'Symfony\\Bridge\\PsrHttpMessage\\Factory\\HttpFoundationFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/HttpFoundationFactory.php',
         'Symfony\\Bridge\\PsrHttpMessage\\Factory\\PsrHttpFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/PsrHttpFactory.php',
         'Symfony\\Bridge\\PsrHttpMessage\\Factory\\UploadedFile' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/UploadedFile.php',

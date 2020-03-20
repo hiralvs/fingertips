@@ -87,7 +87,9 @@ return array(
     'Defuse\\Crypto\\' => array($vendorDir . '/defuse/php-encryption/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
+    'ConsoleTVs\\Charts\\' => array($vendorDir . '/consoletvs/charts/src'),
     'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
+    'Balping\\JsonRaw\\' => array($vendorDir . '/balping/json-raw-encoder/src'),
     'App\\' => array($baseDir . '/app'),
 );

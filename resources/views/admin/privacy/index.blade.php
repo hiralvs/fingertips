@@ -11,13 +11,9 @@
         <div class="col-sm-6">
 			<div class="d-flex align-items-center justify-content-md-end">
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="waves-effect waves-light btn btn_box_shadow btn element" data-toggle="modal" data-target="#addPrivacy" tabindex="" style="">
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addPrivacy" tabindex="" style="">
                         ADD NEW
                     </a>
-                        <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                            Print
-                            <i class="mdi mdi-printer btn-icon-append"></i>                          
-                        </button> -->
                 </div>               
             </div>
         </div>
@@ -266,15 +262,8 @@ $('#addPrivacySubmit').click(function(e){
                             </span>
                         </div>
                     </div>
-            </div>
-                <div class="row">
-                    <div class="form-group col-md-2" style="text-align:center">
                     <button type="button" class="btn btn-primary mr-2" id="addPrivacySubmit">Submit</button>
-                    </div>
-                    <div class="form-group col-md-2" >
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>   
-                    </div>
-                </div>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                 </form>
             </div>
         </div><!-- /.modal-content -->

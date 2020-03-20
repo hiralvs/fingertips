@@ -81,7 +81,7 @@ class BannerController extends Controller
             $image = $request->File('bannerimage');
             $filename = 'banner'.time() . '.' . $image->getClientOriginalExtension();
 
-            $path = public_path('upload/banner/' . $filename);
+            $path = public_path('upload/banners/' . $filename);
             // $path = public_path('upload/' . $filename);
 
             Image::make($image->getRealPath())->resize(50, 50)->save($path);

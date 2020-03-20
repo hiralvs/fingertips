@@ -14,4 +14,9 @@ class ShopsandMalls extends Model
     protected $table="shopsandmalls";
 
     public $sortable = ['name', 'location'];
+
+    public function notHavingImageInDb()
+    {
+        return (empty($this->image))?true:false;
+    }
 }

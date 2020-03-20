@@ -35,8 +35,8 @@ class TaxController extends Controller
         {
             $perpage = 10;
         }
-        $return_data['data'] = Settings::orderBy('id', 'desc')->sortable()->paginate($perpage);
-                
+        $return_data['data'] = Settings::where('type','tax')->orderBy('id', 'desc')->sortable()->paginate($perpage);
+        
         return View('admin.tax.index', $return_data)->render();
     }
     public function addTax(Request $request)
