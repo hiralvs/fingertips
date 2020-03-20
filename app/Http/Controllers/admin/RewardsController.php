@@ -23,8 +23,8 @@ class RewardsController extends Controller
     public function index(Request $request) {
 		$auth = Auth::user();
         $return_data = array();
-        $this->data['title'] = trans('Rewards Listing');
-        $this->data['meta_title'] = trans('Rewards Listing');
+        $return_data['title'] = trans('Rewards Listing');
+        $return_data['meta_title'] = trans('Rewards Listing');
 
         if($request->per_page)
         {

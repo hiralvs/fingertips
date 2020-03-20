@@ -87,7 +87,6 @@
                           <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Product Category</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('tax')}}">Tax</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Floor</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Help</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('privacy')}}">Privacy</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('area')}}">Area</a></li>

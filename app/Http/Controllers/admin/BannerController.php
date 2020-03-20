@@ -26,8 +26,8 @@ class BannerController extends Controller
     public function index(Request $request) {
 		$auth = Auth::user();
         $return_data = array();
-        $this->data['title'] = trans('Banner Listing');
-        $this->data['meta_title'] = trans('Banner Listing');
+        $return_data['title'] = trans('Banner Listing');
+        $return_data['meta_title'] = trans('Banner Listing');
 
         if($request->per_page)
         {

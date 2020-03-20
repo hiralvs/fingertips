@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
-            {{-- <h4 class="card-title" style="float:left">{{$title}}</h4> --}}
+            <h4 class="card-title" style="float:left">{{$title}}</h4>
             </div>
         </div>
         <div class="col-sm-6">
