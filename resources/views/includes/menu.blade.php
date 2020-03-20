@@ -81,7 +81,6 @@
                           <li class="nav-item"><a class="nav-link" href="{{route('banner')}}">Banner</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Product Category</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/register-2.html">Property Images</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('tax')}}">Tax</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Floor</a></li>
                           <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Help</a></li>

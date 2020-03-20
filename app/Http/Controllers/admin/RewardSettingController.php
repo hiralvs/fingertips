@@ -50,8 +50,10 @@ class RewardSettingController extends Controller{
         }
         $request->request->remove('_token');
 
-        $input = $request->all();
+        $input = array();
         $input['type'] = 'rewardpoint';
+        $input['title'] = $request->title;
+        $input['value'] = $request->point;
 
         Settings::unguard();
         $check = Settings::create($input)->id;

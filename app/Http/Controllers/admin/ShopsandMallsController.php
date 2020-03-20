@@ -69,7 +69,7 @@ class ShopsandMallsController extends Controller
         return View('admin.malls.index',$return_data)->render();
     }
 
-    /* Function used to add area */
+    /* Function used to add shops */
     public function addShopsandMalls(Request $request)
     {
         $user = Auth::user();
@@ -126,7 +126,7 @@ class ShopsandMallsController extends Controller
         return Response()->json($arr);
     }
 
-    /* Function used to delete area */
+    /* Function used to delete shops */
     public function delete(Request $request)
     {
         $query = ShopsandMalls::where('id',$request->id);
@@ -134,7 +134,7 @@ class ShopsandMallsController extends Controller
         return redirect()->route('shopsmalls')->with('success', 'Malls Deleted Successfully');
     }
 
-    /* Function used to update area */
+    /* Function used to update shops */
     public function update(Request $request)
     {
         $malls = ShopsandMalls::find($request->id);

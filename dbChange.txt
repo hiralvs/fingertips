@@ -14,5 +14,7 @@ ALTER TABLE `attractions`  ADD `created_by` VARCHAR(100) NOT NULL  AFTER `descri
 
 ALTER TABLE `shopsandmalls` CHANGE `contact` `contact` VARCHAR(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 
+ALTER TABLE `products` ADD `color` VARCHAR(50) NOT NULL AFTER `type`;
 
+ALTER TABLE `products` CHANGE `color` `color` VARCHAR(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 

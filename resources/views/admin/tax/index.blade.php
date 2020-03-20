@@ -184,7 +184,6 @@ $('#addTaxSubmit').click(function(e){
                    var deleteurl = '{{ route("tax.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
-                    "<td>"+data.title+"</td>" +
                     "<td>"+data.value+"</td>" +
                     "</tr>";
                     console.log(tr_str);

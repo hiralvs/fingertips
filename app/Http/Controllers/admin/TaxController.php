@@ -35,15 +35,7 @@ class TaxController extends Controller
         {
             $perpage = 10;
         }
-          $return_data['data'] = Settings::orderBy('id', 'desc')->sortable()->paginate($perpage);
-
-        // $return_data['category_id'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
-        // $return_data['property_user_id'] = User::select('id', 'name')->where('role', 'property_admin')->get();
-        // echo "<pre>";
-        // print_r($return_data['property_user_id']);
-        // exit;
-
-              //  return view('products',compact('products'));
+        $return_data['data'] = Settings::where('type','tax')->orderBy('id', 'desc')->sortable()->paginate($perpage);
         
         return View('admin.tax.index', $return_data)->render();
     }

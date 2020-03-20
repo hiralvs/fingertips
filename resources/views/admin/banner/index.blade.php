@@ -47,7 +47,7 @@
                             <td>{{$value->location}}</td>
                             <td>
                             @if($value->bannerimage!= null)
-                                <img src="{{asset('public/upload/banner/')}}{{'/'.$value->bannerimage}}" alt="">
+                                <img src="{{asset('public/upload/banners/')}}{{'/'.$value->bannerimage}}" alt="">
                             @else
 
                             @endif

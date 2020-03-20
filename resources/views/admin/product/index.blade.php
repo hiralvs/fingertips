@@ -231,7 +231,7 @@ $(document).ready(function(){
             });
         });
    
-    $('#addBrandSubmit').click(function(e){
+    $('#addProductSubmit').click(function(e){
         var formData = new FormData($("#addbrandform")[0]);
         var message = CKEDITOR.instances['desc'].getData();
         console.log(message);
@@ -453,10 +453,6 @@ $(document).ready(function(){
                             <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                             </span>
                         </div>
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span class="text-danger">
-                            <strong id="product_image-error{{$value->id}}"></strong>
-                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleInputName">Name</label>
@@ -508,18 +504,10 @@ $(document).ready(function(){
                     <div class="form-group col-md-3">
                         <label for="exampleInputName">Stock</label>
                         <input type="text" required class="form-control" id="stock" name="stock" placeholder="stock">
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span class="text-danger">
-                            <strong id="price-error"></strong>
-                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleInputName">Size and Fit</label>
                         <input type="text" required class="form-control" id="sizeandfit" name="sizeandfit" placeholder="sizeandfit">
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span class="text-danger">
-                            <strong id="sizeandfit-error"></strong>
-                        </span>
                     </div>
                 </div>
                 <div class="row">  
@@ -532,45 +520,27 @@ $(document).ready(function(){
                             <option value="both">Both</option>
                             <option value="na">NA</option>
                         </select>
-                        <span class="text-danger">
-                            <strong id="gender-error"></strong>
-                        </span>
                     </div>
                     <div class="form-group col-md-3">
                     <label for="exampleInputName">Type</label>
                         <input type="text" required class="form-control" id="type" name="type" placeholder="type">
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span class="text-danger">
-                            <strong id="type-error"></strong>
-                        </span>
                     </div> 
                     <div class="form-group col-md-3">
                         <label for="exampleInputStatus">Color</label>
                         <input type="text" required class="form-control" id="color" name="color" placeholder="color">
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span class="text-danger">
-                            <strong id="color-error"></strong>
-                        </span>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="exampleInputStatus">Material</label>
                         <input type="text" required class="form-control" id="material" name="material" placeholder="material">
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span class="text-danger">
-                            <strong id="material-error"></strong>
-                        </span>
                     </div>
                     <div class="form-group col-md-3">
                     <label for="exampleInputStatus">Status</label>
                         <select class="form-control" id="status" name="status">
                             <option value="" >--Select--</option>
-                            <option value="0">Active</option>
-                            <option value="1">Inactive</option>
+                            <option value="pending">Pending</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
                         </select>
-                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                        <span class="text-danger">
-                            <strong id="status-error"></strong>
-                        </span>
                     </div>
                   
                 </div>

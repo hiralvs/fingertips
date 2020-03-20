@@ -35,7 +35,7 @@ class PrivacyController extends Controller
         } else {
             $perpage = 10;
         }
-        $return_data['data'] = Settings::orderBy('id', 'desc')->sortable()->paginate($perpage);
+        $return_data['data'] = Settings::where('type','privacypolicy')->orderBy('id', 'desc')->sortable()->paginate($perpage);
         $return_data['property_user_id'] = User::select('id', 'name')->where('role', 'property_admin')->get();        
         return View('admin.privacy.index', $return_data)->render();
     }
