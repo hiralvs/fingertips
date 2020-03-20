@@ -97,7 +97,6 @@ Route::post('shopsmallsupdate', array('as' => 'shopsmalls.update', 'routegroup' 
 Route::post('shopsmallssearch', array('as' => 'shopsmalls.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@search'));
 
 //
-
 Route::get('/banner', 'admin\BannerController@index')->name('banner');
 Route::post('/addBanner', 'admin\BannerController@addBanner')->name('addBanner');
 Route::post('bannerupdate', array('as' => 'banner.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BannerController@update'));
@@ -140,3 +139,8 @@ Route::get('/rewardsetting', 'admin\RewardSettingController@index')->name('rewar
 Route::get('rewardsettingdelete/{id}', array('as' => 'rewardsetting.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardSettingController@delete'));
 Route::post('/addRewardSetting', 'admin\RewardSettingController@addRewardSetting')->name('addRewardSetting');
 Route::post('rewardsettingupdate', array('as' => 'rewardsetting.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardSettingController@update'));
+
+Route::get('/floor', 'admin\FloorController@index')->name('floor');
+Route::get('floordelete/{id}', array('as' => 'floor.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FloorController@delete'));
+Route::post('/addFloor', 'admin\FloorController@addFloor')->name('addFloor');
+Route::post('floorupdate', array('as' => 'floor.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FloorController@update'));

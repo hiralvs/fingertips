@@ -27,6 +27,11 @@
                     <span class="menu-title">Shops & Malls</span>
                     <i class="menu-arrow"></i>
                   </a>
+                  <div class="submenu">
+                      <ul class="submenu-item">
+                        <li class="nav-item"><a class="nav-link" href="{{route('floor')}}">Floor</a></li>
+                      </ul>
+                  </div>
               </li>
               <li class="nav-item">
                   <a href="{{route('event')}}" class="nav-link">

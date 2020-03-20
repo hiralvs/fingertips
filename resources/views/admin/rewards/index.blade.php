@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
-            {{-- <h4 class="card-title" style="float:left">{{$title}}</h4> --}}
+            <h4 class="card-title" style="float:left">{{$title}}</h4>
             </div>
         </div>
         <div class="col-sm-6">
@@ -39,12 +39,7 @@
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
-                  <!-- <select name="per_page" id="per_page" style="float:right;">
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  </select> -->
+                  <h4 class="card-title" style="float:left">{{$title}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
                         <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
@@ -71,10 +66,39 @@
                              <td>{{$value->earned}}</td>
                              <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                              
-                            <td><a class="delete" onclick="return confirm('Are you sure you want to delete this Reward?')" href="{{route('rewards.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                            <td><a class="edit open_modal" data-toggle="modal" data-target="#editRewards{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a>
+                                <a class="delete" onclick="return confirm('Are you sure you want to delete this Reward?')" href="{{route('rewards.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
+                        <!-- Edit Modal HTML Markup -->
+                        <div id="editRewards{{$value->id}}" class="modal fade">
+                            <div class="modal-dialog  modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title">Edit Tax</h1>
+                                    </div>
+                                    <div class="modal-body">
+                                    <p class="statusMsg"></p>
+                                        <form name="addbrandform" id="editrewardsform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
+                                                @csrf
+                                            <div class="row">
+                                                <div class="form-group col-md-6 title">
+                                                    <label for="exampleInputName"> Tax Percentage </label>
+                                                    <input type="text" class="form-control value" required id="value" value="{{$value->value}}" name="value" placeholder="Title">
+                                                    <input type="hidden" name="id" value="{{$value->id}}">
+                                                    <span class="text-danger">
+                                                        <strong class="value-error"></strong>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-primary mr-2 editTaxSubmit" data-id="{{$value->id}}" id="editPrivacySubmit">Submit</button>
+                                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                                        </form>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- edit /.modal -->
                         @endforeach
-                        @endif
+                        @endif 
 
                       </tbody>
                     </table>
