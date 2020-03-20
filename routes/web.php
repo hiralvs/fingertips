@@ -149,3 +149,28 @@ Route::get('/floor', 'admin\FloorController@index')->name('floor');
 Route::get('floordelete/{id}', array('as' => 'floor.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FloorController@delete'));
 Route::post('/addFloor', 'admin\FloorController@addFloor')->name('addFloor');
 Route::post('floorupdate', array('as' => 'floor.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FloorController@update'));
+
+Route::get('/help', 'admin\HelpController@index')->name('help');
+Route::get('helpdelete/{id}', array('as' => 'help.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\HelpController@delete'));
+Route::post('/addHelp', 'admin\HelpController@addHelp')->name('addHelp');
+Route::post('helpupdate', array('as' => 'help.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\HelpController@update'));
+
+Route::get('/loginprivacy', 'admin\LoginPrivacyController@index')->name('loginprivacy');
+Route::get('loginprivacydelete/{id}', array('as' => 'loginprivacy.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\LoginPrivacy@delete'));
+Route::post('/addLoginPrivacy', 'admin\LoginPrivacy@addLoginPrivacy')->name('addLoginPrivacy');
+Route::post('loginprivacyupdate', array('as' => 'loginprivacy.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\LoginPrivacy@update'));
+
+Route::get('/directory', 'admin\LoginPrivacyController@index')->name('directory');
+
+
+
+Route::get('/mallbrands', 'admin\MallBrandsController@index')->name('mallbrands');
+
+
+// Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
+// Route::get('/highlights', 'admin\LoginPrivacyController@index')->name('highlights');
+// Route::get('/orders', 'admin\LoginPrivacyController@index')->name('orders');
+// Route::get('/flashsale', 'admin\LoginPrivacyController@index')->name('flashsale');
+// Route::get('/sliderimage', 'admin\LoginPrivacyController@index')->name('sliderimage');
+// Route::get('/mapimage', 'admin\LoginPrivacyController@index')->name('mapimage');
+// Route::get('/photos', 'admin\LoginPrivacyController@index')->name('photos');

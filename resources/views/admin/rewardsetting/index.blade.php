@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
-            {{-- <h4 class="card-title" style="float:left">{{$title}}</h4> --}}
+            <h4 class="card-title" style="float:left">{{$title}}</h4>
             </div>
         </div>
         <div class="col-sm-6">
@@ -30,7 +30,7 @@
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
+                  <h4 class="card-title" style="float:left">{{$title}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
                         <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>

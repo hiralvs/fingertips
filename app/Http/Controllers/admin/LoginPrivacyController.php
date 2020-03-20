@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use App\Settings;
 use Datatables;
-use App\User;
 use Validator;
 
-class RewardSettingController extends Controller{
+class LoginPrivacyController extends Controller
+{
     /**
      * Create a new controller instance.
      *
@@ -23,8 +23,8 @@ class RewardSettingController extends Controller{
     public function index(Request $request) {
 		$auth = Auth::user();
         $return_data = array();
-        $return_data['title'] = trans('Reward Points Setting');
-        $return_data['meta_title'] = trans('Reward Points Setting');
+        $return_data['title'] = trans('Privacy Details');
+        $return_data['meta_title'] = trans('Privacy Details');
 
         if($request->per_page)
         {
@@ -34,35 +34,36 @@ class RewardSettingController extends Controller{
         {
             $perpage = 10;
         }
-        $return_data['data'] = Settings::where('type', 'rewardpoint')->orderBy('id', 'desc')->sortable()->paginate($perpage);
-        // 
-        // $return_data['property_admin'] = User::select('id', 'name')->where('role', 'property_admin')->get();
-        return View('admin.rewardsetting.index', $return_data)->render();
+        $return_data['data'] = Settings::where('type','loginprivacy')->orderBy('id', 'desc')->sortable()->paginate($perpage);
+        
+        return View('admin.loginprivacy.index', $return_data)->render();
     }
-    public function addRewardSetting(Request $request)
+    public function addLoginPrivacy(Request $request)
     {
+        $request->request->remove('_token');
+        $input = $request->all();
+    
         $validator = Validator::make($request->all(), [
-            'title' => 'required',          
-            'point' => 'required',          
+            'title' => 'required',
         ]);
+        $validator->sometimes('description', 'required', function ($input) {
+            return $input->value == '';
+        });
+        
         if ($validator->fails()) {
             return Response()->json(['errors' => $validator->errors()]);
         }
-        $request->request->remove('_token');
 
-        $input = array();
-        $input['type'] = 'rewardpoint';
-        $input['title'] = $request->title;
-        $input['value'] = $request->point;
+        $input['type'] = 'loginprivacy';
 
         Settings::unguard();
         $check = Settings::create($input)->id;
 
         $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
-        if($check){ 
-        $data = Settings::find($check);
+        if ($check) {
+            $data = Settings::find($check);
         
-        $arr = array('msg' => 'Rewadsetting Added Successfully', 'status' => true,'data'=> $data);
+            $arr = array('msg' => 'Privacy Added Successfully', 'status' => true,'data'=> $data);
         }
         return Response()->json($arr);
     }
@@ -70,22 +71,24 @@ class RewardSettingController extends Controller{
     {
         $query = Settings::where('id', $request->id);
         $query->delete();
-        return redirect()->route('rewardsetting')->with('success', 'RewardSetting Deleted Successfully');
+        return redirect()->route('loginprivacy')->with('success', 'Privacy Deleted Successfully');
     }
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',          
-            'points' => 'required', 
+            'title' => 'required',
         ]);
-        
+        $validator->sometimes('description', 'required', function ($input) {
+            return $input->value == '';
+        });
+
         if ($validator->fails()) {
             return Response()->json(['errors' => $validator->errors()]);
         }
 
         $settings = Settings::find($request->id);
-        $settings->title =  $request->title;
-        $settings->value =  $request->points;
+        $settings->title = $request->title;
+        $settings->value =  $request->value;
 
         Settings::unguard();
                
@@ -93,7 +96,7 @@ class RewardSettingController extends Controller{
        
         if (!empty($settings)) {
             $data = Settings::find($request->id);
-            $arr = array('msg' => 'RewardSetting Updated Successfully', 'status' => true,'data'=> $data);
+            $arr = array('msg' => 'Privacy Updated Successfully', 'status' => true,'data'=> $data);
         } else {
             $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         }

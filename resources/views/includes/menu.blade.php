@@ -37,6 +37,15 @@
                   <div class="submenu">
                       <ul class="submenu-item">
                         <li class="nav-item"><a class="nav-link" href="{{route('floor')}}">Floor</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('directory')}}">Directory</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('mallbrands')}}">Brands</a></li>
+                        {{-- <li class="nav-item"><a class="nav-link" href="{{route('checkin')}}">Check In</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('orders')}}">Orders</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('sliderimage')}}">Slider Image</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('mapimage')}}">Map Image</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('photos')}}">Photos</a></li> --}}
                       </ul>
                   </div>
               </li>
@@ -87,11 +96,11 @@
                           <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Product Category</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('tax')}}">Tax</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Help</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('help')}}">Help</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('privacy')}}">Privacy</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('area')}}">Area</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('rewardsetting')}}">Reward Setting</a></li>
-                          <li class="nav-item"><a class="nav-link" href="pages/samples/lock-screen.html">Login Privacy</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('loginprivacy')}}">Login Privacy</a></li>
                       </ul>
                   </div>
               </li>

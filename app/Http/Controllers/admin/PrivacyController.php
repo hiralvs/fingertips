@@ -27,8 +27,8 @@ class PrivacyController extends Controller
     {
         $auth = Auth::user();
         $return_data = array();
-        $this->data['title'] = trans('Privacy Listing');
-        $this->data['meta_title'] = trans('Privacy Listing');
+        $return_data['title'] = trans('Privacy Listing');
+        $return_data['meta_title'] = trans('Privacy Listing');
 
         if ($request->per_page) {
             $perpage = $request->per_page;
