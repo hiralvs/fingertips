@@ -53,22 +53,17 @@ class MallBrandsController extends Controller
     public function addMallBrand(Request $request)
     {
         $user = Auth::user();
-        // $validator = Validator::make($request->all(), [
-        //     'image' => 'required|image',
-        //     'name' => 'required|max:255',
-        //     'openinghrs' => 'required',
-        //     //'closinghrs' => 'required|after:openinghrs',
-        //     'closinghrs' => 'required',
-        //     'property_admin' => 'required',
-        //     'filter' => 'required',
-        //     'area' => 'required',
-        //     'layer' => 'required',
-        //     'featured_mall' => 'required',
-        // ]);
+        $validator = Validator::make($request->all(), [
+            // 'name' => 'required|max:255',
+            'brand_id' => 'required',
+            //'closinghrs' => 'required|after:openinghrs',
+            'common_id' => 'required',
+            'status' => 'required',
+        ]);
 
-        // if($validator->fails()){
-        //     return Response()->json(['errors' => $validator->errors()]);      
-        // }
+        if($validator->fails()){
+            return Response()->json(['errors' => $validator->errors()]);      
+        }
         $username = "";
         if(!empty($user))
         {
@@ -79,18 +74,7 @@ class MallBrandsController extends Controller
         $input = $request->all();
         $input['type'] = 'malls';
         $input['unique_id'] =  get_unique_id("brands_connection");
-        // $input['category_id'] =  implode(",",$input['filter']);
-        // $input['type'] =  $request->type ;
-        // if ($request->hasFile('image')) {
 
-        //     $image = $request->File('image');
-        //     $filename = time() . '.' . $image->getClientOriginalExtension();
-
-        //     $path = public_path('upload/malls/' . $filename);
-
-        //     Image::make($image->getRealPath())->resize(50, 50)->save($path);
-        //     $input['image'] = $filename;
-        // }
         Brand_Connection::unguard();
         $check = Brand_Connection::create($input)->id;
 
@@ -110,15 +94,16 @@ class MallBrandsController extends Controller
     }
     public function update(Request $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     'name' => 'required',
-        //     'category_id' => 'required',
-        //     'status' => 'required',
-        //     'commission' => 'required',
-        // ]);
-        // if ($validator->fails()) {
-        //     return Response()->json(['errors' => $validator->errors()]);
-        // }
+         $validator = Validator::make($request->all(), [
+            'brand_id' => 'required',
+            'common_id' => 'required',
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
+
 
         $brand = Brand_Connection::find($request->id);
         $brand->brand_id = $request->brand_id;

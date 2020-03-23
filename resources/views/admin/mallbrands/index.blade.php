@@ -84,7 +84,7 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Brand Name</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="brand_id" id="brandname" class="form-control">
+                                                    <select name="brand_id" id="brandname" class="form-control brand_id">
                                                         <option value=""> -- Select One --</option>
                                                         @if(!empty($brand_id) && $brand_id->count() > 0)
                                                             @foreach($brand_id as $key => $pd)
@@ -92,11 +92,14 @@
                                                             @endforeach
                                                         @endif
                                                     </select>
+                                                     <span class="text-danger">
+                                                        <strong class="brand_id-error"></strong>
+                                                    </span>
                                                 </div>   
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Common Name</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control">
+                                                    <select name="common_id" id="commonname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @if(!empty($common_id) && $common_id->count() > 0)
                                                             @foreach ($common_id as $key => $pd)
@@ -104,17 +107,20 @@
                                                             @endforeach
                                                         @endif
                                                     </select>
+                                                    <span class="text-danger">
+                                                        <strong class="common_id-error"></strong>
+                                                    </span>
                                                 </div> 
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Status</label>
-                                                    <select class="form-control" id="status" name="status">
+                                                    <select class="form-control status" id="status" name="status">
                                                         <option value="" selected="">Status</option>
                                                         <option value="Active" {{ $value->status == 'Active' ? 'selected' : ''}}>Active</option>
                                                         <option value="Inactive" {{ $value->status == 'Inactive' ? 'selected' : ''}}>Inactive</option>
                                                     </select>
                                                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                                                     <span class="text-danger">
-                                                        <strong id="status-error"></strong>
+                                                        <strong class="status-error"></strong>
                                                     </span>
                                                 </div> 
                                             </div>
@@ -164,16 +170,9 @@ $(document).ready(function(){
         var id = $(this).data('id');
         var formData = new FormData($("#editMallBrandsform"+id)[0]);
 
-        // $( '.event_name-error' ).html( "" );
-        // $( '.event_start_date-error' ).html( "" );
-        // $( '.start_time-error' ).html( "" );
-        // $( '.event_end_date-error' ).html( "" );
-        // $( '.end_time-error' ).html( "" );
-        // $( '.contact-error' ).html( "" );
-        // $( '.property_admin_user_id-error' ).html( "" );
-        // $( '.category_id-error' ).html( "" );
-        // $( '.area_id-error' ).html( "" );
-        // $( '.featured_event-error' ).html( "" );
+            $( '.brand_id-error' ).html( "" );
+            $( '.common_id-error' ).html( "" );
+            $( '.status-error' ).html( "" ); 
         
         // var message = CKEDITOR.instances['description'+id].getData();
 
@@ -193,39 +192,18 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
-                //     if(result.errors) {
-                //     $(".statusMsg").hide();
-                //     if(result.errors.event_name){
-                //         $( '.event_name-error' ).html( result.errors.event_name[0] );
-                //     }
-                //     if(result.errors.event_start_date){
-                //         $( '.event_start_date-error' ).html( result.errors.event_start_date[0] );
-                //     }
-                //     if(result.errors.start_time){
-                //         $( '.start_time-error' ).html( result.errors.start_time[0] );
-                //     }
-                //     if(result.errors.event_end_date){
-                //         $( '.event_end_date-error' ).html( result.errors.event_end_date[0] );
-                //     }
-                //     if(result.errors.end_time){
-                //         $( '.end_time-error' ).html( result.errors.end_time[0] );
-                //     }
-                //     if(result.errors.contact){
-                //         $( '.contact-error' ).html( result.errors.contact[0] );
-                //     }
-                //     if(result.errors.property_admin_user_id){
-                //         $( '.property_admin_user_id-error' ).html( result.errors.property_admin_user_id[0] );
-                //     }
-                //     if(result.errors.category_id){
-                //         $( '.category_id-error' ).html( result.errors.category_id[0] );
-                //     }
-                //     if(result.errors.area_id){
-                //         $( '.area_id-error' ).html( result.errors.area_id[0] );
-                //     }
-                //     if(result.errors.featured_event){
-                //         $( '.featured_event-error' ).html( result.errors.featured_event[0] );
-                //     }                    
-                // }
+                    if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.brand_id){
+                        $( '.brand_id-error' ).html( result.errors.brand_id[0] );
+                    }
+                    if(result.errors.common_id){
+                        $( '.common_id-error' ).html( result.errors.common_id[0] );
+                    }                    
+                    if(result.errors.status){
+                        $( '.status-error' ).html( result.errors.status[0] );
+                    }                    
+                }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
@@ -243,21 +221,11 @@ $(document).ready(function(){
         });
     $('#addMallBrandSubmit').click(function(e){
             var formData = new FormData($("#addMallBrandform")[0]);
-            // var message = CKEDITOR.instances['description'].getData();
-            // $( '#event_image-error' ).html( "" );
-            // $( '#event_name-error' ).html( "" );
-            // $( '#event_start_date-error' ).html( "" );
-            // $( '#start_time-error' ).html( "" );
-            // $( '#event_end_date-error' ).html( "" );
-            // $( '#end_time-error' ).html( "" );
-            // $( '#contact-error' ).html( "" );
-            // $( '#property_admin_user_id-error' ).html( "" );
-            // $( '#category_id-error' ).html( "" );
-            // $( '#area_id-error' ).html( "" );
-            // $( '#featured_event-error' ).html( "" );
+            
+            $( '#brand_id-error' ).html( "" );
+            $( '#common_id-error' ).html( "" );
+            $( '#status-error' ).html( "" );    
 
-            // formData.append('description',message);
-                
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -272,6 +240,18 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.brand_id){
+                            $( '#brand_id-error' ).html( result.errors.brand_id[0] );
+                        }
+                    if(result.errors.common_id){
+                            $( '#common_id-error' ).html( result.errors.common_id[0] );
+                        }                  
+                    if(result.errors.status){
+                            $( '#status-error' ).html( result.errors.status[0] );
+                        }                  
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -296,43 +276,6 @@ $(document).ready(function(){
                 }
             });
         });
-    //     $(document).on('click','#search',function(){ 
-    //     $.ajaxSetup({
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-    //             }
-    //         });       
-    //     $.ajax({
-    //             url: "{{route('mallbrands.search')}}",
-    //             method: 'post',
-    //             data: {'search':$("#searchtext").val()},
-    //             success: function(result){
-    //             if(result.status == true)
-    //             {
-    //                 var data = result.data;
-                    
-                    
-    //                 var findnorecord = $('#brandstableData tr.norecord').length;
-    //                 if(findnorecord > 0){
-    //                     $('#brandstableData tr.norecord').remove();
-    //                     }
-                
-    //                 var tr_str = "<tr>"+
-    //                 "<td>"+data.unique_id+"</td>" +
-    //                 "<td>"+data.brand_id+"</td>" +
-    //                 "<td>"+data.status+"</td>"+
-    //                 "</tr>";
-    //                 console.log(tr_str);
-    //                 $("#brandstableData tbody").html(tr_str);
-    //                 $("#paging").hide();
-    //             }
-    //             else
-    //             {
-    //                 $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-    //             }
-    //             }
-    //         });
-    // });
          $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
@@ -400,6 +343,9 @@ $(document).ready(function(){
                                     <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                 @endforeach
                             </select>
+                            <span class="text-danger">
+                                <strong id="brand_id-error"></strong>
+                            </span>
                         </div>   
                         <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Common Name</label>
@@ -409,6 +355,9 @@ $(document).ready(function(){
                                     <option value="{{ $common->id }}">{{ $common->name }}</option>
                                 @endforeach
                             </select>
+                            <span class="text-danger">
+                                <strong id="common_id-error"></strong>
+                            </span>
                         </div>   
                         <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Status</label>
@@ -417,7 +366,6 @@ $(document).ready(function(){
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
                             </select>
-                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                             <span class="text-danger">
                                 <strong id="status-error"></strong>
                             </span>
