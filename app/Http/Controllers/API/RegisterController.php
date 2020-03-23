@@ -12,9 +12,12 @@ use App\Otp;
 use App\Settings;
 use App\Rewards;
 use Illuminate\Support\Facades\Config;
+use App\Mail\VerificationEmail;
 use DB;
 use Stripe;
 use Hash;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 
 class RegisterController extends Controller
@@ -32,7 +35,7 @@ class RegisterController extends Controller
             'dob' => 'required',
             'role' => 'required',
             'gender' => 'required',
-            'mobile' => 'required'
+            'mobile' => 'required',
         ]);
    
         if($validator->fails()){
@@ -53,7 +56,8 @@ class RegisterController extends Controller
 	            $input['role'] = $input['role'];
 	            $input['gender'] = $input['gender'];
 	            $input['mobile'] = $input['mobile'];
-	            $input['dob'] = date('Y-m-d',strtotime($input['dob']));
+                $input['dob'] = date('Y-m-d',strtotime($input['dob']));
+                $input['email_verification_token'] = Str::random(32);
 	            if ($request->hasFile('profilepic')) {
 	    
 	                $image = $request->File('profilepic');
@@ -64,42 +68,52 @@ class RegisterController extends Controller
 	                Image::make($image->getRealPath())->resize(50, 50)->save($path);
 	                $input['profile_pic'] = $filename;
 	            }
-	            $otp = rand(100000,999999);
+	           // $otp = rand(100000,999999);
 	            
 	            $user = User::create($input);
-	                echo "<pre>";
-	            print_r($user);
 	            // code to send otp to user
 	            if($user->id)
 	            {
-	                $data = array();
+	                // $data = array();
 	    
-	                $otpdata['user_id'] = $user->id;
-	                $otpdata['otp'] = $otp;
+	                // $otpdata['user_id'] = $user->id;
+	                // $otpdata['otp'] = $otp;
 	                
-	                $data['TO'] = $user->email;
+	                // $data['TO'] = $user->email;
+	                // $data['FROM'] =  Config::get('constants.SMTP_FROM'); 
+	                // $data['SITE_NAME'] = Config::get('constants.SITE_NAME');
+	                // $data['SUBJECT'] = 'Fingertips-Otp';
+	                // $data['VIEW'] = 'mails.otp';
+	                // $data['PARAM'] = array('name' => $user->name, 'otp' => $otp);
+	                // $data['name'] = $user->name;
+                    // $data['otp'] = $otp;
+                    $data['TO'] = $user->email;
 	                $data['FROM'] =  Config::get('constants.SMTP_FROM'); 
 	                $data['SITE_NAME'] = Config::get('constants.SITE_NAME');
-	                $data['SUBJECT'] = 'Fingertips-Otp';
-	                $data['VIEW'] = 'mails.otp';
-	                $data['PARAM'] = array('name' => $user->name, 'otp' => $otp);
-	                $data['name'] = $user->name;
-	                $data['otp'] = $otp;
-	                $send_mail = send($data);
-	                if($send_mail)
-	                {
-	                    Otp::unguard();
-	                    $otpinsert = Otp::create($otpdata);
-	                }
+	                $data['SUBJECT'] = 'Fingertips-Verification';
+	                $data['VIEW'] = 'mails.verifyEmail';
+	                $data['PARAM'] = array('name' => $user->name, 'email_verification_token' => $user->email_verification_token);
+                    $data['name'] = $user->name;
+                    $data['email_verification_token'] = $user->email_verification_token;
+                    //$send_mail = \Mail::to($user->email)->send(new VerificationEmail($user));
+                    $send_mail = send($data);
+                    //print_r($send_mail);die;
+
+	                // if($send_mail)
+	                // {
+	                //     Otp::unguard();
+	                //     $otpinsert = Otp::create($otpdata);
+	                // }
 	                
-	                if($otpinsert)
-	                {
+	                //if($otpinsert)
+	                //{
 	                    $point = Settings::where('type','Signup')->get();
 	                    $rewards = array();
 	                    $rewards['user_id'] = $user->id;
-	                    $rewards['earned'] = $point[0]->value;
+                        $rewards['earned'] = $point[0]->value;
+                        Rewards::unguard();
 	                    $setting = Rewards::create($rewards);
-	                }
+	                //}
 	    
 	                Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 	    
@@ -129,6 +143,7 @@ class RegisterController extends Controller
 	            }
         	}
         	catch (\Exception $ex) {
+                return $ex->getMessage();
 	            $response = ['status' => 404,'success' => false,'message' => 'Email Id Already Exist']; 
             }
         }       
@@ -136,6 +151,42 @@ class RegisterController extends Controller
         return response()->json($response);
        
     }
+
+    /* Functio used to verify email*/
+    public function VerifyEmail($token = null)
+    {
+    	if($token == null) {
+
+    		session()->flash('message', 'Invalid Login attempt');
+
+    		return redirect()->route('login');
+
+    	}
+
+       $user = User::where('email_verification_token',$token)->first();
+
+       if($user == null ){
+
+       	session()->flash('message', 'Invalid Login attempt');
+
+        return redirect()->route('login');
+
+       }
+
+       $user->update([
+        
+        'email_verified' => 1,
+        'email_verified_at' => Carbon::now(),
+        'email_verification_token' => ''
+
+       ]);
+       
+       	session()->flash('message', 'Your account is activated, you can log in now');
+
+        return redirect()->route('login');
+
+    }
+
     /* Function  used to login */ 
     public function login(Request $request)
     {

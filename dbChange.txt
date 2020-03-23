@@ -22,4 +22,5 @@ ALTER TABLE `products` CHANGE `category_id` `category_id` VARCHAR(50) NOT NULL C
 
 ALTER TABLE `products` ADD `sizefit` VARCHAR(100) NOT NULL AFTER `stock`;
 
+ALTER TABLE `users` ADD `email_verification_token` VARCHAR(200) NULL DEFAULT NULL AFTER `email_verified_at`;
 
