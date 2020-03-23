@@ -634,12 +634,6 @@ $(document).ready(function(){
                 else
                 {
                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-
-
-                    // $.each(result.errors, function(key, value){
-                    //     $('.alert-danger').show();
-                    //     $('.alert-danger').append('<li>'+value+'</li>');
-                    // });
                 }
                 }
             });

@@ -14,11 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Brand_Connection extends Model
 {
-    use Notifiable;
-    use HasApiTokens;
-    use Notifiable;
     use Sortable;
     use SoftDeletes;
+    protected $table="brands_connection";
 
-    protected $table = "brands_connection";
 }

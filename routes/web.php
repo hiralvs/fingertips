@@ -165,7 +165,10 @@ Route::get('/directory', 'admin\LoginPrivacyController@index')->name('directory'
 
 
 Route::get('/mallbrands', 'admin\MallBrandsController@index')->name('mallbrands');
-
+Route::post('/addMallBrand', 'admin\MallBrandsController@addMallBrand')->name('addMallBrand');
+Route::post('mallbrandsupdate', array('as' => 'mallbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@update'));
+Route::get('mallbrandsdelete/{id}', array('as' => 'mallbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@delete'));
+Route::post('mallbrandssearch', array('as' => 'mallbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@search'));
 
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
 // Route::get('/highlights', 'admin\LoginPrivacyController@index')->name('highlights');
