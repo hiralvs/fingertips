@@ -568,8 +568,9 @@ $(document).ready(function(){
                     }
                     var deleteurl = '{{ route("user.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
+                    var imageurl = "{{asset('public/upload/')}}";
                     var tr_str = "<tr>"+
-                    "<td>"+profilepic+"</td>" +
+                    "<td><img src="+imageurl+"/"+profilepic+"></td>" +
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.name+"</td>" +
                     "<td>"+data.email+"</td>"+

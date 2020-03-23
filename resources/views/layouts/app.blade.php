@@ -23,7 +23,8 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('/public/css/jquery.multiselect.css')}}"/>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ asset('/public/css/jquery.multiselect.css')}}"/>
-        
+        <script src="{{asset('/public/js/dashboard.js')}}"></script>
+    
   </head>
   <body>
     <div class="container-scroller">
@@ -63,7 +64,6 @@
 		<script src="{{asset('/public/vendors/justgage/raphael-2.1.4.min.js')}}"></script>
 		<script src="{{asset('/public/vendors/justgage/justgage.js')}}"></script>
     <!-- Custom js for this page-->
-    <script src="{{asset('/public/js/dashboard.js')}}"></script>
     <!-- End custom js for this page-->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  

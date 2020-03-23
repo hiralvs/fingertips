@@ -18,3 +18,8 @@ ALTER TABLE `products` ADD `color` VARCHAR(50) NOT NULL AFTER `type`;
 
 ALTER TABLE `products` CHANGE `color` `color` VARCHAR(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
 
+ALTER TABLE `products` CHANGE `category_id` `category_id` VARCHAR(50) NOT NULL COMMENT 'Reference to category table';
+
+ALTER TABLE `products` ADD `sizefit` VARCHAR(100) NOT NULL AFTER `stock`;
+
+
