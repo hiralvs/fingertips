@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('dashboard', 'API\DashboardController@dashboard');
     Route::get('editProfile', 'API\RegisterController@editProfile');
     Route::get('events', 'API\HomePageController@eventListing');
     Route::get('malls', 'API\HomePageController@mallListing');
@@ -46,6 +47,7 @@ Route::middleware('auth:api')->group(function () {
 
 
 Route::post('login', 'API\RegisterController@login');
+Route::get('/verify/{token}', 'VerifyController@VerifyEmail')->name('verify');
 Route::post('register', 'API\RegisterController@register');
 Route::post('otp', 'API\RegisterController@otpverify');
 Route::post('forgot/password', 'API\ForgotPasswordController@forgotPassword');    

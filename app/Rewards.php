@@ -11,5 +11,5 @@ class Rewards extends Model
     use Sortable;
     use SoftDeletes;
 
-    public $sortable = ['earned', 'created_at'];
+    public $sortable = ['earned', 'created_at','user_id'];
 }
