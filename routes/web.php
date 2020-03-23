@@ -23,11 +23,11 @@ Auth::routes();
 // route to process the form
 //Route::post('login', array('uses' => 'HomeController@doLogin'));
  Route::get('/', array('as' => 'loginpage', 'routegroup' => 'login', 'uses' => 'Auth\LoginController@index'));
- Route::post('/postlogin', array('as' => 'postlogin', 'routegroup' => 'login', 'uses' => 'Auth\LoginController@postLogin'));
 
 // Route::post('login', 'Auth\LoginController@doLogin')->name('login');
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+Route::post('/postlogin', array('as' => 'postlogin', 'routegroup' => 'login', 'uses' => 'Auth\LoginController@postLogin'));
 
  // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('forgotpassword');
@@ -70,6 +70,10 @@ Route::post('updatebrand', array('as' => 'brand.update', 'routegroup' => 'grp_ad
 Route::get('/dashboard', 'admin\DashboardController@index')->name('dashboard');
 
 Route::get('/products', 'admin\ProductController@index')->name('products');
+Route::post('/addproduct', 'admin\ProductController@addProducts')->name('addproduct');
+Route::post('productsearch', array('as' => 'product.productsearch', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@search'));
+Route::post('updateproduct', array('as' => 'product.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@update'));
+Route::get('product/delete/{id}', array('as' => 'product.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@delete'));
 
 
 Route::get('/excel_export', 'ExportExcelController@index');

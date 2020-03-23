@@ -45,91 +45,97 @@ class RegisterController extends Controller
         }
         else
         {
-            $input = $request->all();
-            $input['password'] = bcrypt($input['password']);
-            $input['unique_id'] =  get_unique_id('users');
-            $input['role'] = $input['role'];
-            $input['gender'] = $input['gender'];
-            $input['mobile'] = $input['mobile'];
-            $input['dob'] = date('Y-m-d',strtotime($input['dob']));
-            if ($request->hasFile('profilepic')) {
-    
-                $image = $request->File('profilepic');
-                $filename = time() . '.' . $image->getClientOriginalExtension();
-    
-                $path = public_path('upload/' . $filename);
-    
-                Image::make($image->getRealPath())->resize(50, 50)->save($path);
-                $input['profile_pic'] = $filename;
-            }
-            $otp = rand(100000,999999);
-            
-            $user = User::create($input);
-    
-            // code to send otp to user
-            if($user->id)
-            {
-                $data = array();
-    
-                $otpdata['user_id'] = $user->id;
-                $otpdata['otp'] = $otp;
-                
-                $data['TO'] = $user->email;
-                $data['FROM'] =  Config::get('constants.SMTP_FROM'); 
-                $data['SITE_NAME'] = Config::get('constants.SITE_NAME');
-                $data['SUBJECT'] = 'Fingertips-Otp';
-                $data['VIEW'] = 'mails.otp';
-                $data['PARAM'] = array('name' => $user->name, 'otp' => $otp);
-                $data['name'] = $user->name;
-                $data['otp'] = $otp;
-                $send_mail = send($data);
-                if($send_mail)
-                {
-                    Otp::unguard();
-                    $otpinsert = Otp::create($otpdata);
-                }
-                
-                if($otpinsert)
-                {
-                    $point = Settings::where('type','Signup')->get();
-                    $rewards = array();
-                    $rewards['user_id'] = $user->id;
-                    $rewards['earned'] = $point[0]->value;
-                    $setting = Rewards::create($rewards);
-                }
-    
-                Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-    
-                try {
-    
-                    $customer = \Stripe\Customer::create([
-                        'email' => $user->email,
-                        'name' => $user->name,
-                        'description' => 'My First Test Customer (created for API docs)',
-                    ]);
-                    if($customer)
-                    {  
-                        $updateuser = User::where('id', $user->id)->update(['customer_id' => $customer->id]);
-                    }
-                } catch (\Exception $ex) {
-                    return $ex->getMessage();
-                }
-                $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
+        	try
+        	{
+	            $input = $request->all();
+	            $input['password'] = bcrypt($input['password']);
+	            $input['unique_id'] =  get_unique_id('users');
+	            $input['role'] = $input['role'];
+	            $input['gender'] = $input['gender'];
+	            $input['mobile'] = $input['mobile'];
+	            $input['dob'] = date('Y-m-d',strtotime($input['dob']));
+	            if ($request->hasFile('profilepic')) {
+	    
+	                $image = $request->File('profilepic');
+	                $filename = time() . '.' . $image->getClientOriginalExtension();
+	    
+	                $path = public_path('upload/' . $filename);
+	    
+	                Image::make($image->getRealPath())->resize(50, 50)->save($path);
+	                $input['profile_pic'] = $filename;
+	            }
+	            $otp = rand(100000,999999);
+	            
+	            $user = User::create($input);
+	                echo "<pre>";
+	            print_r($user);
+	            // code to send otp to user
+	            if($user->id)
+	            {
+	                $data = array();
+	    
+	                $otpdata['user_id'] = $user->id;
+	                $otpdata['otp'] = $otp;
+	                
+	                $data['TO'] = $user->email;
+	                $data['FROM'] =  Config::get('constants.SMTP_FROM'); 
+	                $data['SITE_NAME'] = Config::get('constants.SITE_NAME');
+	                $data['SUBJECT'] = 'Fingertips-Otp';
+	                $data['VIEW'] = 'mails.otp';
+	                $data['PARAM'] = array('name' => $user->name, 'otp' => $otp);
+	                $data['name'] = $user->name;
+	                $data['otp'] = $otp;
+	                $send_mail = send($data);
+	                if($send_mail)
+	                {
+	                    Otp::unguard();
+	                    $otpinsert = Otp::create($otpdata);
+	                }
+	                
+	                if($otpinsert)
+	                {
+	                    $point = Settings::where('type','Signup')->get();
+	                    $rewards = array();
+	                    $rewards['user_id'] = $user->id;
+	                    $rewards['earned'] = $point[0]->value;
+	                    $setting = Rewards::create($rewards);
+	                }
+	    
+	                Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+	    
+	                try {
+	    
+	                    $customer = \Stripe\Customer::create([
+	                        'email' => $user->email,
+	                        'name' => $user->name,
+	                        'description' => 'My First Test Customer (created for API docs)',
+	                    ]);
+	                    if($customer)
+	                    {  
+	                        $updateuser = User::where('id', $user->id)->update(['customer_id' => $customer->id]);
+	                    }
+	                } catch (\Exception $ex) {
+	                    $response = ['status' => 404,'success' => false,'message' => $ex->getMessage()]; 
+	                }
+	                $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
 
-                $response = [
-                    'success' => true,
-                    'status' => 200,
-                    'token' => $user->createToken('MyApp')->accessToken,
-                    'data'    => $user,
-                    'message' => 'User register successfully.',
-                ];
+	                $response = [
+	                    'success' => true,
+	                    'status' => 200,
+	                    'token' => $user->createToken('MyApp')->accessToken,
+	                    'data'    => $user,
+	                    'message' => 'User register successfully.',
+	                ];
+	            }
+        	}
+        	catch (\Exception $ex) {
+	            $response = ['status' => 404,'success' => false,'message' => 'Email Id Already Exist']; 
             }
         }       
 
         return response()->json($response);
        
     }
-   
     /* Function  used to login */ 
     public function login(Request $request)
     {
