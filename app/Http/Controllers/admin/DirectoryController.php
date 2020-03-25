@@ -52,10 +52,15 @@ class DirectoryController extends Controller
             $direction='asc';
         }
         $return_data['data'] = Directory::select('directory.*','category.id as category_id' ,'settings.value as floorname', 'category_name')->leftjoin('category', 'directory.category_id', '=', 'category.id')
-        ->leftjoin('settings', 'settings.id', '=', 'directory.floor')
+
+        ->leftjoin('settings', 'settings.id', '=', 'directory.floor')    
         ->orderBy($sort, $direction)->sortable()->paginate($perpage);
         $return_data['category_name'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
-         $return_data['floor'] = Settings::where('type', 'floor')->orderBy('id', 'asc')->get();
+        $return_data['floor'] = Settings::where('type', 'floor')->orderBy('id', 'asc')->get();
+
+        $foods = Directory::join('directory.*', 'category.id','=', 'directory.category_id')
+         ->join('settings','settings.id','=','directory.floor')
+         ->where('directory.category_id', 'LIKE', '%' . $search . '%');
 
         // echo "<pre>";
         // print_r( $return_data['data']);
@@ -129,9 +134,9 @@ class DirectoryController extends Controller
         //     'featured_event' => 'required',
         // ]);
 
-        if ($validator->fails()) {
-            return Response()->json(['errors' => $validator->errors()]);
-        }
+        // if ($validator->fails()) {
+        //     return Response()->json(['errors' => $validator->errors()]);
+        // }
 
         $events = Directory::find($request->id);
         $events->name =  $request->name;
@@ -154,4 +159,30 @@ class DirectoryController extends Controller
         }
         return Response()->json($arr);
     }
+    /* Function user to search user data */
+     public function search(Request $request)
+     {
+        $search = $request->input('search');
+     
+        $events = Directory::where('name','LIKE',"%{$search}%")
+         ->orWhere('unique_id', 'LIKE',"%{$search}%")
+         ->orWhere('category_id', 'LIKE',"%{$search}%")
+         ->orWhere('floor', 'LIKE',"%{$search}%")
+         ->orWhere('openinghrs', 'LIKE',"%{$search}%")
+         ->orWhere('description', 'LIKE',"%{$search}%")
+         ->paginate();
+
+        
+ 
+        if($events)
+         {
+             $arr = array('status' => true,"data"=>$events[0]);    
+         }
+         else{
+             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
+         }
+ 
+         return Response()->json($arr);
+ 
+     }
 }

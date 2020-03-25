@@ -186,6 +186,8 @@ Route::post('sponsorssearch', array('as' => 'sponsors.search', 'routegroup' => '
 Route::get('/directory', 'admin\DirectoryController@index')->name('directory');
 Route::post('/addDirectory', 'admin\DirectoryController@addDirectory')->name('addDirectory');
 Route::get('directorydelete/{id}', array('as' => 'directory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\DirectoryController@delete'));
+Route::post('directoryupdate', array('as' => 'directory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\DirectoryController@update'));
+Route::post('directorysearch', array('as' => 'directory.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\DirectoryController@search'));
 
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
 // Route::get('/highlights', 'admin\LoginPrivacyController@index')->name('highlights');

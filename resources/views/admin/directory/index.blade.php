@@ -49,7 +49,7 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="sponsorstableData">
+                    <table class="table table-hover" id="directorytableData">
                       <thead>
                         <tr>
                             <th>@sortablelink('Id')</th>
@@ -75,19 +75,19 @@
                             <td>{{$value->contact}}</td>
                             <td>{{$value->openinghrs}}</td>
                             <td>{{$value->description}}</td>
-                            <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editSponsor{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a>
+                            <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editDirectory{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a>
                                 <a class="delete" onclick="return confirm('Are you sure you want to delete this Directory?')" href="{{route('directory.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                             </tr>
                         <!-- Edit Modal HTML Markup -->
-                        <div id="editSponsor{{$value->id}}" class="modal fade">
-                            <div class="modal-dialog  modal-lg" role="document">
+                        <div id="editDirectory{{$value->id}}" class="modal fade">
+                            <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title">Edit Trending</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
-                                        <form name="addSponsor" id="editSponsorform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
+                                        <form name="addSponsor" id="editDirectoryform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
                                             @csrf
                                             <div class="row">
                                                 <div class="form-group col-md-4">
@@ -123,14 +123,42 @@
                                         <div class="row">
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputName">Unit Number</label>
-                                                <input type="text" required class="form-control"  id="unit_number" name="unit_number" placeholder="Unit Number">
+                                                <input type="text" required class="form-control unit_number"  id="unit_number" value="{{$value->unit_number}}" name="unit_number">
                                                 <input type="hidden" name="id" value="{{$value->id}}">
                                                 <span class="text-danger">
                                                     <strong id="unit_number-error"></strong>
                                                 </span>
                                             </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="exampleSelectGender">Contact Number</label>
+                                                <input type="text" class="form-control contact" id="contact" value="{{$value->contact}}" name="contact" placeholder="Contact">
+                                                <span class="text-danger">
+                                                    <strong class="contact-error"></strong>
+                                                </span>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="exampleInputPassword">Opening Hours</label>
+                                                <input type="text" class="form-control openinghrs" value="{{$value->openinghrs}}"  id="openinghrs" name="openinghrs" placeholder="Opening Houres">
+                                                <span class="text-danger">
+                                                    <strong class="openinghrs-error"></strong>
+                                                </span>
+                                            </div>                                            
                                         </div>
-                                        <button type="button" class="btn btn-primary mr-2 editSponsorSubmit" data-id="{{$value->id}}" id="editSponsorSubmit">Submit</button>
+                                        <div class="row">
+                                            <div class="form-group col-md-4">
+                                                <label for="exampleInputPassword">Closing Hours</label>
+                                                <input type="text" class="form-control closinghrs" value="{{$value->closinghrs}}"  id="closinghrs" name="closinghrs" placeholder="Closing Houres">
+                                                <span class="text-danger">
+                                                    <strong class="closinghrs-error"></strong>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-md-12">
+                                                <textarea class="form-control ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-primary mr-2 editDirectorySubmit" data-id="{{$value->id}}" id="editDirectorySubmit">Submit</button>
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                         </form>
                                     </div>
@@ -171,11 +199,15 @@ $(document).ready(function(){
             format: 'HH:mm:ss'
         });
 
-    $('.editSponsorSubmit').click(function(e){
+    $('.editDirectorySubmit').click(function(e){
         var id = $(this).data('id');
-        var formData = new FormData($("#editSponsorform"+id)[0]);
-            $( '.title-error' ).html( "" );
-            $( '.url-error' ).html( "" );
+        var formData = new FormData($("#editDirectoryform"+id)[0]);
+        var message = CKEDITOR.instances['description'+id].getData();
+
+        formData.append('description',message);
+
+        // $( '.title-error' ).html( "" );
+            // $( '.url-error' ).html( "" );
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -183,27 +215,27 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('sponsors.update') }}",
+                url: "{{ route('directory.update') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
                 processData: false,
                 data: formData,
                 success: function(result){
-                if(result.errors) {
-                    $(".statusMsg").hide();
-                    if(result.errors.title){
-                        $( '.title-error' ).html( result.errors.title[0] );
-                    }
-                    if(result.errors.url){
-                        $( '.url-error' ).html( result.errors.url[0] );
-                    }
-                }
+                // if(result.errors) {
+                //     $(".statusMsg").hide();
+                //     if(result.errors.title){
+                //         $( '.title-error' ).html( result.errors.title[0] );
+                //     }
+                //     if(result.errors.url){
+                //         $( '.url-error' ).html( result.errors.url[0] );
+                //     }
+                // }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setInterval(function(){ 
-                        $('#editSponsor'+id).modal('hide');
+                        $('#editDirectory'+id).modal('hide');
                         window.location.reload();
                     }, 3000);
                 }
@@ -269,56 +301,41 @@ $(document).ready(function(){
                 }
             });
         }); 
-           $(document).on('click','#search',function(){ 
+    $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
             });       
         $.ajax({
-                url: "{{route('sponsors.search')}}",
+                url: "{{route('directory.search')}}",
                 method: 'post',
                 data: {'search':$("#searchtext").val()},
                 success: function(result){
                 if(result.status == true)
                 {
                     var data = result.data;
-                    
-                    
-                    var findnorecord = $('#sponsorstableData tr.norecord').length;
+
+                    var findnorecord = $('#directorytableData tr.norecord').length;
                     if(findnorecord > 0){
-                        $('#sponsorstableData tr.norecord').remove();
+                        $('#directorytableData tr.norecord').remove();
                         }
-                    
-                    var id = image = title = link = '';
-                    if(data.id != null)
-                    {
-                        id = data.id;
-                    }
-                    if(data.image != null)
-                    {
-                        image = data.image;
-                    }
-                    if(data.title != null)
-                    {
-                        title = data.title;
-                    }
-                    if(data.url != null)
-                    {
-                        url = data.url;
-                    }
-                    var deleteurl = '{{ route("sponsors.delete", ":id") }}';
+
+                    var deleteurl = '{{ route("directory.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
-                    "<td>"+id+"</td>" +
-                    "<td>"+image+"</td>" +
-                    "<td>"+title+"</td>" +
-                    "<td>"+url+"</td>" +
-                    // "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    "<td>"+data.unique_id+"</td>" +
+                    "<td>"+data.name+"</td>" +
+                    "<td>"+data.category_id+"</td>"+
+                    "<td>"+data.floor+"</td>" +
+                    "<td>"+data.unit_number+"</td>" +
+                    "<td>"+data.contact+"</td>" +
+                    "<td>"+data.openinghrs+"</td>" +
+                    "<td>"+data.description+"</td>" +
+                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editDirectory'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Directory?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
                     console.log(tr_str);
-                    $("#sponsorstableData tbody").html(tr_str);
+                    $("#directorytableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else
