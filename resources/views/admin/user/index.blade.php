@@ -73,7 +73,7 @@
                     </a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()"  tabindex="">
                         EXPORT
                     </a>
                         <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
@@ -299,6 +299,28 @@ function openCity(evt, cityName) {
   }
   document.getElementById(cityName).style.display = "block";
   evt.currentTarget.className += " active";
+}
+function fnExcelReport()
+{
+    $('thead tr th').last().remove();
+    var tT = new XMLSerializer().serializeToString(document.querySelector('#admintableData')); //Serialised table
+    var tF = 'brand.xls'; //Filename
+    var tB = new Blob([tT]); //Blub
+    if(window.navigator.msSaveOrOpenBlob){
+        //Store Blob in IE
+        window.navigator.msSaveOrOpenBlob(tB, tF)
+    }
+    else{
+        //Store Blob in others
+        var tA = document.body.appendChild(document.createElement('a'));
+        tA.href = URL.createObjectURL(tB);
+        tA.download = tF;
+        tA.style.display = 'none';
+        tA.click();
+        tA.parentNode.removeChild(tA)
+    }
+
+    $('thead tr').last().append('<th>Action</th>');
 }
 $(document).ready(function(){
 

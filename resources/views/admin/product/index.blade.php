@@ -357,27 +357,6 @@ $(document).ready(function(){
                         if(result.errors.name){
                             $( '#name-error' ).html( result.errors.name[0] );
                         }
-                        function fnExcelReport()
-                        {
-
-                        var tT = new XMLSerializer().serializeToString(document.querySelector('.table-responsive')); //Serialised table
-                            var tF = 'report.xls'; //Filename
-                            var tB = new Blob([tT]); //Blub
-
-                            if(window.navigator.msSaveOrOpenBlob){
-                                //Store Blob in IE
-                                window.navigator.msSaveOrOpenBlob(tB, tF)
-                            }
-                            else{
-                                //Store Blob in others
-                                var tA = document.body.appendChild(document.createElement('a'));
-                                tA.href = URL.createObjectURL(tB);
-                                tA.download = tF;
-                                tA.style.display = 'none';
-                                tA.click();
-                                tA.parentNode.removeChild(tA)
-                            }
-                        }
                         if(result.errors.price){
                             $( '#price-error' ).html( result.errors.price[0] );
                         }
