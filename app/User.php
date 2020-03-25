@@ -22,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','unique_id','gender','role','profile_pic','status','dob','mobile','created_at','email_verification_token'
+        'name', 'email', 'password','unique_id','gender','role','profile_pic','status','dob','mobile','created_at','email_verification_token','email_verified'
     ];
     public $sortable = ['profile_pic','unique_id','name', 'email', 'gender','role','status','created_at'];
 

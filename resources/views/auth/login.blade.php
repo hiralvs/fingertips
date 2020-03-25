@@ -32,6 +32,18 @@
                 <p>
                   {{ $errors->first('email') }}
                   {{ $errors->first('password') }}
+                 <div class="box-header ">
+                   @if (session()->has('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if (session()->has('warning'))
+                        <div class="alert alert-warning">
+                            {{ session('warning') }}
+                        </div>
+                    @endif
+                    </div>
               </p>
                 <!-- <h4>Hello! let's get started</h4> -->
                 <!-- <h6 class="font-weight-light">Sign in to continue.</h6> -->

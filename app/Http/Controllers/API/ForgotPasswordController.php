@@ -29,33 +29,33 @@ class ForgotPasswordController extends Controller
             'email' => 'required|email',
         ]);
    
-        if($validator->fails()){echo "Sdfsd";
-            $arr = array("status" => 400, "message" => $validator->errors()->first(), "data" => array());
+        if($validator->fails()){
+            $arr = array('success' => false,"status" => 400, "message" => $validator->errors()->first(), "data" => array());
         }
         else {
             try {
                 $user = User::where('email',$request->email);
                 if($user->count() > 0)
-                { echo "Dfd";
+                { 
                     $response = Password::sendResetLink($request->only('email'), function (Message $message) {
                         //$message->from('hiral.devstree@gmail.com');
                         $message->subject('Reset Password');
                     });
                     switch ($response) {
                         case Password::RESET_LINK_SENT:
-                            return \Response::json(array("status" => 200, "message" => trans($response), "data" => array()));
+                            return \Response::json(array('success' => true,"status" => 200, "message" => trans($response), "data" => array()));
                         case Password::INVALID_USER:
-                            return \Response::json(array("status" => 400, "message" => trans($response), "data" => array()));
+                            return \Response::json(array('success' => false,"status" => 400, "message" => trans($response), "data" => array()));
                     }
                 }
                 else
                 {
-                    return \Response::json(array("status" => 400, "message" => 'The email provided is incorrect, please try again.', "data" => array()));
+                    return \Response::json(array('success' => false,"status" => 400, "message" => 'The email provided is incorrect, please try again.', "data" => array()));
                 }
             } catch (\Swift_TransportException $ex) {
-                $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
+                $arr = array('success' => false,"status" => 400, "message" => $ex->getMessage(), "data" => []);
             } catch (Exception $ex) {
-                $arr = array("status" => 400, "message" => $ex->getMessage(), "data" => []);
+                $arr = array('success' => false,"status" => 400, "message" => $ex->getMessage(), "data" => []);
             }
         }
         return \Response::json($arr);

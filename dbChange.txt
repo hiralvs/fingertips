@@ -24,3 +24,4 @@ ALTER TABLE `products` ADD `sizefit` VARCHAR(100) NOT NULL AFTER `stock`;
 
 ALTER TABLE `users` ADD `email_verification_token` VARCHAR(200) NULL DEFAULT NULL AFTER `email_verified_at`;
 
+ALTER TABLE `trending_now` CHANGE `update_at` `updated_at` TIMESTAMP NULL DEFAULT NULL;

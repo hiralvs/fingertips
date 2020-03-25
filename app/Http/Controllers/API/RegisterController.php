@@ -32,9 +32,9 @@ class RegisterController extends Controller
             'email' => 'required|email',
             'password' => 'required',
             'c_password' => 'required|same:password',
-            'dob' => 'required',
+            //'dob' => 'required',
             'role' => 'required',
-            'gender' => 'required',
+            //'gender' => 'required',
             'mobile' => 'required',
         ]);
    
@@ -54,9 +54,9 @@ class RegisterController extends Controller
 	            $input['password'] = bcrypt($input['password']);
 	            $input['unique_id'] =  get_unique_id('users');
 	            $input['role'] = $input['role'];
-	            $input['gender'] = $input['gender'];
+	            $input['gender'] = isset($input['gender']) ? $input['gender'] : NULL;
 	            $input['mobile'] = $input['mobile'];
-                $input['dob'] = date('Y-m-d',strtotime($input['dob']));
+                $input['dob'] = isset($input['dob']) ? date('Y-m-d',strtotime($input['dob'])) : NULL;
                 $input['email_verification_token'] = Str::random(32);
 	            if ($request->hasFile('profilepic')) {
 	    
@@ -97,23 +97,22 @@ class RegisterController extends Controller
                     $data['email_verification_token'] = $user->email_verification_token;
                     //$send_mail = \Mail::to($user->email)->send(new VerificationEmail($user));
                     $send_mail = send($data);
-                    //print_r($send_mail);die;
+                 //    //print_r($send_mail);die;
 
-	                // if($send_mail)
-	                // {
-	                //     Otp::unguard();
-	                //     $otpinsert = Otp::create($otpdata);
-	                // }
+	                // // if($send_mail)
+	                // // {
+	                // //     Otp::unguard();
+	                // //     $otpinsert = Otp::create($otpdata);
+	                // // }
 	                
-	                //if($otpinsert)
-	                //{
-	                    $point = Settings::where('type','Signup')->get();
-	                    $rewards = array();
-	                    $rewards['user_id'] = $user->id;
-                        $rewards['earned'] = $point[0]->value;
-                        Rewards::unguard();
-	                    $setting = Rewards::create($rewards);
-	                //}
+	                /* Add rewards for signup*/
+                    $point = Settings::where('type','Signup')->get();
+                    $rewards = array();
+                    $rewards['user_id'] = $user->id;
+                    $rewards['earned'] = $point[0]->value;
+                    Rewards::unguard();
+                    $setting = Rewards::create($rewards);
+	              
 	    
 	                Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 	    
@@ -132,6 +131,9 @@ class RegisterController extends Controller
 	                    $response = ['status' => 404,'success' => false,'message' => $ex->getMessage()]; 
 	                }
 	                $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
+                    $user->gender = (is_null($user->gender) || $user->gender == "") ? "":$user->gender;
+                    $user->dob = (is_null($user->dob) || $user->dob == "") ? "":$user->dob;
+                    $user->customer_id = (is_null($user->customer_id) || $user->customer_id == "") ? "":$user->customer_id;
 
 	                $response = [
 	                    'success' => true,
@@ -143,48 +145,13 @@ class RegisterController extends Controller
 	            }
         	}
         	catch (\Exception $ex) {
-                return $ex->getMessage();
+                //return $ex->getMessage();
 	            $response = ['status' => 404,'success' => false,'message' => 'Email Id Already Exist']; 
             }
         }       
 
         return response()->json($response);
        
-    }
-
-    /* Functio used to verify email*/
-    public function VerifyEmail($token = null)
-    {
-    	if($token == null) {
-
-    		session()->flash('message', 'Invalid Login attempt');
-
-    		return redirect()->route('login');
-
-    	}
-
-       $user = User::where('email_verification_token',$token)->first();
-
-       if($user == null ){
-
-       	session()->flash('message', 'Invalid Login attempt');
-
-        return redirect()->route('login');
-
-       }
-
-       $user->update([
-        
-        'email_verified' => 1,
-        'email_verified_at' => Carbon::now(),
-        'email_verification_token' => ''
-
-       ]);
-       
-       	session()->flash('message', 'Your account is activated, you can log in now');
-
-        return redirect()->route('login');
-
     }
 
     /* Function  used to login */ 
@@ -212,7 +179,7 @@ class RegisterController extends Controller
                 $user->gender = is_null($user->gender) ? "":$user->gender;
                 $user->mobile = is_null($user->mobile) ? "":$user->mobile;
                 $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
-             
+                $user->customer_id = (is_null($user->customer_id) || $user->customer_id == "") ? "":$user->customer_id;
                 $response = [
                     'success' => true,
                     'token' => $user->createToken('MyApp')-> accessToken,
@@ -331,6 +298,75 @@ class RegisterController extends Controller
             }
         }
        return \Response::json($arr);
+    }
+
+    /* Functio used to verify email*/
+
+    public function verifyEmail(Request $request,$token = null)
+    {
+        $token = $request->route('token');
+
+        if($token == null) {
+           return redirect()->route('loginpage')->with('error', trans('Invalid Login attempt'));
+        }
+
+       $user = User::where('email_verification_token',$token)->first();
+
+       if($user == null ){
+           return redirect()->route('loginpage')->with('error', trans('Invalid Login attempt'));
+       }
+       else
+       {
+            $user->email_verified = '1';
+            $user->email_verified_at = Carbon::now();
+            $user->email_verification_token = '';
+
+            $user->save();
+            return redirect()->route('loginpage')->with('success', trans('Your account is activated, you can log in now into app'));
+       }
+
+    }
+
+    /* Functio used to verify email*/
+
+    public function resendverifyEmail(Request $request)
+    {
+        $id = $request->route('id');
+        $user = User::where('id',$id)->first();
+        $user->email_verified = '0';
+        $user->email_verification_token = Str::random(32);
+        $user->save();
+
+        $data['TO'] = $user->email;
+        $data['FROM'] =  Config::get('constants.SMTP_FROM'); 
+        $data['SITE_NAME'] = Config::get('constants.SITE_NAME');
+        $data['SUBJECT'] = 'Fingertips-Verification';
+        $data['VIEW'] = 'mails.verifyEmail';
+        $data['PARAM'] = array('name' => $user->name, 'email_verification_token' => $user->email_verification_token);
+        $data['name'] = $user->name;
+        $data['email_verification_token'] = $user->email_verification_token;
+        //$send_mail = \Mail::to($user->email)->send(new VerificationEmail($user));
+        $send_mail = send($data);
+
+        if($send_mail)
+        {
+            unset($user->email_verification_token,$user->email_verified_at,
+                $user->dob,$user->gender,$user->customer_id,$user->deleted_at);
+            $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
+            $response = [
+                        'success' => true,
+                        'status' => 200,
+                        'token' => $user->createToken('MyApp')->accessToken,
+                        'data'    => $user,
+                        'message' => 'Email verification link send successfully.',
+                    ];
+        }
+        else
+        {
+            $response = ['status' => 404,'success' => false,'message' => 'Email Id Already Exist']; 
+        }
+
+        return response()->json($response);
     }
 
 }
