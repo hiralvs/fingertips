@@ -73,7 +73,7 @@
                                                     <option value="" selected="">Location</option>
                                                     <option value="home" {{ $value->location == 'home' ? 'selected' : ''}}>Home</option>
                                                     <option value="event" {{ $value->location == 'event' ? 'selected' : ''}}>Event</option>
-                                                    <option value="mall" {{ $value->location == 'mall' ? 'selected' : ''}}>Mall</option>
+                                                    <option value="malls" {{ $value->location == 'mall' ? 'selected' : ''}}>Mall</option>
                                                     <option value="attraction {{ $value->location == 'attraction' ? 'selected' : ''}}">Attraction</option>
                                                 </select>
                                             <input  type="hidden" name="id" value="{{$value->id}}"> 
@@ -362,7 +362,7 @@ $(function () {
                             <option value="" selected="">Location</option>
                             <option value="home">Home</option>
                             <option value="event">Event</option>
-                            <option value="mall">Mall</option>
+                            <option value="malls">Mall</option>
                             <option value="attraction">Attraction</option>
                         </select>
                         <span class="text-danger">

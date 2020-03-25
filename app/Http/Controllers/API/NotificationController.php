@@ -13,11 +13,16 @@ class NotificationController extends Controller
     /*Function Used to get events*/
     public function notification(Request $request)
     {
-        $notification = notification::all();
+        $page = $request->page ? $request->page : 1;
+        $limit = $request->limit?  $request->limit : 10;
+        $offset = ($page - 1) * $limit;
+        $notification = Notification::offset($offset)->limit($limit)->get();
+        $totalrecords = Notification::all()->count(); 
+        $totalpage = (int) ceil($totalrecords / $limit);
         if($notification->count() > 0)
         {
             unset($notification[0]->deleted_at);
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$notification];
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','total'=> $totalrecords,"total_page"=> $totalpage,"page"=> $page,"limit"=> $offset,'data'=>$notification];
         }
         else
         {   

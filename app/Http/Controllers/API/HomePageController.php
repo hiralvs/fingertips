@@ -16,7 +16,7 @@ use App\Brand;
 use App\Product;
 use App\Photos;
 use App\Map_images;
-use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use DB;
 
@@ -27,11 +27,19 @@ class HomePageController extends Controller
     /*Function Used to get events*/
     public function eventListing(Request $request)
     {
-        $url =env('APP_URL');
-        $events = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->get();
+        $url =env('APP_URL'); 
+        $page = $request->page ? $request->page : 1;
+        $limit = $request->limit?  $request->limit : 10;
+        $offset = ($page - 1) * $limit;
+
+        $events = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->offset($offset)->limit($limit)->get();
+        $totalrecords = Events::all()->count(); 
+        $totalpage = (int) ceil($totalrecords / $limit);
+
         if($events->count() > 0)
         {
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$events];
+
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.', 'total'=> $totalrecords,"total_page"=> $totalpage,"page"=> $page,"limit"=> $offset,'data'=>$events];
         }
         else
         {  
@@ -44,10 +52,15 @@ class HomePageController extends Controller
     public function mallListing(Request $request)
     {
         $url =env('APP_URL');
-        $malls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->get();
+        $page = $request->page ? $request->page : 1;
+        $limit = $request->limit?  $request->limit : 10;
+        $offset = ($page - 1) * $limit;
+        $malls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->offset($offset)->limit($limit)->get();
+        $totalrecords = ShopsandMalls::all()->count(); 
+        $totalpage = (int) ceil($totalrecords / $limit);
         if($malls->count() > 0)
         {
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$malls];
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.', 'total'=> $totalrecords,"total_page"=> $totalpage,"page"=> $page,"limit"=> $offset,'data'=>$malls];
         }
         else
         {   
@@ -60,10 +73,15 @@ class HomePageController extends Controller
     public function attractionListing(Request $request)
     {
         $url =env('APP_URL');
-        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->get();
+        $page = $request->page ? $request->page : 1;
+        $limit = $request->limit?  $request->limit : 10;
+        $offset = ($page - 1) * $limit;
+        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->offset($offset)->limit($limit)->get();
+        $totalrecords = Attractions::all()->count(); 
+        $totalpage = (int) ceil($totalrecords / $limit);
         if($attraction->count() > 0)
         {
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$attraction];
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.', 'total'=> $totalrecords,"total_page"=> $totalpage,"page"=> $page,"limit"=> $offset,'data'=>$attraction];
         }
         else
         {   
@@ -77,7 +95,7 @@ class HomePageController extends Controller
     public function featuredEvents(Request $request)
     {
         $url =env('APP_URL');
-        $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->limit(20)->get();
+        $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->paginate(20);
         if($featuredevents->count() > 0)
         {
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredevents];
@@ -191,37 +209,50 @@ class HomePageController extends Controller
     public function homepagedetails(Request $request)
     {
         $url =env('APP_URL');
+        $success = array();
         $type = $request->route('type'); // type can be event, malls and attraction
-        $banners = Banner::select('banners.*',DB::raw("CONCAT('','$url/public/upload/banners/',bannerimage) as bannerimage"))->where('location',$type)->get();
-        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>$type])->get();
+        $banners = Banner::select('banners.id','banners.type',DB::raw('IFNULL(banners.url , "" ) as url'),DB::raw('IFNULL(banners.ema , "" ) as ema'),DB::raw('IFNULL(banners.property_user_id , "" ) as property_user_id'),DB::raw("CONCAT('','$url/public/upload/banners/',bannerimage) as bannerimage"))->where('location',$type)->get();
+        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(["brands_connection.type"=>$type])->get();
+        if($banners->count() > 0)
+        {
+            // $banners[0]->url = is_null($banners[0]->url) ? "":$banners[0]->url;
+            // $banners[0]->ema = is_null($banners[0]->ema) ? "":$banners[0]->ema;
+            // $banners[0]->property_user_id = is_null($banners[0]->property_user_id) ? "":$banners[0]->property_user_id;
+            // unset($banners[0]->deleted_at,$banners[0]->updated_at);
+            $success['banners'] = $banners;
+        }
+        if($deals->count()>0)
+        {
+            $success['deals'] =  $deals ;
+        }
         if($type == 'event')
         {
             $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->limit(20)->get();
-            
+            $success['featuredevents'] =$featuredevents;
         }
         if($type == 'malls')
         {
             $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
             $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
+            $success['featuredShops'] = $featuredShops;
+            $success['featuredmalls'] = $featuredmalls;
         }
         if($type == 'attraction')
         {
             $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
+            $success['featuredAttraction'] =  $featuredAttraction ;
         }
-                
-        if($banners->count() > 0)
+        // print_r( $success);
+        // echo $success->count();
+        if($success)
         {
-            $banners[0]->url = is_null($banners[0]->url) ? "":$banners[0]->url;
-            $banners[0]->ema = is_null($banners[0]->ema) ? "":$banners[0]->ema;
-            $banners[0]->property_user_id = is_null($banners[0]->property_user_id) ? "":$banners[0]->property_user_id;
-            unset($banners[0]->deleted_at,$banners[0]->updated_at);
-            
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$banners];
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
         }
         else
         {   
             $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
+
         return response()->json($response);
     }
 
