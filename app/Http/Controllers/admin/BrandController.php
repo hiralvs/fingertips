@@ -49,7 +49,8 @@ class BrandController extends Controller
         } else {
             $direction='desc';
         }
-        $return_data['data'] = brand::orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['data'] = brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"))->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        
         $return_data['category_id'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         $return_data['grand_merchant_user_id'] = User::select('id', 'name')->where('role','brand_merchant')->get();
         return View('admin.brand.index', $return_data)->render();

@@ -86,7 +86,7 @@
                                 </td>
                           <td>{{$value->unique_id}}</td>
                           <td>{{$value->name}}</td>
-                          <td>{{$value->noofproducts}}</td>
+                          <td>{{$value->product_count}}</td>
                           <td>{{$value->category_id}}</td>
                           <td>{{$value->commission}}</td>
                           

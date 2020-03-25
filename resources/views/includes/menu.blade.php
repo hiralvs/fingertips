@@ -39,8 +39,8 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('floor')}}">Floor</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('directory')}}">Directory</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mallbrands')}}">Brands</a></li>
-                        <li class="nav-item"><a class="nav-link" >Check In</a></li>
-                        <li class="nav-item"><a class="nav-link" >Highlights</a></li>
+<!--                         <li class="nav-item"><a class="nav-link" >Check In</a></li>
+ -->                        <li class="nav-item"><a class="nav-link" >Highlights</a></li>
                         <li class="nav-item"><a class="nav-link" >Orders</a></li>
                         <li class="nav-item"><a class="nav-link">Flash Sale</a></li>
                         <li class="nav-item"><a class="nav-link" >Slider Image</a></li>
