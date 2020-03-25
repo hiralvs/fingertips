@@ -78,9 +78,16 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="pages/icons/mdi.html" class="nav-link">
+                  <a href="{{route('trending')}}" class="nav-link">
                     <i class="mdi mdi-emoticon menu-icon"></i>
-                    <span class="menu-title">Icons</span>
+                    <span class="menu-title">Trending Now</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{route('sponsors')}}" class="nav-link">
+                    <i class="mdi mdi-emoticon menu-icon"></i>
+                    <span class="menu-title">Sponsors</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>

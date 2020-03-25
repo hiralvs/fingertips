@@ -164,15 +164,28 @@ Route::get('loginprivacydelete/{id}', array('as' => 'loginprivacy.delete', 'rout
 Route::post('/addLoginPrivacy', 'admin\LoginPrivacy@addLoginPrivacy')->name('addLoginPrivacy');
 Route::post('loginprivacyupdate', array('as' => 'loginprivacy.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\LoginPrivacy@update'));
 
-Route::get('/directory', 'admin\LoginPrivacyController@index')->name('directory');
-
-
 
 Route::get('/mallbrands', 'admin\MallBrandsController@index')->name('mallbrands');
 Route::post('/addMallBrand', 'admin\MallBrandsController@addMallBrand')->name('addMallBrand');
 Route::post('mallbrandsupdate', array('as' => 'mallbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@update'));
 Route::get('mallbrandsdelete/{id}', array('as' => 'mallbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@delete'));
 Route::post('mallbrandssearch', array('as' => 'mallbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@search'));
+
+Route::get('/trending', 'admin\TrendingController@index')->name('trending');
+Route::post('/addTrending', 'admin\TrendingController@addTrending')->name('addTrending');
+Route::post('trendingupdate', array('as' => 'trending.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TrendingController@update'));
+Route::get('trendingdelete/{id}', array('as' => 'trending.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TrendingController@delete'));
+Route::post('trendingsearch', array('as' => 'trending.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TrendingController@search'));
+
+Route::get('/sponsors', 'admin\SponsorController@index')->name('sponsors');
+Route::post('/addSponsors', 'admin\SponsorController@addSponsors')->name('addSponsors');
+Route::get('sponsorsdelete/{id}', array('as' => 'sponsors.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SponsorController@delete'));
+Route::post('sponsorsupdate', array('as' => 'sponsors.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SponsorController@update'));
+Route::post('sponsorssearch', array('as' => 'sponsors.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SponsorController@search'));
+
+Route::get('/directory', 'admin\DirectoryController@index')->name('directory');
+Route::post('/addDirectory', 'admin\DirectoryController@addDirectory')->name('addDirectory');
+Route::get('directorydelete/{id}', array('as' => 'directory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\DirectoryController@delete'));
 
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
 // Route::get('/highlights', 'admin\LoginPrivacyController@index')->name('highlights');

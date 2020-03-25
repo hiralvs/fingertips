@@ -32,11 +32,10 @@
                     </a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">
-                    <!-- <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('export_excel.excel')}}" tabindex=""     style="background-color:#454d56 !important;"> -->
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">     
                         EXPORT
                     </a>
-                </div>                
+                </div>
             </div>
         </div>
     </div>
@@ -67,7 +66,6 @@
                           <th>@sortablelink('name')</th>
                           <th>No Of Products</th>
                           <th>Category</th>
-                          <th>No Of Presence</th>
                           <th>Total Earnings</th>
                           <th>Status</th>
                           <th>@sortablelink('created_at','Created on')</th>
@@ -81,7 +79,7 @@
                         <tr>
                               <td>
                                 @if($value->brand_image!= null)
-                                    <img src="{{asset('public/upload/')}}{{'/'.$value->brand_image}}" alt="">
+                                    <img src="{{asset('public/upload/brands')}}{{'/'.$value->brand_image}}" alt="">
                                 @else
     
                                 @endif
@@ -90,7 +88,6 @@
                           <td>{{$value->name}}</td>
                           <td>{{$value->noofproducts}}</td>
                           <td>{{$value->category_id}}</td>
-                          <td>{{$value->noofpresence}}</td>
                           <td>{{$value->commission}}</td>
                           
                           <td> @if($value->status == '1') 
@@ -304,6 +301,27 @@ $(document).ready(function(){
                     if(result.errors.status){
                         $( '#status-error' ).html( result.errors.status[0] );
                     }
+                    function fnExcelReport()
+                    {
+
+                        var tT = new XMLSerializer().serializeToString(document.querySelector('.table-responsive')); //Serialised table
+                        var tF = 'brand.xls'; //Filename
+                        var tB = new Blob([tT]); //Blub
+
+                        if(window.navigator.msSaveOrOpenBlob){
+                            //Store Blob in IE
+                            window.navigator.msSaveOrOpenBlob(tB, tF)
+                        }
+                        else{
+                            //Store Blob in others
+                            var tA = document.body.appendChild(document.createElement('a'));
+                            tA.href = URL.createObjectURL(tB);
+                            tA.download = tF;
+                            tA.style.display = 'none';
+                            tA.click();
+                            tA.parentNode.removeChild(tA)
+                        }
+                    }
                     if(result.errors.commission){
                         $( '#commission-error' ).html( result.errors.commission[0] );
                     }
@@ -318,58 +336,54 @@ $(document).ready(function(){
                         //  $('#done-message').addClass('hide');
                     }, 3000);
                     
-                    var findnorecord = $('#brandData tr.norecord').length;
-                    if(findnorecord > 0){
-                        $('#brandData tr.norecord').remove();
-                        }
+                //     var findnorecord = $('#brandData tr.norecord').length;
+                //     if(findnorecord > 0){
+                //         $('#brandData tr.norecord').remove();
+                //         }
                     
-                    var  brand_image = status = '';
-                    if(data.brand_image != null)
-                    {
-                        brandimage = data.brand_image;
-                    }
-                    if(data.status == 0)
-                    {
-                        status = 'Active';
-                    }
-                    else
-                    {
-                        status = 'Inactive';
-                    }
-                    if(data.created_at)
-                    {
-                        var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
-                        cdate = cdate.replace(':date', data.created_at);
+                //     var  brand_image = status = '';
+                //     if(data.brand_image != null)
+                //     {
+                //         brandimage = data.brand_image;
+                //     }
+                //     if(data.status == 0)
+                //     {
+                //         status = 'Active';
+                //     }
+                //     else
+                //     {
+                //         status = 'Inactive';
+                //     }
+                //     if(data.created_at)
+                //     {
+                //         var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
+                //         cdate = cdate.replace(':date', data.created_at);
 
-                    }
-                    var deleteurl = '{{ route("brand.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+brand_image+"</td>" +
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.name+"</td>" +
-                    "<td>"+data.grand_merchant_user_id  +"</td>"+
-                    "<td>"+data.category_id+"</td>" +
-                    "<td>"+data.description+"</td>" +
-                    "<td>"+data.status+"</td>" +
-                    "<td>"+data.commission+"</td>" +
-                    "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editBrand'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Brand?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    console.log(tr_str);
-                    $("#brandData tbody").prepend(tr_str);
-                    $("#addbrandform")[0].reset();
-                     window.location.reload();
+                //     }
+                //     var deleteurl = '{{ route("brand.delete", ":id") }}';
+                //     var imageurl = "{{asset('public/upload/brands/')}}";
+                //     deleteurl = deleteurl.replace(':id', data.id);
+                //     var tr_str = "<tr>"+
+                //     // "<td><img src="+brand_image+"></td>" +
+                //     "<td>"+brand_image+"</td>" +
+                //     "<td>"+data.unique_id+"</td>" +
+                //     "<td>"+data.name+"</td>" +
+                //     "<td>"+data.grand_merchant_user_id  +"</td>"+
+                //     "<td>"+data.category_id+"</td>" +
+                //     "<td>"+data.description+"</td>" +
+                //     "<td>"+data.status+"</td>" +
+                //     "<td>"+data.commission+"</td>" +
+                //     "<td>"+cdate+"</td>" +
+                //     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editBrand'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Brand?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                //     "</tr>";
+                //     console.log(tr_str);
+                //     $("#brandData tbody").prepend(tr_str);
+                //     $("#addbrandform")[0].reset();
+                //      window.location.reload();
                 }
                 else
                 {
                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-
-
-                    // $.each(result.errors, function(key, value){
-                    //     $('.alert-danger').show();
-                    //     $('.alert-danger').append('<li>'+value+'</li>');
-                    // });
                 }
                 }
             });
@@ -449,6 +463,28 @@ $(document).ready(function(){
     });
     
 });
+function fnExcelReport()
+{
+    $('thead tr th').last().remove();
+    var tT = new XMLSerializer().serializeToString(document.querySelector('#brandData')); //Serialised table
+    var tF = 'brand.xls'; //Filename
+    var tB = new Blob([tT]); //Blub
+    if(window.navigator.msSaveOrOpenBlob){
+        //Store Blob in IE
+        window.navigator.msSaveOrOpenBlob(tB, tF)
+    }
+    else{
+        //Store Blob in others
+        var tA = document.body.appendChild(document.createElement('a'));
+        tA.href = URL.createObjectURL(tB);
+        tA.download = tF;
+        tA.style.display = 'none';
+        tA.click();
+        tA.parentNode.removeChild(tA)
+    }
+
+    $('thead tr').last().append('<th>Action</th>');
+}
 </script>
 @endsection
 

@@ -6,13 +6,15 @@ use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
-use \Maatwebsite\Excel\Exporter;
+// use \Maatwebsite\Excel\Exporter;
 use App\Brand;
 use App\User;
 use App\Category;
+use App\Product;
 use Datatables;
-use Excel;
-use App\Exports\UserExport;
+use DB;
+// use Excel;
+// use App\Exports\UserExport;
 use Validator;
 
 class BrandController extends Controller
@@ -20,7 +22,7 @@ class BrandController extends Controller
     public function __construct(\Maatwebsite\Excel\Exporter $excel)
     {
         $this->middleware('auth');
-        $this->excel = $excel;
+        // $this->excel = $excel;
     }
     public function index(Request $request)
     {
