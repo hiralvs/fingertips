@@ -98,11 +98,24 @@ class ShopsandMallsController extends Controller
         $request->request->remove('lat');
         $request->request->remove('long');
         $request->request->remove('desc');
-        $input = $request->all();
-        $input['unique_id'] =  get_unique_id("shopsandmalls");
-        $input['category_id'] =  implode(",",$input['filter']);
-        $input['created_by'] =  $username ;
-        $input['type'] =  $request->type ;
+        $input = array(
+            'unique_id' => get_unique_id("shopsandmalls") ,
+            'name' => $request->name ,
+            'location' => $request->location ,
+            'latitude' => $request->latitude ,
+            'longitude' => $request->longitude ,
+            'openinghrs' => $request->openinghrs ,
+            'closinghrs' => $request->closinghrs ,
+            'contact' => $request->contact ,
+            'featured_mall' => $request->featured_mall ,
+            'type' => $request->layer ,
+            'category_id' => implode(",",$request->filter),
+            'created_by' => $username,
+            'property_admin_user_id' =>  $request->property_admin ,
+            'area_id' =>  $request->area ,
+            'description' =>  $request->description ,
+        );
+
         if ($request->hasFile('image')) {
 
             $image = $request->File('image');
@@ -161,6 +174,8 @@ class ShopsandMallsController extends Controller
         $categoryid = implode(",",$request->filter);
         $malls->name =  $request->name;
         $malls->location =  $request->location;
+        $malls->latitude =  $request->latitude;
+        $malls->longitude =  $request->longitude;
         $malls->openinghrs =  $request->openinghrs;
         $malls->closinghrs =  $request->closinghrs;
         $malls->contact =  $request->contact;

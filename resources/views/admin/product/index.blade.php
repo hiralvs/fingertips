@@ -357,6 +357,7 @@ $(document).ready(function(){
                         if(result.errors.name){
                             $( '#name-error' ).html( result.errors.name[0] );
                         }
+                        
                         if(result.errors.price){
                             $( '#price-error' ).html( result.errors.price[0] );
                         }

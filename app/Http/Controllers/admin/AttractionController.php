@@ -144,6 +144,8 @@ class AttractionController extends Controller
         $categoryid = implode(",",$request->category_id);
         $attraction->attraction_name =  $request->attraction_name;
         $attraction->location =  $request->location;
+        $attraction->latitude =  $request->latitude;
+        $attraction->longitude =  $request->longitude;
         $attraction->opening_time =  $request->opening_time;
         $attraction->closing_time =  $request->closing_time;
         $attraction->contact =  $request->contact;

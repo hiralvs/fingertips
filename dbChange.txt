@@ -26,4 +26,13 @@ ALTER TABLE `users` ADD `email_verification_token` VARCHAR(200) NULL DEFAULT NUL
 
 ALTER TABLE `trending_now` CHANGE `update_at` `updated_at` TIMESTAMP NULL DEFAULT NULL;
 
-ALTER TABLE `directory` CHANGE `description` `description` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+ALTER TABLE `shopsandmalls` ADD `lat` FLOAT NOT NULL AFTER `location`, ADD `long` FLOAT NOT NULL AFTER `lat`;
+
+ALTER TABLE `shopsandmalls` CHANGE `long` `longitude` FLOAT NOT NULL;
+
+ALTER TABLE `shopsandmalls` CHANGE `lat` `latitude` FLOAT NOT NULL;
+
+ALTER TABLE `events` ADD `latitude` FLOAT NOT NULL AFTER `location`, ADD `longitude` FLOAT NOT NULL AFTER `latitude`;
+
+ALTER TABLE `attractions` ADD `latitude` FLOAT NOT NULL AFTER `location`, ADD `longitude` FLOAT NOT NULL AFTER `latitude`
+

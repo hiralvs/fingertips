@@ -14,10 +14,15 @@ class ProductController extends Controller
     public function products(Request $request)
     {
         $url =env('APP_URL');
-        $products = Product::select('products.*',DB::raw("CONCAT('','$url/public/upload/products/',product_image) as product_image"))->get();
+        $page = $request->page ? $request->page : 1;
+        $limit = $request->limit?  $request->limit : 10;
+        $offset = ($page - 1) * $limit;
+        $products = Product::select('products.*',DB::raw("CONCAT('','$url/public/upload/products/',product_image) as product_image"))->offset($offset)->limit($limit)->get();
+        $totalrecords = Product::all()->count(); 
+        $totalpage = (int) ceil($totalrecords / $limit);
         if($products->count()>0)
         {
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$products];
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','total'=> $totalrecords,"total_page"=> $totalpage,"page"=> $page,"limit"=> $offset,'data'=>$products];
         }
         else
         {

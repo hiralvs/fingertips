@@ -13,4 +13,8 @@ class Events extends Model
     protected $table="events";
 
     public $sortable = ['event_name', 'location'];
+    public function notHavingImageInDb()
+    {
+        return (empty($this->image))?true:false;
+    }
 }

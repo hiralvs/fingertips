@@ -25,10 +25,10 @@
                     <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="btn btn-secondary" href="{{route('mallbrands')}}" tabindex="" >CLEAR</a>
+                    <a id="clear16" class="btn btn-secondary" href="{{route('attractionbrands')}}" tabindex="" >CLEAR</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addMallBrand" tabindex="">ADD NEW</a>
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addAttractionBrand" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
@@ -50,12 +50,12 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="brandstableData">
+                    <table class="table table-hover" id="attractionbrandstableData">
                       <thead>
                         <tr>
                             <th>@sortablelink('id')</th>
                             <th>@sortablelink('Name')</th>
-                            <th>@sortablelink('mallname','Shops and Malls')</th>
+                            <th>@sortablelink('attraction_name','Attraction Name')</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -66,21 +66,21 @@
                         <tr>
                           <td>{{$value->unique_id}}</td>
                           <td>{{$value->brandname}}</td>
-                          <td>{{$value->mallname}}</td>
+                          <td>{{$value->attraction_name}}</td>
                           <td>{{$value->status}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editMallBrands{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Brand?')" href="{{route('mallbrands.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editAttractionBrands{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Attraction?')" href="{{route('attractionbrands.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->
-                        <div id="editMallBrands{{$value->id}}" class="modal fade">
+                        <div id="editAttractionBrands{{$value->id}}" class="modal fade">
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit MallBrand</h1>
+                                        <h1 class="modal-title">Edit Attraction Brand</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
-                                        <form name="addMallBrandform" id="editMallBrandsform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
+                                        <form name="editAttractionBrandform" id="editAttractionBrandsform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
                                             @csrf
                                             <div class="row">
                                                 <div class="form-group col-md-4">
@@ -97,22 +97,22 @@
                                                      <span class="text-danger">
                                                         <strong class="brand_id-error"></strong>
                                                     </span>
-                                                    <input type="hidden" value="malls" name="type">
                                                 </div>   
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Malls and Shops</label>
+                                                    <label for="exampleInputStatus">Attraction Name</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
                                                     <select name="common_id" id="commonname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
-                                                        @if(!empty($common_id) && $common_id->count() > 0)
-                                                            @foreach ($common_id as $key => $pd)
-                                                                  <option value="{{$pd->id}}" {{ $value->common_id == $pd->id ? 'selected' : ''}} >{{$pd->name}}</option>
+                                                        @if(!empty($attraction) && $attraction->count() > 0)
+                                                            @foreach ($attraction as $key => $pd)
+                                                                  <option value="{{$pd->id}}" {{ $value->common_id == $pd->id ? 'selected' : ''}} >{{$pd->attraction_name}}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
                                                     <span class="text-danger">
                                                         <strong class="common_id-error"></strong>
                                                     </span>
+                                                    <input type="hidden" value="attraction" name="type">
                                                 </div> 
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Status</label>
@@ -127,7 +127,7 @@
                                                     </span>
                                                 </div> 
                                             </div>
-                                            <button type="button" class="btn btn-primary mr-2 editMallBrandsSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
+                                            <button type="button" class="btn btn-primary mr-2 editAttractionBrandsSubmit" data-id="{{$value->id}}" id="editAttractionBrandsSubmit">Submit</button>
                                             <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                                         </form>
                                     </div>
@@ -170,18 +170,13 @@ $(document).ready(function(){
      setTimeout(function(){
            $("h4.mess").remove();
         }, 5000 );
-    $(document).on('click','.editMallBrandsSubmit',function(e){
+    $(document).on('click','.editAttractionBrandsSubmit',function(e){
        
         var id = $(this).data('id');
-        var formData = new FormData($("#editMallBrandsform"+id)[0]);
 
-            $( '.brand_id-error' ).html( "" );
-            $( '.common_id-error' ).html( "" );
-            $( '.status-error' ).html( "" ); 
-        
-        // var message = CKEDITOR.instances['description'+id].getData();
-
-        // formData.append('description',message);
+        $( '.brand_id-error' ).html( "" );
+        $( '.common_id-error' ).html( "" );
+        $( '.status-error' ).html( "" ); 
         var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
@@ -190,12 +185,9 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('mallbrands.update') }}",
+                url: "{{ route('attractionbrands.update') }}",
                 method: 'post',
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: formData,
+                data: $("#editAttractionBrandsform"+id).serialize(),
                 success: function(result){
                     if(result.errors) {
                     $(".statusMsg").hide();
@@ -213,7 +205,7 @@ $(document).ready(function(){
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
-                        $('#editMallBrands'+id).modal('hide');
+                        $('#editAttractionBrands'+id).modal('hide');
                         window.location.reload();
                     }, 3000);
                 }
@@ -224,8 +216,7 @@ $(document).ready(function(){
                 }
             });
         });
-    $('#addMallBrandSubmit').click(function(e){
-            var formData = new FormData($("#addMallBrandform")[0]);
+    $('#addAttractionBrandSubmit').click(function(e){
             
             $( '#brand_id-error' ).html( "" );
             $( '#common_id-error' ).html( "" );
@@ -238,12 +229,9 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('addMallBrand') }}",
+                url: "{{ route('addAttractionBrand') }}",
                 method: 'post',
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: formData,
+                data: $("#addAttractionBrandform").serialize(),
                 success: function(result){
                 if(result.errors) {
                     $(".statusMsg").hide();
@@ -264,15 +252,15 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
-                        $("#addMallBrandform")[0].reset();
-                        $('#addMallBrand').modal('hide');
+                        $("#addAttractionBrandform")[0].reset();
+                        $('#addAttractionBrand').modal('hide');
                         window.location.reload();
                     }, 3000);
 
-                    $("#addbrandform")[0].reset();
+                    $("#addattractionform")[0].reset();
                      window.location.reload();
                     
-                    $("#addMallBrandform")[0].reset();
+                    $("#addAttractionBrandform")[0].reset();
                 }
                 else
                 {
@@ -288,30 +276,30 @@ $(document).ready(function(){
                 }
             });       
         $.ajax({
-                url: "{{route('mallbrands.search')}}",
+                url: "{{route('attractionbrands.search')}}",
                 method: 'post',
-                data: {'search':$("#searchtext").val(),'type' : 'malls'},
+                data: {'search':$("#searchtext").val(),'type' : 'attraction'},
                 success: function(result){
                 if(result.status == true)
                 {
                     var data = result.data;
                     
                     
-                    var findnorecord = $('#brandstableData tr.norecord').length;
+                    var findnorecord = $('#attractionbrandstableData tr.norecord').length;
                     if(findnorecord > 0){
-                        $('#brandstableData tr.norecord').remove();
+                        $('#attractionbrandstableData tr.norecord').remove();
                     }
                     
-                    var deleteurl = '{{ route("mallbrands.delete", ":id") }}';
+                    var deleteurl = '{{ route("attractionbrands.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.brandname+"</td>" +
-                    "<td>"+data.mallname+"</td>" +
+                    "<td>"+data.attraction_name+"</td>" +
                     "<td>"+data.status+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMallBrands'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this BrandMall?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editAttractionBrands'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Brand?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    $("#brandstableData tbody").html(tr_str);
+                    $("#attractionbrandstableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else
@@ -325,7 +313,7 @@ $(document).ready(function(){
 function fnExcelReport()
 {
     $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#brandstableData')); //Serialised table
+    var tT = new XMLSerializer().serializeToString(document.querySelector('#AttractiontableData')); //Serialised table
     var tF = 'report.xls'; //Filename
     var tB = new Blob([tT]); //Blub
     if(window.navigator.msSaveOrOpenBlob){
@@ -348,15 +336,15 @@ function fnExcelReport()
 @endsection
 
 <!-- Modal HTML Markup -->
-<div id="addMallBrand" class="modal fade">
+<div id="addAttractionBrand" class="modal fade">
     <div class="modal-dialog  modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add MallBrand</h1>
+                <h1 class="modal-title">Add AttractionBrand</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
-                <form name="addMallBrandform" id="addMallBrandform" role="form" method="POST" enctype= "multipart/form-data">
+                <form name="addAttractionBrandform" id="addAttractionBrandform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
                         
@@ -373,15 +361,17 @@ function fnExcelReport()
                             <span class="text-danger">
                                 <strong id="brand_id-error"></strong>
                             </span>
-                            <input type="hidden" value="malls" name="type">
+                            <input type="hidden" value="attraction" name="type">
                         </div>   
                         <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Malls and Shops</label>
+                            <label for="exampleInputStatus">Attraction Name</label>
                             <select name="common_id" id="commonname" class="form-control">
                                 <option value=""> -- Select One --</option>
-                                @foreach ($common_id as $common)
-                                    <option value="{{ $common->id }}">{{ $common->name }}</option>
-                                @endforeach
+                                @if(!empty($attraction) && $attraction->count() > 0)
+	                                @foreach ($attraction as $common)
+	                                    <option value="{{ $common->id }}">{{ $common->attraction_name }}</option>
+	                                @endforeach
+	                            @endif
                             </select>
                             <span class="text-danger">
                                 <strong id="common_id-error"></strong>
@@ -399,7 +389,7 @@ function fnExcelReport()
                             </span>
                         </div> 
                     </div>
-                    <button type="button" class="btn btn-primary mr-2" id="addMallBrandSubmit">Submit</button>
+                    <button type="button" class="btn btn-primary mr-2" id="addAttractionBrandSubmit">Submit</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                 </form>
             </div>

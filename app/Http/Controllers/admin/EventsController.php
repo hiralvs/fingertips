@@ -144,8 +144,9 @@ class EventsController extends Controller
     /* Function used to update event */
     public function update(Request $request)
     {
-         $validator = Validator::make($request->all(), [
-            // 'event_image' => 'required',
+        $events = Events::find($request->id);
+
+        $validator = Validator::make($request->all(), [
             'event_name' => 'required|max:255',
             'event_start_date' => 'required',
             'start_time' => 'required',
@@ -162,10 +163,15 @@ class EventsController extends Controller
             return Response()->json(['errors' => $validator->errors()]);
         }
 
-        $events = Events::find($request->id);
+        if ($events->notHavingImageInDb()){
+            $rules['event_image'] = 'required|image';
+        }
+
         $categoryid = implode(",",$request->category_id);
         $events->event_name =  $request->event_name;
         $events->location =  $request->location;
+        $events->latitude =  $request->latitude;
+        $events->longitude =  $request->longitude;
         $events->event_start_date =  $request->event_start_date;
         $events->event_end_date =  $request->event_end_date;
         $events->start_time =  $request->start_time;
