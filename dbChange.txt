@@ -36,3 +36,7 @@ ALTER TABLE `events` ADD `latitude` FLOAT NOT NULL AFTER `location`, ADD `longit
 
 ALTER TABLE `attractions` ADD `latitude` FLOAT NOT NULL AFTER `location`, ADD `longitude` FLOAT NOT NULL AFTER `latitude`
 
+ALTER TABLE `sliders` CHANGE `image_id` `unique_id` INT(20) NOT NULL;
+
+ALTER TABLE `photos` CHANGE `image_id` `unique_id` INT(20) NOT NULL;
+

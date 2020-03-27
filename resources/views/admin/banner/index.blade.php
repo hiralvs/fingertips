@@ -285,7 +285,7 @@ $('#addBannerSubmit').click(function(e){
                         bannerpic = data.bannerimage;
                     }
                     var deleteurl = '{{ route("banner.delete", ":id") }}';
-                    var imageurl = "{{asset('public/upload/baner/')}}";
+                    var imageurl = "{{asset('public/upload/banners/')}}";
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
                     // "<td>"+data.category_name+"</td>" +

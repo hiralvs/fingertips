@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 use App\ShopsandMalls;
 use App\Events;
 use App\Attractions;
@@ -60,9 +61,9 @@ class CommonSliderController extends Controller
         {
             $return_data['title'] = trans('Attraction Slider');
             $return_data['meta_title'] = trans('Attraction Slider');
-            $return_data['data'] = Slider::select('sliders.*','attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'brands_connectionsliders.common_id')->where('sliders.type','attraction')->orderBy($sort, $direction)->sortable()->paginate($perpage);
+            $return_data['data'] = Slider::select('sliders.*','attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'sliders.common_id')->where('sliders.type','attraction')->orderBy($sort, $direction)->sortable()->paginate($perpage);
             $return_data['attraction'] = Attractions::select('id', 'attraction_name')->get();
-            return View('admin.attractionbrands.index', $return_data)->render(); 
+            return View('admin.attractionslider.index', $return_data)->render(); 
         }
     }//
 
@@ -70,28 +71,71 @@ class CommonSliderController extends Controller
     public function addCommonSlider(Request $request)
     {
         $user = Auth::user();
-        $validator = $this->validate(
-        $request, 
-        [   
-            'common_id' => 'required',
-            'image'=> 'required'
-        ],
-        [   
-            'common_id.required'    => 'Please Select Mall or Shop Name, Thank You.'
-        ]
-    );
+        if($request->type == 'malls')
+        {
+        	$validator = Validator::make($request->all(), [
+	            'mallname' => 'required',
+	            'image' => 'required|image',
+	        ]);
 
-        if($validator->fails()){
-            return Response()->json(['errors' => $validator->errors()]);      
+	        if($validator->fails()){
+	            return Response()->json(['errors' => $validator->errors()]);      
+	        }	
+	        $common_name =  $request->mallname;
         }
+
+        if($request->type == 'event')
+        {
+        	$validator = Validator::make($request->all(), [
+	            'eventname' => 'required',
+	            'image' => 'required|image',
+	        ]);
+
+	        if($validator->fails()){
+	            return Response()->json(['errors' => $validator->errors()]);      
+	        }	
+	        $common_name =  $request->eventname;
+        }
+
+        if($request->type == 'attraction')
+        {
+        	$validator = Validator::make($request->all(), [
+	            'attractionname' => 'required',
+	            'image' => 'required|image',
+	        ]);
+
+	        if($validator->fails()){
+	            return Response()->json(['errors' => $validator->errors()]);      
+	        }	
+	        $common_name =  $request->attractionname;
+        }
+        
         $username = "";
         if(!empty($user))
         {
             $username = $user->name;
         }
         $request->request->remove('_token');
-        $request->request->remove('desc');
-        $input = $request->all();
+        $input = array(
+        	'unique_id' => get_unique_id("sliders"),
+        	'common_id'=>$common_name,
+        	'type'=>  $request->type,
+        	'created_by'=>$username ,
+
+        );
+
+        if ($request->hasFile('image')) {
+
+            $image = $request->File('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+
+            $path = public_path('upload/sliders/' . $filename);
+            // $path = public_path('upload/' . $filename);
+
+            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            $input['slider_image_name'] = $filename;
+        }
+
 
         Slider::unguard();
         $check = Slider::create($input)->id;
@@ -121,28 +165,58 @@ class CommonSliderController extends Controller
 
         $query = Slider::where('id',$request->id);
         $query->delete();
-        return redirect()->route($lastsegment)->with('success', 'Brand Deleted Successfully');
+        return redirect()->route($lastsegment)->with('success', 'Slider Deleted Successfully');
     }
     public function update(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'brand_id' => 'required',
-            'common_id' => 'required',
-            'status' => 'required',
-        ]);
+        $slider = Slider::find($request->id);
+
+        if($request->type == 'malls')
+        {
+        	$validator = Validator::make($request->all(), [
+	            'mallname' => 'required',
+	        ]);
+        	$common_name =  $request->mallsnname;
+        }
+        if($request->type == 'event')
+        {
+        	$validator = Validator::make($request->all(), [
+	            'eventname' => 'required',
+	        ]);
+   	        $common_name =  $request->eventname;
+        }
+        if($request->type == 'attraction')
+        {
+        	$validator = Validator::make($request->all(), [
+            'attractionname' => 'required',
+       	 	]);
+ 	        $common_name =  $request->attractionname;
+        }        
+
+        if ($slider->notHavingImageInDb()){
+            $rules['image'] = 'required|image';
+        }
 
         if ($validator->fails()) {
             return Response()->json(['errors' => $validator->errors()]);
         }
 
+        $slider->common_id = $common_name ;
+        $slider->type = $request->type;
+          if ($request->hasFile('image')) {
 
-        $slider = Slider::find($request->id);
-        $slider->brand_id = $request->brand_id;
-        $slider->common_id = $request->common_id;
-        $slider->status = $request->status;
-        $brand->save();
+            $image = $request->File('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+
+            $path = public_path('upload/sliders/' . $filename);
+
+            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            $slider->slider_image_name = $filename;
+        }
+
+        $slider->save();
        
-        if (!empty($brand)) {
+        if (!empty($slider)) {
             $data = Slider::find($request->id);
             $arr = array('msg' => 'Slider Image Updated Successfully', 'status' => true,'data'=> $data);
         } else {
@@ -157,33 +231,28 @@ class CommonSliderController extends Controller
         $type = $request->input('type');
         if($type == 'attraction')
         {
-            $brandconnection = Slider::select('Slider.*', 'attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'Slider.common_id')->where(function ($query) {
-                $query->where('Slider.type', 'attraction');
+            $brandconnection = Slider::select('sliders.*', 'attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'sliders.common_id')->where(function ($query) {
+                $query->where('sliders.type', 'attraction');
                 })->where(function ($query)   use ($search){
-                    $query->orWhere('Slider.unique_id','=',"%{search}%")
-                    ->orWhere('brand_id', 'LIKE',"%{$search}%")
+                    $query->orWhere('sliders.unique_id','=',"%{search}%")
                     ->orWhere('attraction_name', 'LIKE',"%{$search}%");
                 })->paginate();
         }
         if($type == 'malls')
         {
-            $brandconnection = Brand_ConnectionSlider::select('Slider.*', 'shopsandmalls.name as mallname')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'Slider.common_id')->where(function ($query) {
-                $query->where('Slider.type', 'malls');
+            $brandconnection = Slider::select('sliders.*', 'shopsandmalls.name as mallname')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'sliders.common_id')->where(function ($query) {
+                $query->where('sliders.type', 'malls');
                 })->where(function ($query)   use ($search){
-                    $query->where('brands.name','LIKE',"%{$search}%")
-                    ->orWhere('Slider.unique_id','=',"%{search}%")
-                    ->orWhere('brand_id', 'LIKE',"%{$search}%")
+                    $query->where('sliders.unique_id','=',"%{search}%")
                     ->orWhere('shopsandmalls.name', 'LIKE',"%{$search}%");
                 })->paginate();
         }
         if($type == 'event')
         {
-            $brandconnection = Slider::select('Slider.*', 'event_name')->leftjoin('events', 'events.id', '=', 'Slider.common_id')->where(function ($query) {
-                $query->where('Slider.type', 'event');
+            $brandconnection = Slider::select('sliders.*', 'event_name')->leftjoin('events', 'events.id', '=', 'sliders.common_id')->where(function ($query) {
+                $query->where('sliders.type', 'event');
                 })->where(function ($query)   use ($search){
-                    $query->where('brands.name','LIKE',"%{$search}%")
-                    ->orWhere('Slider.unique_id','=',"%{search}%")
-                    ->orWhere('brand_id', 'LIKE',"%{$search}%")
+                    $query->where('sliders.unique_id','=',"%{search}%")
                     ->orWhere('event_name', 'LIKE',"%{$search}%");
                 })->paginate();
         }        

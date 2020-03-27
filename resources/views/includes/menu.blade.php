@@ -57,7 +57,8 @@
                   </a>
                   <div class="submenu">
                       <ul class="submenu-item">
-                        <li class="nav-item"><a class="nav-link" href="{{route('eventbrands')}}">Brands</a></li>                       
+                        <li class="nav-item"><a class="nav-link" href="{{route('eventbrands')}}">Brands</a></li>   
+                        <li class="nav-item"><a class="nav-link" href="{{route('eventslider')}}">Slider Image</a></li>                    
                       </ul>
                   </div>
               </li>
@@ -69,7 +70,8 @@
                   </a>
                   <div class="submenu">
                       <ul class="submenu-item">
-                        <li class="nav-item"><a class="nav-link" href="{{route('attractionbrands')}}">Brands</a></li>                       
+                        <li class="nav-item"><a class="nav-link" href="{{route('attractionbrands')}}">Brands</a></li>         
+                        <li class="nav-item"><a class="nav-link" href="{{route('attractionslider')}}">Slider Image</a></li>              
                       </ul>
                   </div>
               </li>

@@ -11,4 +11,9 @@ class Slider extends Model
 {
     use Sortable;
     use SoftDeletes;
+
+    public function notHavingImageInDb()
+    {
+        return (empty($this->image))?true:false;
+    }
 }
