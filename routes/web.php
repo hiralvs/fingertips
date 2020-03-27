@@ -227,8 +227,12 @@ Route::post('highlightssearch', array('as' => 'highlights.search', 'routegroup' 
 
 Route::get('/flashsale', 'admin\FlashsaleController@index')->name('flashsale');
 
+Route::get('/photos', 'admin\CommonPhotosController@index')->name('photos');
+Route::post('/addPhotos', 'admin\CommonPhotosController@addPhotos')->name('addPhotos');
+Route::get('photosdelete/{id}', array('as' => 'photos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
+Route::post('photosupdate', array('as' => 'photos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@update'));
+
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
 // Route::get('/orders', 'admin\LoginPrivacyController@index')->name('orders');
 // Route::get('/sliderimage', 'admin\LoginPrivacyController@index')->name('sliderimage');
 // Route::get('/mapimage', 'admin\LoginPrivacyController@index')->name('mapimage');
-// Route::get('/photos', 'admin\LoginPrivacyController@index')->name('photos');

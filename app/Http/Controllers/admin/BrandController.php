@@ -49,10 +49,12 @@ class BrandController extends Controller
         } else {
             $direction='desc';
         }
-
-        $return_data['data'] = brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"))->orderBy($sort,$direction)->sortable()->paginate($perpage);
-        $return_data['category_id'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
+        $return_data['data'] = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"))->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        
+        $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
+        
         $return_data['grand_merchant_user_id'] = User::select('id', 'name')->where('role','brand_merchant')->get();
+        
         return View('admin.brand.index', $return_data)->render();
     }
 
@@ -67,6 +69,7 @@ class BrandController extends Controller
         if($validator->fails()){
             return Response()->json(['errors' => $validator->errors()]);      
         }
+    
         $request->request->remove('_token');
         $input = $request->all();
         $input['unique_id'] =  get_unique_id('brands');
@@ -82,6 +85,7 @@ class BrandController extends Controller
             Image::make($image->getRealPath())->resize(50, 50)->save($path);
             $input['brand_image'] = $filename;
         }
+        Brand::unguard();
         $check = Brand::create($input)->id;
 
         $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
