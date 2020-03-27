@@ -145,7 +145,7 @@ class EventsController extends Controller
     public function update(Request $request)
     {
          $validator = Validator::make($request->all(), [
-            'event_image' => 'required',
+            // 'event_image' => 'required',
             'event_name' => 'required|max:255',
             'event_start_date' => 'required',
             'start_time' => 'required',

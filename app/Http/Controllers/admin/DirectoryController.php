@@ -51,40 +51,35 @@ class DirectoryController extends Controller
         } else {
             $direction='asc';
         }
-        $return_data['data'] = Directory::select('directory.*','category.id as category_id' ,'settings.value as floorname', 'category_name')->leftjoin('category', 'directory.category_id', '=', 'category.id')
+        $return_data['data'] = Directory::select('directory.*', 'category.id as category_id', 'settings.value as floorname', 'category_name')->leftjoin('category', 'directory.category_id', '=', 'category.id')
 
-        ->leftjoin('settings', 'settings.id', '=', 'directory.floor')    
+        ->leftjoin('settings', 'settings.id', '=', 'directory.floor')
         ->orderBy($sort, $direction)->sortable()->paginate($perpage);
         $return_data['category_name'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         $return_data['floor'] = Settings::where('type', 'floor')->orderBy('id', 'asc')->get();
 
-        $foods = Directory::join('directory.*', 'category.id','=', 'directory.category_id')
-         ->join('settings','settings.id','=','directory.floor')
-         ->where('directory.category_id', 'LIKE', '%' . $search . '%');
+        $diretory = Directory::select('directory.*', 'category.category_name as category_id', 'settings.value as floorname', 'category_name')
+        ->leftjoin('category', 'directory.category_id', '=', 'category.id')
+        ->leftjoin('settings', 'settings.floor', '=', 'directory.floor');
 
         // echo "<pre>";
         // print_r( $return_data['data']);
         // exit;
         return View('admin.directory.index', $return_data)->render();
     }
-    public function addDirectory(Request $request) {
-        //     $validator = Validator::make($request->all(), [
-        //     'event_image' => 'required|image',
-        //     'event_name' => 'required|max:255',
-        //     'event_start_date' => 'required',
-        //     'start_time' => 'required',
-        //     'event_end_date' => 'required|after:event_start_date',
-        //     'end_time' => 'required',
-        //     'contact' => 'required|numeric',
-        //     'property_admin_user_id' => 'required',
-        //     'category_id' => 'required',
-        //     'area_id' => 'required',
-        //     'featured_event' => 'required',
-        // ]);
+    public function addDirectory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'floor' => 'required',
+            'unit_number' => 'required',
+        ]);
 
-        // if ($validator->fails()) {
-        //     return Response()->json(['errors' => $validator->errors()]);
-        // }
+
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
+
 
 
         $user = Auth::user();
@@ -109,38 +104,31 @@ class DirectoryController extends Controller
             $arr = array('msg' => 'Directory Added Successfully', 'status' => true,'data'=> $data);
         }
         return Response()->json($arr);
-     }
-     /* Function used to delete event */
+    }
+    /* Function used to delete event */
     public function delete(Request $request)
     {
-        $query = Directory::where('id',$request->id);
+        $query = Directory::where('id', $request->id);
         $query->delete();
         return redirect()->route('directory')->with('success', 'Directory Deleted Successfully');
     }
-        /* Function used to update event */
+    /* Function used to update event */
     public function update(Request $request)
     {
-        //  $validator = Validator::make($request->all(), [
-        //     'event_image' => 'required',
-        //     'event_name' => 'required|max:255',
-        //     'event_start_date' => 'required',
-        //     'start_time' => 'required',
-        //     'event_end_date' => 'required',
-        //     'end_time' => 'required',
-        //     'contact' => 'required',
-        //     'property_admin_user_id' => 'required',
-        //     'category_id' => 'required',
-        //     'area_id' => 'required',
-        //     'featured_event' => 'required',
-        // ]);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'floor' => 'required',
+            'unit_number' => 'required',
+        ]);
 
-        // if ($validator->fails()) {
-        //     return Response()->json(['errors' => $validator->errors()]);
-        // }
+        if ($validator->fails()) {
+            return Response()->json(['errors' => $validator->errors()]);
+        }
 
         $events = Directory::find($request->id);
         $events->name =  $request->name;
-        $events->category_id = $request->category_id;;
+        $events->category_id = $request->category_id;
+        ;
         $events->floor = $request->floor;
         $events->unit_number = $request->unit_number;
         $events->contact = $request->contact;
@@ -160,29 +148,24 @@ class DirectoryController extends Controller
         return Response()->json($arr);
     }
     /* Function user to search user data */
-     public function search(Request $request)
-     {
+    public function search(Request $request)
+    {
         $search = $request->input('search');
      
-        $events = Directory::where('name','LIKE',"%{$search}%")
-         ->orWhere('unique_id', 'LIKE',"%{$search}%")
-         ->orWhere('category_id', 'LIKE',"%{$search}%")
-         ->orWhere('floor', 'LIKE',"%{$search}%")
-         ->orWhere('openinghrs', 'LIKE',"%{$search}%")
-         ->orWhere('description', 'LIKE',"%{$search}%")
-         ->paginate();
-
-        
+            $diretory = Directory::select('directory.*', 'category.category_name as category_id', 'settings.value as floorname', 'category_name')
+            ->leftjoin('category', 'directory.category_id', '=', 'category.id')
+            ->leftjoin('settings', 'settings.id', '=', 'directory.floor')
+            ->where('name','LIKE',"%{$search}%")
+            ->orWhere('unique_id', 'LIKE',"%{$search}%")
+            ->orWhere('openinghrs', 'LIKE',"%{$search}%")
+            ->orWhere('description', 'LIKE',"%{$search}%")
+            ->paginate(); 
+        if ($diretory) {
+            $arr = array('status' => true,"data"=>$diretory[0]);
+        } else {
+            $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);
+        }
  
-        if($events)
-         {
-             $arr = array('status' => true,"data"=>$events[0]);    
-         }
-         else{
-             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
-         }
- 
-         return Response()->json($arr);
- 
-     }
+        return Response()->json($arr);
+    }
 }

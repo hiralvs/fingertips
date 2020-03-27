@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 use DB;
 // use Excel;
 use App\Exports\BrandsExport;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\admin;
 
 

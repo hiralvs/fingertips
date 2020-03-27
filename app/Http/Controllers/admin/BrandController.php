@@ -50,7 +50,7 @@ class BrandController extends Controller
             $direction='desc';
         }
         $return_data['data'] = brand::orderBy($sort,$direction)->sortable()->paginate($perpage);
-        $return_data['category_id'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
+        $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         $return_data['grand_merchant_user_id'] = User::select('id', 'name')->where('role','brand_merchant')->get();
         return View('admin.brand.index', $return_data)->render();
     }
@@ -69,6 +69,8 @@ class BrandController extends Controller
         $request->request->remove('_token');
         $input = $request->all();
         $input['unique_id'] =  get_unique_id('brands');
+        $input['category_id'] =  implode(",", $input['category_id']);
+
         if ($request->hasFile('brand_image')) {
 
             $image = $request->File('brand_image');
@@ -95,10 +97,10 @@ class BrandController extends Controller
         return redirect()->route('brand')->with('success', 'Brand Deleted Successfully');
     }
 
-    public function edit(Request $request){
-        $query = Brand::where('id',$request->id);
-        return View('admin.brand.edit',$query)->render();
-    }
+    // public function edit(Request $request){
+    //     $query = Brand::where('id',$request->id);
+    //     return View('admin.brand.edit',$query)->render();
+    // }
  public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -112,9 +114,10 @@ class BrandController extends Controller
         }
 
         $brand = Brand::find($request->id);
+        $categoryid = implode(",",$request->category_id);
         $brand->name = $request->name;
         $brand->grand_merchant_user_id = $request->grand_merchant_user_id;
-        $brand->category_id = $request->category_id;
+        $brand->category_id =  $categoryid;
         $brand->status = $request->status;
         $brand->commission = $request->commission;
     
@@ -128,6 +131,7 @@ class BrandController extends Controller
             Image::make($image->getRealPath())->resize(50, 50)->save($path);
             $brand->brand_image = $filename;
         }
+        Brand::unguard();
         $brand->save();
        
         if (!empty($brand)) {

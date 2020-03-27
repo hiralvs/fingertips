@@ -106,9 +106,6 @@
                                                             <option value="{{ $cat->id }}"  {{ $value->category_id ==$cat->id ? 'selected' : ''}}>{{ $cat->category_name }}</option>
                                                         @endforeach
                                                     </select>
-                                                    <span class="text-danger">
-                                                            <strong class="category_id-error"></strong>
-                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4 ">
                                                     <label for="exampleInputName"> Floor </label>
@@ -118,6 +115,9 @@
                                                             <option value="{{$values->id}}" {{$value->floor == $values->id ? 'selected' : ''}}>{{ $values->value}}</option>
                                                         @endforeach
                                                     </select>
+                                                    <span class="text-danger">
+                                                        <strong class="floor-error"></strong>
+                                                    </span>
                                                 </div>
                                             </div>
                                         <div class="row">
@@ -126,31 +126,22 @@
                                                 <input type="text" required class="form-control unit_number"  id="unit_number" value="{{$value->unit_number}}" name="unit_number">
                                                 <input type="hidden" name="id" value="{{$value->id}}">
                                                 <span class="text-danger">
-                                                    <strong id="unit_number-error"></strong>
+                                                    <strong class="unit_number-error"></strong>
                                                 </span>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleSelectGender">Contact Number</label>
                                                 <input type="text" class="form-control contact" id="contact" value="{{$value->contact}}" name="contact" placeholder="Contact">
-                                                <span class="text-danger">
-                                                    <strong class="contact-error"></strong>
-                                                </span>
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputPassword">Opening Hours</label>
                                                 <input type="text" class="form-control openinghrs" value="{{$value->openinghrs}}"  id="openinghrs" name="openinghrs" placeholder="Opening Houres">
-                                                <span class="text-danger">
-                                                    <strong class="openinghrs-error"></strong>
-                                                </span>
                                             </div>                                            
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputPassword">Closing Hours</label>
                                                 <input type="text" class="form-control closinghrs" value="{{$value->closinghrs}}"  id="closinghrs" name="closinghrs" placeholder="Closing Houres">
-                                                <span class="text-danger">
-                                                    <strong class="closinghrs-error"></strong>
-                                                </span>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -206,8 +197,10 @@ $(document).ready(function(){
 
         formData.append('description',message);
 
-        // $( '.title-error' ).html( "" );
-            // $( '.url-error' ).html( "" );
+            $( '.name-error' ).html( "" );
+            $( '.floor-error' ).html( "" );
+            $( '.unit_number-error' ).html( "" );
+
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -222,15 +215,18 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
-                // if(result.errors) {
-                //     $(".statusMsg").hide();
-                //     if(result.errors.title){
-                //         $( '.title-error' ).html( result.errors.title[0] );
-                //     }
-                //     if(result.errors.url){
-                //         $( '.url-error' ).html( result.errors.url[0] );
-                //     }
-                // }
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.name){
+                        $( '.name-error' ).html( result.errors.name[0] );
+                    }
+                    if(result.errors.floor){
+                        $( '.floor-error' ).html( result.errors.floor[0] );
+                    }
+                    if(result.errors.unit_number){
+                        $( '.unit_number-error' ).html( result.errors.unit_number[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
@@ -250,9 +246,9 @@ $(document).ready(function(){
             var formData = new FormData($("#addDirectoryform")[0]);       
             var message = CKEDITOR.instances['description'].getData();
             console.log(message);         
-            // $( '#image-error' ).html( "" );
-            // $( '#title-error' ).html( "" );
-            // $( '#url-error' ).html( "" );
+            $( '#name-error' ).html( "" );
+            $( '#floor-error' ).html( "" );
+            $( '#unit_number-error' ).html( "" );
             formData.append('description',message);
             e.preventDefault();
             $.ajaxSetup({
@@ -268,18 +264,18 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
-                // if(result.errors) {
-                //     $(".statusMsg").hide();
-                //     if(result.errors.image){
-                //         $( '#image-error' ).html( result.errors.image[0] );
-                //     }
-                //     if(result.errors.title){
-                //         $( '#title-error' ).html( result.errors.title[0] );
-                //     }
-                //     if(result.errors.url){
-                //         $( '#url-error' ).html( result.errors.url[0] );
-                //     }
-                // }
+                if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.name){
+                        $( '#name-error' ).html( result.errors.name[0] );
+                    }
+                    if(result.errors.floor){
+                        $( '#floor-error' ).html( result.errors.floor[0] );
+                    }
+                    if(result.errors.unit_number){
+                        $( '#unit_number-error' ).html( result.errors.unit_number[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     var data = result.data.sponsors;
@@ -327,7 +323,7 @@ $(document).ready(function(){
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.name+"</td>" +
                     "<td>"+data.category_id+"</td>"+
-                    "<td>"+data.floor+"</td>" +
+                    "<td>"+data.floorname+"</td>" +
                     "<td>"+data.unit_number+"</td>" +
                     "<td>"+data.contact+"</td>" +
                     "<td>"+data.openinghrs+"</td>" +
@@ -375,9 +371,6 @@ $(document).ready(function(){
                                     <option value="{{ $category->id }}">{{ $category->category_name}}</option>
                                 @endforeach 
                             </select>
-                            <span class="text-danger">
-                                <strong id="category_name-error"></strong>
-                            </span>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputName">Floor</label>
@@ -404,26 +397,17 @@ $(document).ready(function(){
                             <label for="exampleInputPassword">Contact</label>
                             <input type="text" class="form-control" id="contact" name="contact" placeholder="Contact">
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                            <span class="text-danger">
-                                <strong id="contact-error"></strong>
-                            </span>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputPassword">Opening Hours</label>
                             <input type="text" class="form-control timepicker" id="openinghrs" name="openinghrs" placeholder="Opening Houres">
                             <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                            <span class="text-danger">
-                                <strong id="openinghrs-error"></strong>
-                            </span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="exampleSelectGender">Closing Hours</label>
                             <input type="text" class="form-control timepicker" id="closinghrs" name="closinghrs" placeholder="Closing Hours">
-                            <span class="text-danger">
-                                <strong id="closinghrs-error"></strong>
-                            </span>
                         </div>
                     </div>
                     <div class="row">

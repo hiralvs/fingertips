@@ -48,14 +48,9 @@ class RewardsController extends Controller
         $search = $request->input('search');
         $rewards = Rewards::select('users.id', 'users.name', 'users.created_at', 'rewards.*')->leftjoin('users', 'users.id', '=', 'rewards.user_id')->where('users.name','LIKE',"%{$search}%")
 
-        // $rewards = Rewards::where('user_id','LIKE',"%{$search}%")
          ->orWhere('earned', 'LIKE',"%{$search}%")
-        //  ->orWhere('contact', 'LIKE',"%{$search}%")
-        //  ->orWhere('featured_event', 'LIKE',"%{$search}%")
          ->paginate();
 
-        
- 
         if($rewards)
          {
              $arr = array('status' => true,"data"=>$rewards[0]);    
@@ -63,8 +58,6 @@ class RewardsController extends Controller
          else{
              $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
          }
- 
          return Response()->json($arr);
- 
-     }
+    }
 }

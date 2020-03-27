@@ -26,9 +26,6 @@
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="clear16" class="btn btn-secondary" href="{{route('rewards')}}" tabindex="" >CLEAR</a>
                 </div> 
-                {{-- <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addShopsandMalls" tabindex="">ADD NEW</a>
-                </div> --}}
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
                 </div>             
@@ -66,38 +63,10 @@
                              <td>{{$value->earned}}</td>
                              <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                              
-                            <td><a class="edit open_modal" data-toggle="modal" data-target="#editRewards{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a>
+                            <td>
                                 <a class="delete" onclick="return confirm('Are you sure you want to delete this Reward?')" href="{{route('rewards.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
-                        <!-- Edit Modal HTML Markup -->
-                        <div id="editRewards{{$value->id}}" class="modal fade">
-                            <div class="modal-dialog  modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title">Edit Tax</h1>
-                                    </div>
-                                    <div class="modal-body">
-                                    <p class="statusMsg"></p>
-                                        <form name="addbrandform" id="editrewardsform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
-                                                @csrf
-                                            <div class="row">
-                                                <div class="form-group col-md-6 title">
-                                                    <label for="exampleInputName"> Tax Percentage </label>
-                                                    <input type="text" class="form-control value" required id="value" value="{{$value->value}}" name="value" placeholder="Title">
-                                                    <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <span class="text-danger">
-                                                        <strong class="value-error"></strong>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-primary mr-2 editTaxSubmit" data-id="{{$value->id}}" id="editPrivacySubmit">Submit</button>
-                                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                                        </form>
-                                    </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- edit /.modal -->
-                        @endforeach
+                            @endforeach
                         @endif 
 
                       </tbody>
@@ -112,9 +81,10 @@
             </div>
     </div>
 </div>
-<!-- content-wrapper ends -->
 <script src="{{asset('public/js/file-upload.js')}}" ></script>
 <script>
+
+$(document).ready(function(){
         $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
@@ -142,7 +112,6 @@
                     }
                     var deleteurl = '{{ route("rewards.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
-                    // var imageurl = "{{asset('public/upload/malls')}}";
                     var tr_str = "<tr>"+
                     "<td>"+data.name+"</td>" +
                     "<td>"+data.earned+"</td>" +
@@ -157,16 +126,11 @@
                 else
                 {
                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-
-
-                    // $.each(result.errors, function(key, value){
-                    //     $('.alert-danger').show();
-                    //     $('.alert-danger').append('<li>'+value+'</li>');
-                    // });
                 }
                 }
             });
     });
+});
 </script>
 @endsection
 
