@@ -123,6 +123,8 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputEmail1">Location</label>
                                                     <input type="email" required class="form-control" id="location{{$value->id}}" value="{{$value->location}}" name="location" placeholder="location">
+                                                    <input type="hidden" name="latitude" id="lat{{$value->id}}" value="{{$value->latitude}}">
+                                                    <input type="hidden" name="longitude" id="long{{$value->id}}" value="{{$value->longitude}}">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -267,7 +269,8 @@
       var autocomplete = new google.maps.places.Autocomplete(input);
       autocomplete.addListener('place_changed', function () {
       var place = autocomplete.getPlace();
-    
+        $('#lat').val(place.geometry['location'].lat());
+      $('#long').val(place.geometry['location'].lng());
       $('#my-modal').modal('show');
     });
   }
@@ -286,6 +289,8 @@ $(document).ready(function(){
             var autocomplete = new google.maps.places.Autocomplete(input);
             autocomplete.addListener('place_changed', function () {
             var place = autocomplete.getPlace();
+            $('#lat'+sid).val(place.geometry['location'].lat());
+            $('#long'+sid).val(place.geometry['location'].lng());
             $('#my-modal').modal('show');
         });      
     });
@@ -571,7 +576,9 @@ $(document).ready(function(){
                             <input type="email" required class="form-control" id="location" name="location" placeholder="location">
                             <span class="text-danger">
                                 <strong id="location-error"></strong>
-                            </span>                           
+                            </span>       
+                            <input type="hidden" name="latitude" id="lat">
+                            <input type="hidden" name="longitude" id="long">                    
                         </div>
                     </div>
                     <div class="row">

@@ -25,10 +25,10 @@
                     <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="btn btn-secondary" href="{{route('mallbrands')}}" tabindex="" >CLEAR</a>
+                    <a id="clear16" class="btn btn-secondary" href="{{route('mallslider')}}" tabindex="" >CLEAR</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addMallBrand" tabindex="">ADD NEW</a>
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addMallSlider" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
@@ -50,13 +50,13 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="brandstableData">
+                    <table class="table table-hover" id="slidertableData">
                       <thead>
                         <tr>
-                            <th>@sortablelink('id')</th>
-                            <th>@sortablelink('Name')</th>
+                            <th>@sortablelink('slider_image_name','Slider Image')</th>
+                            <th>@sortablelink('image_id','Slider Image id')</th>
+                            <th>@sortablelink('created_at','Created On')</th>
                             <th>@sortablelink('mallname','Shops and Malls')</th>
-                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -64,39 +64,39 @@
                         @if(!empty($data) && $data->count() > 0)
                             @foreach($data as $key => $value)
                         <tr>
-                          <td>{{$value->unique_id}}</td>
-                          <td>{{$value->brandname}}</td>
-                          <td>{{$value->mallname}}</td>
-                          <td>{{$value->status}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editMallBrands{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Brand?')" href="{{route('mallbrands.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <td><img src="{{asset('public/upload/sliders/')}}/{{$value->slider_image_name}}" alt=""></td>
+                          <td>{{$value->image_id}}</td>
+                          <td>{{date("d F Y",strtotime($value->created_at))}}</td>
+                          <td>{{$value->created_by}}</td>
+                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editMallSlider{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Sldier?')" href="{{route('mallslider.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->
-                        <div id="editMallBrands{{$value->id}}" class="modal fade">
+                        <div id="editMallSlider{{$value->id}}" class="modal fade">
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit MallBrand</h1>
+                                        <h1 class="modal-title">Edit MallSlider</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
-                                        <form name="addMallBrandform" id="editMallBrandsform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
+                                        <form name="addMallBrandform" id="editMallSliderform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
                                             @csrf
                                             <div class="row">
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Brand Name</label>
-                                                    <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="brand_id" id="brandname" class="form-control brand_id">
-                                                        <option value=""> -- Select One --</option>
-                                                        @if(!empty($brand_id) && $brand_id->count() > 0)
-                                                            @foreach($brand_id as $key => $pd)
-                                                                <option value="{{$pd->id}}" {{ $value->brand_id == $pd->id ? 'selected' : ''}} >{{$pd->name}}</option>
-                                                            @endforeach
-                                                        @endif
-                                                    </select>
-                                                     <span class="text-danger">
-                                                        <strong class="brand_id-error"></strong>
+                                                    <label for="exampleInputStatus">Slider Image</label>
+                                                    <input type="file" name="image" class="file-upload-default">
+                                                    <div class="input-group col-xs-12">
+                                                        <input type="text" value="{{$value->slider_image_name}}" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                                        <span class="input-group-append">
+                                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                                        </span>
+                                                    </div>
+                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                                                    <span class="text-danger">
+                                                        <strong id="image-error{{$value->id}}"></strong>
                                                     </span>
+                                                    <input type="hidden" name="id" value="{{$value->id}}">
                                                     <input type="hidden" value="malls" name="type">
                                                 </div>   
                                                 <div class="form-group col-md-4">
@@ -104,8 +104,8 @@
                                                     <input type="hidden" name="id" value="{{$value->id}}">
                                                     <select name="common_id" id="commonname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
-                                                        @if(!empty($common_id) && $common_id->count() > 0)
-                                                            @foreach ($common_id as $key => $pd)
+                                                        @if(!empty($malls) && $malls->count() > 0)
+                                                            @foreach ($malls as $key => $pd)
                                                                   <option value="{{$pd->id}}" {{ $value->common_id == $pd->id ? 'selected' : ''}} >{{$pd->name}}</option>
                                                             @endforeach
                                                         @endif
@@ -114,20 +114,8 @@
                                                         <strong class="common_id-error"></strong>
                                                     </span>
                                                 </div> 
-                                                <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Status</label>
-                                                    <select class="form-control status" id="status" name="status">
-                                                        <option value="" selected="">Status</option>
-                                                        <option value="Active" {{ $value->status == 'Active' ? 'selected' : ''}}>Active</option>
-                                                        <option value="Inactive" {{ $value->status == 'Inactive' ? 'selected' : ''}}>Inactive</option>
-                                                    </select>
-                                                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                                                    <span class="text-danger">
-                                                        <strong class="status-error"></strong>
-                                                    </span>
-                                                </div> 
                                             </div>
-                                            <button type="button" class="btn btn-primary mr-2 editMallBrandsSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
+                                            <button type="button" class="btn btn-primary mr-2 editMallSliderSubmit" data-id="{{$value->id}}" id="editSliderSubmit">Submit</button>
                                             <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                                         </form>
                                     </div>
@@ -170,14 +158,13 @@ $(document).ready(function(){
      setTimeout(function(){
            $("h4.mess").remove();
         }, 5000 );
-    $(document).on('click','.editMallBrandsSubmit',function(e){
+    $(document).on('click','.editMallSliderSubmit',function(e){
        
         var id = $(this).data('id');
-        var formData = new FormData($("#editMallBrandsform"+id)[0]);
+        var formData = new FormData($("#editMallSliderform"+id)[0]);
 
-            $( '.brand_id-error' ).html( "" );
             $( '.common_id-error' ).html( "" );
-            $( '.status-error' ).html( "" ); 
+            $( '.image-error' ).html( "" ); 
         
         // var message = CKEDITOR.instances['description'+id].getData();
 
@@ -190,7 +177,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('mallbrands.update') }}",
+                url: "{{ route('mallslider.update') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -199,21 +186,19 @@ $(document).ready(function(){
                 success: function(result){
                     if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.brand_id){
-                        $( '.brand_id-error' ).html( result.errors.brand_id[0] );
-                    }
+                    console.log(result.errors.common_id[0]);
                     if(result.errors.common_id){
                         $( '.common_id-error' ).html( result.errors.common_id[0] );
                     }                    
                     if(result.errors.status){
-                        $( '.status-error' ).html( result.errors.status[0] );
+                        $( '.image-error' ).html( result.errors.status[0] );
                     }                    
                 }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
-                        $('#editMallBrands'+id).modal('hide');
+                        $('#editMallSlider'+id).modal('hide');
                         window.location.reload();
                     }, 3000);
                 }
@@ -224,12 +209,11 @@ $(document).ready(function(){
                 }
             });
         });
-    $('#addMallBrandSubmit').click(function(e){
-            var formData = new FormData($("#addMallBrandform")[0]);
+    $('#addMallSliderSubmit').click(function(e){
+            var formData = new FormData($("#addMallSliderform")[0]);
             
-            $( '#brand_id-error' ).html( "" );
             $( '#common_id-error' ).html( "" );
-            $( '#status-error' ).html( "" );    
+            $( '#image-error' ).html( "" );    
 
             e.preventDefault();
             $.ajaxSetup({
@@ -238,23 +222,23 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('addMallBrand') }}",
+                url: "{{ route('addMallSlider') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
                 processData: false,
                 data: formData,
-                success: function(result){
+                success: function(result){ alert('sdf');
+                console.log(result);
                 if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.brand_id){
-                            $( '#brand_id-error' ).html( result.errors.brand_id[0] );
-                        }
+                                        console.log(result.errors);
+ alert(result.errors.common_id);
                     if(result.errors.common_id){
                             $( '#common_id-error' ).html( result.errors.common_id[0] );
                         }                  
                     if(result.errors.status){
-                            $( '#status-error' ).html( result.errors.status[0] );
+                            $( '#image-error' ).html( result.errors.status[0] );
                         }                  
                 }
                 if(result.status == true)
@@ -264,15 +248,15 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
-                        $("#addMallBrandform")[0].reset();
-                        $('#addMallBrand').modal('hide');
+                        $("#addMallSliderform")[0].reset();
+                        $('#addMallSlider').modal('hide');
                         window.location.reload();
                     }, 3000);
 
-                    $("#addbrandform")[0].reset();
+                    $("#addSliderform")[0].reset();
                      window.location.reload();
                     
-                    $("#addMallBrandform")[0].reset();
+                    $("#addMallSliderform")[0].reset();
                 }
                 else
                 {
@@ -288,7 +272,7 @@ $(document).ready(function(){
                 }
             });       
         $.ajax({
-                url: "{{route('mallbrands.search')}}",
+                url: "{{route('mallslider.search')}}",
                 method: 'post',
                 data: {'search':$("#searchtext").val(),'type' : 'malls'},
                 success: function(result){
@@ -297,19 +281,19 @@ $(document).ready(function(){
                     var data = result.data;
                     
                     
-                    var findnorecord = $('#brandstableData tr.norecord').length;
+                    var findnorecord = $('#sliderstableData tr.norecord').length;
                     if(findnorecord > 0){
-                        $('#brandstableData tr.norecord').remove();
+                        $('#sliderstableData tr.norecord').remove();
                     }
                     
-                    var deleteurl = '{{ route("mallbrands.delete", ":id") }}';
+                    var deleteurl = '{{ route("mallslider.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
                     "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.brandname+"</td>" +
+                    "<td>"+data.slidername+"</td>" +
                     "<td>"+data.mallname+"</td>" +
                     "<td>"+data.status+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMallBrands'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this BrandMall?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMallSlider'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Slider?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
                     $("#brandstableData tbody").html(tr_str);
                     $("#paging").hide();
@@ -348,58 +332,49 @@ function fnExcelReport()
 @endsection
 
 <!-- Modal HTML Markup -->
-<div id="addMallBrand" class="modal fade">
-    <div class="modal-dialog  modal-xl" role="document">
+<div id="addMallSlider" class="modal fade">
+    <div class="modal-dialog  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add MallBrand</h1>
+                <h1 class="modal-title">Add MallSlider</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
-                <form name="addMallBrandform" id="addMallBrandform" role="form" method="POST" enctype= "multipart/form-data">
+                <form name="addMallSliderform" id="addMallSliderform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
                         
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Brand Name</label>
-                            <select name="brand_id" id="brandname" class="form-control">
-                                <option value=""> -- Select One --</option>
-                                @foreach ($brand_id as $brand)
-                                    <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                                @endforeach
-                            </select>
+                        <div class="form-group col-md-6">
+                            <label for="exampleSelectPhoto">Slider Image</label>
+                            <input type="file" name="image" id="image" class="file-upload-default">
+                            <div class="input-group col-xs-12">
+                                <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                <span class="input-group-append">
+                                <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                </span>
+                            </div>
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
                             <span class="text-danger">
-                                <strong id="brand_id-error"></strong>
+                                <strong id="image-error"></strong>
                             </span>
                             <input type="hidden" value="malls" name="type">
                         </div>   
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <label for="exampleInputStatus">Malls and Shops</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <select name="mallname" id="mallname" class="form-control">
                                 <option value=""> -- Select One --</option>
-                                @foreach ($common_id as $common)
+                                @foreach ($malls as $common)
                                     <option value="{{ $common->id }}">{{ $common->name }}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger">
                                 <strong id="common_id-error"></strong>
                             </span>
-                        </div>   
-                        <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Status</label>
-                            <select class="form-control" id="status" name="status">
-                                <option value="" selected="">Status</option>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                            <span class="text-danger">
-                                <strong id="status-error"></strong>
-                            </span>
-                        </div> 
+                        </div>  
                     </div>
-                    <button type="button" class="btn btn-primary mr-2" id="addMallBrandSubmit">Submit</button>
+                    <button type="button" class="btn btn-primary mr-2" id="addMallSliderSubmit">Submit</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                 </form>
             </div>

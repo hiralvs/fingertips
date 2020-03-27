@@ -38,12 +38,12 @@
                       <ul class="submenu-item">
                         <li class="nav-item"><a class="nav-link" href="{{route('floor')}}">Floor</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('directory')}}">Directory</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('mallbrands')}}">Brands</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('mallbrands')}}">Brands</a></li>                      
+                        <li class="nav-item"><a class="nav-link" href="{{route('mallslider')}}">Slider Image</a></li>
                         {{-- <li class="nav-item"><a class="nav-link" href="{{route('checkin')}}">Check In</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('orders')}}">Orders</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('sliderimage')}}">Slider Image</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mapimage')}}">Map Image</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('photos')}}">Photos</a></li> --}}
                       </ul>
@@ -55,6 +55,11 @@
                     <span class="menu-title">Events</span>
                     <i class="menu-arrow"></i>
                   </a>
+                  <div class="submenu">
+                      <ul class="submenu-item">
+                        <li class="nav-item"><a class="nav-link" href="{{route('eventbrands')}}">Brands</a></li>                       
+                      </ul>
+                  </div>
               </li>
               <li class="nav-item">
                   <a href="{{route('attractions')}}" class="nav-link">
@@ -62,6 +67,11 @@
                     <span class="menu-title">Attractions</span>
                     <i class="menu-arrow"></i>
                   </a>
+                  <div class="submenu">
+                      <ul class="submenu-item">
+                        <li class="nav-item"><a class="nav-link" href="{{route('attractionbrands')}}">Brands</a></li>                       
+                      </ul>
+                  </div>
               </li>
               <li class="nav-item">
                   <a href="{{route('rewards')}}" class="nav-link">

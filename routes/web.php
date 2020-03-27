@@ -165,11 +165,41 @@ Route::post('/addLoginPrivacy', 'admin\LoginPrivacy@addLoginPrivacy')->name('add
 Route::post('loginprivacyupdate', array('as' => 'loginprivacy.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\LoginPrivacy@update'));
 
 
-Route::get('/mallbrands', 'admin\MallBrandsController@index')->name('mallbrands');
-Route::post('/addMallBrand', 'admin\MallBrandsController@addMallBrand')->name('addMallBrand');
-Route::post('mallbrandsupdate', array('as' => 'mallbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@update'));
-Route::get('mallbrandsdelete/{id}', array('as' => 'mallbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@delete'));
-Route::post('mallbrandssearch', array('as' => 'mallbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\MallBrandsController@search'));
+Route::get('/mallbrands', 'admin\CommonBrandsController@index')->name('mallbrands');
+Route::post('/addMallBrand', 'admin\CommonBrandsController@addMallBrand')->name('addMallBrand');
+Route::post('mallbrandsupdate', array('as' => 'mallbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@update'));
+Route::get('mallbrandsdelete/{id}', array('as' => 'mallbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@delete'));
+Route::post('mallbrandssearch', array('as' => 'mallbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@search'));
+
+Route::get('/eventbrands', 'admin\CommonBrandsController@index')->name('eventbrands');
+Route::post('/addEventBrand', 'admin\CommonBrandsController@addMallBrand')->name('addEventBrand');
+Route::post('eventbrandsupdate', array('as' => 'eventbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@update'));
+Route::get('eventbrandsdelete/{id}', array('as' => 'eventbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@delete'));
+Route::post('eventbrandssearch', array('as' => 'eventbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@search'));
+
+Route::get('/attractionbrands', 'admin\CommonBrandsController@index')->name('attractionbrands');
+Route::post('/addAttractionBrand', 'admin\CommonBrandsController@addMallBrand')->name('addAttractionBrand');
+Route::post('attractionbrandsupdate', array('as' => 'attractionbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@update'));
+Route::get('attractionbrandsdelete/{id}', array('as' => 'attractionbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@delete'));
+Route::post('attractionbrandssearch', array('as' => 'attractionbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@search'));
+
+Route::get('/mallslider', 'admin\CommonSliderController@index')->name('mallslider');
+Route::post('/addMallSlider', 'admin\CommonSliderController@addCommonSlider')->name('addMallSlider');
+Route::post('mallsliderupdate', array('as' => 'mallslider.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@update'));
+Route::get('mallsliderdelete/{id}', array('as' => 'mallslider.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@delete'));
+Route::post('mallslidersearch', array('as' => 'mallslider.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@search'));
+
+Route::get('/eventslider', 'admin\CommonSliderController@index')->name('eventslider');
+Route::post('/addEventSlider', 'admin\CommonSliderController@addCommonSlider')->name('addEventSlider');
+Route::post('eventsliderupdate', array('as' => 'eventslider.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@update'));
+Route::get('eventsliderdelete/{id}', array('as' => 'eventslider.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@delete'));
+Route::post('eventslidersearch', array('as' => 'eventslider.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@search'));
+
+Route::get('/attractionslider', 'admin\CommonSliderController@index')->name('attractionslider');
+Route::post('/addAttractionSlider', 'admin\CommonSliderController@addCommonSlider')->name('addAttractionSlider');
+Route::post('attractionsliderupdate', array('as' => 'attractionslider.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@update'));
+Route::get('attractionsliderdelete/{id}', array('as' => 'attractionslider.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@delete'));
+Route::post('attractionslidersearch', array('as' => 'attractionslider.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@search'));
 
 Route::get('/trending', 'admin\TrendingController@index')->name('trending');
 Route::post('/addTrending', 'admin\TrendingController@addTrending')->name('addTrending');

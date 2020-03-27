@@ -32,7 +32,7 @@ class HomePageController extends Controller
         $limit = $request->limit?  $request->limit : 10;
         $offset = ($page - 1) * $limit;
 
-        $events = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->offset($offset)->limit($limit)->get();
+        $events = Events::select('id','unique_id','event_image','event_name','start_time','end_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->offset($offset)->limit($limit)->get();
         $totalrecords = Events::all()->count(); 
         $totalpage = (int) ceil($totalrecords / $limit);
 
@@ -55,7 +55,7 @@ class HomePageController extends Controller
         $page = $request->page ? $request->page : 1;
         $limit = $request->limit?  $request->limit : 10;
         $offset = ($page - 1) * $limit;
-        $malls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->offset($offset)->limit($limit)->get();
+        $malls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude','type',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->offset($offset)->limit($limit)->get();
         $totalrecords = ShopsandMalls::all()->count(); 
         $totalpage = (int) ceil($totalrecords / $limit);
         if($malls->count() > 0)
@@ -76,7 +76,7 @@ class HomePageController extends Controller
         $page = $request->page ? $request->page : 1;
         $limit = $request->limit?  $request->limit : 10;
         $offset = ($page - 1) * $limit;
-        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->offset($offset)->limit($limit)->get();
+        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->offset($offset)->limit($limit)->get();
         $totalrecords = Attractions::all()->count(); 
         $totalpage = (int) ceil($totalrecords / $limit);
         if($attraction->count() > 0)
@@ -95,7 +95,7 @@ class HomePageController extends Controller
     public function featuredEvents(Request $request)
     {
         $url =env('APP_URL');
-        $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->paginate(20);
+        $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->paginate(20);
         if($featuredevents->count() > 0)
         {
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredevents];
@@ -111,7 +111,7 @@ class HomePageController extends Controller
     public function featuredShops(Request $request)
     {
         $url =env('APP_URL');
-        $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
+        $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
         if($featuredShops->count() > 0)
         {
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredShops];
@@ -127,7 +127,7 @@ class HomePageController extends Controller
     public function featuredMalls(Request $request)
     {
         $url =env('APP_URL');
-        $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
+        $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
         if($featuredmalls->count() > 0)
         {
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredmalls];
@@ -143,7 +143,7 @@ class HomePageController extends Controller
     public function featuredAttraction(Request $request)
     {
         $url =env('APP_URL');
-        $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
+        $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
         if($featuredAttraction->count() > 0)
         {
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredAttraction];
@@ -164,15 +164,15 @@ class HomePageController extends Controller
         $highlights = array();
         if($type == 'event')
         {
-            $highlights = Highlights::select('highlights.*','events.description',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('events','events.id','=','highlights.common_id')->where(['common_id'=>$id,'type'=>$type])->get();
+            $highlights = Highlights::select('highlights.*','events.description','events.location','events.latitude','events.longitude',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('events','events.id','=','highlights.common_id')->where(['common_id'=>$id,'type'=>$type])->get();
         }
         if($type == 'malls')
         {
-            $highlights = Highlights::select('highlights.*','shopsandmalls.description',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('shopsandmalls','shopsandmalls.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
+            $highlights = Highlights::select('highlights.*','shopsandmalls.description','shopsandmalls.location','shopsandmalls.latitude','shopsandmalls.longitude',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('shopsandmalls','shopsandmalls.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
         }
         if($type == 'attraction')
         {
-            $highlights = Highlights::select('highlights.*','attractions.description',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('attractions','attractions.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
+            $highlights = Highlights::select('highlights.*','attractions.description','attractions.location','attractions.latitude','attractions.longitude',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('attractions','attractions.id','=','highlights.common_id')->where(['common_id'=>$id,'highlights.type'=>$type])->get();
         }
         
         if($highlights->count() > 0)
@@ -227,19 +227,19 @@ class HomePageController extends Controller
         }
         if($type == 'event')
         {
-            $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->limit(20)->get();
+            $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->limit(20)->get();
             $success['featuredevents'] =$featuredevents;
         }
         if($type == 'malls')
         {
-            $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
-            $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
+            $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
+            $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
             $success['featuredShops'] = $featuredShops;
             $success['featuredmalls'] = $featuredmalls;
         }
         if($type == 'attraction')
         {
-            $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
+            $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
             $success['featuredAttraction'] =  $featuredAttraction ;
         }
         // print_r( $success);

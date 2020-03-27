@@ -31,7 +31,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addShopsandMalls" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()"  tabindex="">EXPORT</a>
                 </div>             
             </div>
         </div>
@@ -126,6 +126,8 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputEmail1">Location</label>
                                                     <input type="email" required class="form-control" id="location{{$value->id}}" value="{{$value->location}}" name="location" placeholder="location">
+                                                    <input type="hidden" name="latitude" id="lat{{$value->id}}" value="{{$value->latitude}}">
+                                                    <input type="hidden" name="longitude" id="long{{$value->id}}" value="{{$value->longitude}}">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -276,8 +278,8 @@
       autocomplete.addListener('place_changed', function () {
       var place = autocomplete.getPlace();
       // place variable will have all the information you are looking for.
-    //   $('#lat').val(place.geometry['location'].lat());
-    //   $('#long').val(place.geometry['location'].lng());
+      $('#lat').val(place.geometry['location'].lat());
+      $('#long').val(place.geometry['location'].lng());
       $('#my-modal').modal('show');
     });
   }
@@ -296,8 +298,8 @@ $(document).ready(function(){
             autocomplete.addListener('place_changed', function () {
             var place = autocomplete.getPlace();
             // place variable will have all the information you are looking for.
-            //   $('#lat').val(place.geometry['location'].lat());
-            //   $('#long').val(place.geometry['location'].lng());
+              $('#lat'+sid).val(place.geometry['location'].lat());
+              $('#long'+sid).val(place.geometry['location'].lng());
             $('#my-modal').modal('show');
         });      
     });
@@ -639,6 +641,36 @@ $(document).ready(function(){
             });
     }); 
 });
+function fnExcelReport()
+{
+  $("#mallstableData").table2excel({
+    // exclude CSS class
+    exclude: ".noExl",
+    name: "mall",
+    filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+    fileext: ".xls" // file extension
+  }); 
+
+    // $('thead tr th').last().remove();
+    // var tT = new XMLSerializer().serializeToString(document.querySelector('#mallstableData')); //Serialised table
+    // var tF = 'report.xls'; //Filename
+    // var tB = new Blob([tT]); //Blub
+    // if(window.navigator.msSaveOrOpenBlob){
+    //     //Store Blob in IE
+    //     window.navigator.msSaveOrOpenBlob(tB, tF)
+    // }
+    // else{
+    //     //Store Blob in others
+    //     var tA = document.body.appendChild(document.createElement('a'));
+    //     tA.href = URL.createObjectURL(tB);
+    //     tA.download = tF;
+    //     tA.style.display = 'none';
+    //     tA.click();
+    //     tA.parentNode.removeChild(tA)
+    // }
+
+    // $('thead tr').last().append('<th>Action</th>');
+}
 </script>
 @endsection
 
@@ -679,8 +711,8 @@ $(document).ready(function(){
                         <div class="form-group col-md-4">
                             <label for="exampleInputEmail1">Location</label>
                             <input type="email" required class="form-control location" id="location" name="location" placeholder="location">
-                    <!-- <input type="hidden" name="lat">
-                    <input type="hidden" name="long"> -->
+                            <input type="hidden" name="latitude" id="lat">
+                            <input type="hidden" name="longitude" id="long">
                         </div>
                     </div>
                     <div class="row">
@@ -712,7 +744,7 @@ $(document).ready(function(){
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="exampleInputRole">Property Admin</label>
-                            <select class="form-control" id="property_admin" name="property_admin_user_id">
+                            <select class="form-control" id="property_admin" name="property_admin">
                             <option value="">--Select--</option>
                             @if(!empty($property_admin) && $property_admin->count() > 0)
                                 @foreach($property_admin as $key => $pd)
@@ -742,7 +774,7 @@ $(document).ready(function(){
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleSelectPhoto">Area</label>
-                            <select class="form-control" id="area" name="area_id">
+                            <select class="form-control" id="area" name="area">
                             <option value="">--Select--</option>
                             @if(!empty($area) && $area->count() > 0)
                                 @foreach($area as $key => $avalue)
