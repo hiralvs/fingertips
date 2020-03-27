@@ -465,19 +465,19 @@ function fnExcelReport()
                         </select>
                     </div>
                     <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Category</label>
-                            <select class="form-control category_id" multiple name="category_id[]" id="category_id">
-                            
-                            @if(!empty($category) && $category->count() > 0)
-                                @foreach($category as $key => $cat)
-                                <option value="{{$cat->id}}">{{$cat->category_name}}</option>
-                                @endforeach
-                            @endif
-                            </select>
-                            <span class="text-danger">
-                                <strong id="category_id-error"></strong>
-                            </span>
-                        </div>
+                        <label for="exampleInputStatus">Category</label>
+                        <select class="form-control category_id" multiple name="category_id[]" id="category_id">
+                        
+                        @if(!empty($category) && $category->count() > 0)
+                            @foreach($category as $key => $cat)
+                            <option value="{{$cat->id}}">{{$cat->category_name}}</option>
+                            @endforeach
+                        @endif
+                        </select>
+                        <span class="text-danger">
+                            <strong id="category_id-error"></strong>
+                        </span>
+                    </div>
                     <div class="form-group col-md-4">
                         <label for="exampleInputStatus">Status</label>
                         <select class="form-control" id="status" name="status">
