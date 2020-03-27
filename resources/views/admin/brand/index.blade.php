@@ -142,17 +142,19 @@
                                             </div>
                                         <div class="row">
                                             <div class="form-group col-md-4">
-                                                <label for="exampleInputStatus">Category</label>
-                                                <select name="category_id" id="category_id" class="form-control category_id">
-                                                    <option value=""> -- Select One --</option>
-                                                    @foreach ($category_id as $cat)
-                                                        <option value="{{ $cat->id }}"  {{ $value->category_id ==$cat->id ? 'selected' : ''}}>{{ $cat->category_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="text-danger">
+                                                    <label for="exampleInputStatus">Category</label>
+                                                    <select class="form-control category_id" multiple name="category_id[]" id="category_id">
+                                                    <!-- <option value="">--Select--</option> -->
+                                                    @if(!empty($category) && $category->count() > 0)
+                                                        @foreach($category as $key => $cat)
+                                                        <option value="{{$cat->id}}"  {{ in_array($cat->id,explode(",",$value->category_id))  ? 'selected' : ''}}>{{$cat->category_name}}</option>
+                                                        @endforeach
+                                                    @endif
+                                                    </select>
+                                                    <span class="text-danger">
                                                         <strong class="category_id-error"></strong>
-                                                </span>
-                                            </div>
+                                                    </span>
+                                                </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputStatus">Status</label>
                                                 <select class="form-control status" id="status" name="status">
@@ -172,7 +174,7 @@
                                                 </span>
                                             </div>
                                             <div class="form-group col-md-12"> 
-                                                <textarea class="description ckeditor" id="description" name="description"></textarea>
+                                                <textarea class="description ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
                                             </div>
                                         </div>
                                             <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
@@ -209,14 +211,21 @@
 <script>
 $(document).ready(function(){
 
+        $('.category_id').multiselect({
+            columns: 1,
+            placeholder: 'Select Category'
+        });
+
     $('.editBrandSubmit').click(function(e){
         var id = $(this).data('id');
         var formData = new FormData($("#editbrandform"+id)[0]);
+        var message = CKEDITOR.instances['description'+id].getData();
         $('.name-error' ).html( "" );
         $('.category_id-error' ).html( "" );
         $('.status-error' ).html( "" );
         $('.commission-error' ).html( "" );
-        
+        formData.append('description',message);
+        var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -249,7 +258,7 @@ $(document).ready(function(){
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
-                    setInterval(function(){ 
+                    setTimeout(function(){ 
                         $('#editBrand'+id).modal('hide');
                         window.location.reload();
                     }, 3000);
@@ -257,15 +266,10 @@ $(document).ready(function(){
                 else
                 {
                     $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-                    // $.each(result.errors, function(key, value){
-                    //     $('.alert-danger').show();
-                    //     $('.alert-danger').append('<li>'+value+'</li>');
-                    // });
                 }
                 }
             });
         });
-   
     $('#addBrandSubmit').click(function(e){
         var formData = new FormData($("#addbrandform")[0]);
         var message = CKEDITOR.instances['desc'].getData();
@@ -314,51 +318,6 @@ $(document).ready(function(){
                         $('#addBrand').modal('hide');
                         //  $('#done-message').addClass('hide');
                     }, 3000);
-                    
-                //     var findnorecord = $('#brandData tr.norecord').length;
-                //     if(findnorecord > 0){
-                //         $('#brandData tr.norecord').remove();
-                //         }
-                    
-                //     var  brand_image = status = '';
-                //     if(data.brand_image != null)
-                //     {
-                //         brandimage = data.brand_image;
-                //     }
-                //     if(data.status == 0)
-                //     {
-                //         status = 'Active';
-                //     }
-                //     else
-                //     {
-                //         status = 'Inactive';
-                //     }
-                //     if(data.created_at)
-                //     {
-                //         var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
-                //         cdate = cdate.replace(':date', data.created_at);
-
-                //     }
-                //     var deleteurl = '{{ route("brand.delete", ":id") }}';
-                //     var imageurl = "{{asset('public/upload/brands/')}}";
-                //     deleteurl = deleteurl.replace(':id', data.id);
-                //     var tr_str = "<tr>"+
-                //     // "<td><img src="+brand_image+"></td>" +
-                //     "<td>"+brand_image+"</td>" +
-                //     "<td>"+data.unique_id+"</td>" +
-                //     "<td>"+data.name+"</td>" +
-                //     "<td>"+data.grand_merchant_user_id  +"</td>"+
-                //     "<td>"+data.category_id+"</td>" +
-                //     "<td>"+data.description+"</td>" +
-                //     "<td>"+data.status+"</td>" +
-                //     "<td>"+data.commission+"</td>" +
-                //     "<td>"+cdate+"</td>" +
-                //     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editBrand'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Brand?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                //     "</tr>";
-                //     console.log(tr_str);
-                //     $("#brandData tbody").prepend(tr_str);
-                //     $("#addbrandform")[0].reset();
-                //      window.location.reload();
                 }
                 else
                 {
@@ -388,7 +347,7 @@ $(document).ready(function(){
                         $('#brandData tr.norecord').remove();
                         }
                     
-                    var brand_image = commission = category_id = status = '';
+                    var brand_image = commission = status = '';
                     if(data.brand_image != null)
                     {
                         brand_image = data.brand_image;
@@ -396,10 +355,6 @@ $(document).ready(function(){
                     if(data.commission != null)
                     {
                         commission = data.commission;
-                    }
-                    if(data.category_id != null)
-                    {
-                        category_id = data.category_id;
                     }
                     if(data.status == 0)
                     {
@@ -510,18 +465,19 @@ function fnExcelReport()
                         </select>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="exampleInputStatus">Category</label>
-                        <select name="category_id" id="category_id" class="form-control">
-                            <option value=""> -- Select One --</option>
-                            @foreach ($category_id as $cat)
-                                <option value="{{ $cat->id }}"  {{ (isset($cat->id) || old('id'))? "":"selected" }}>{{ $cat->category_name }}</option>
-                            @endforeach 
-                        </select>
-                        <span class="text-danger">
-                            <strong id="category_id-error"></strong>
-                        </span>
-                    </div>
-         
+                            <label for="exampleInputStatus">Category</label>
+                            <select class="form-control category_id" multiple name="category_id[]" id="category_id">
+                            
+                            @if(!empty($category) && $category->count() > 0)
+                                @foreach($category as $key => $cat)
+                                <option value="{{$cat->id}}">{{$cat->category_name}}</option>
+                                @endforeach
+                            @endif
+                            </select>
+                            <span class="text-danger">
+                                <strong id="category_id-error"></strong>
+                            </span>
+                        </div>
                     <div class="form-group col-md-4">
                         <label for="exampleInputStatus">Status</label>
                         <select class="form-control" id="status" name="status">
@@ -543,9 +499,7 @@ function fnExcelReport()
                         <span class="text-danger">
                             <strong id="commission-error"></strong>
                         </span>
-                    </div>
-                    
-				
+                    </div>				
                 </div>
                 <div class="form-group col-md-12"> 
                     <textarea class="description ckeditor" id="desc" name="desc"></textarea>

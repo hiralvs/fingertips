@@ -1,0 +1,1 @@
+C:\>icacls "F:\xampp\htdocs\fingertips" /grant Users:(OI)(CI)F /T

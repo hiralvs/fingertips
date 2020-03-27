@@ -189,10 +189,16 @@ Route::get('directorydelete/{id}', array('as' => 'directory.delete', 'routegroup
 Route::post('directoryupdate', array('as' => 'directory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\DirectoryController@update'));
 Route::post('directorysearch', array('as' => 'directory.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\DirectoryController@search'));
 
+Route::get('/highlights', 'admin\CommonhighlightController@index')->name('highlights');
+Route::post('/addHighlights', 'admin\CommonhighlightController@addHighlights')->name('addHighlights');
+Route::get('highlightsdelete/{id}', array('as' => 'highlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@delete'));
+Route::post('highlightsupdate', array('as' => 'highlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@update'));
+Route::post('highlightssearch', array('as' => 'highlights.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@search'));
+
+Route::get('/flashsale', 'admin\FlashsaleController@index')->name('flashsale');
+
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
-// Route::get('/highlights', 'admin\LoginPrivacyController@index')->name('highlights');
 // Route::get('/orders', 'admin\LoginPrivacyController@index')->name('orders');
-// Route::get('/flashsale', 'admin\LoginPrivacyController@index')->name('flashsale');
 // Route::get('/sliderimage', 'admin\LoginPrivacyController@index')->name('sliderimage');
 // Route::get('/mapimage', 'admin\LoginPrivacyController@index')->name('mapimage');
 // Route::get('/photos', 'admin\LoginPrivacyController@index')->name('photos');
