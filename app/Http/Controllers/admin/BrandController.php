@@ -49,7 +49,7 @@ class BrandController extends Controller
         } else {
             $direction='desc';
         }
-        $return_data['data'] = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"))->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['data'] = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"),DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,brands.category_id)"),">",DB::raw("'0'"))->groupBy("brands.id")->orderBy($sort,$direction)->sortable()->paginate($perpage);
         
         $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         
@@ -71,6 +71,8 @@ class BrandController extends Controller
         }
     
         $request->request->remove('_token');
+        $request->request->remove('desc');
+
         $input = $request->all();
         $input['unique_id'] =  get_unique_id('brands');
         $input['category_id'] =  implode(",", $input['category_id']);
@@ -102,11 +104,7 @@ class BrandController extends Controller
         return redirect()->route('brand')->with('success', 'Brand Deleted Successfully');
     }
 
-    // public function edit(Request $request){
-    //     $query = Brand::where('id',$request->id);
-    //     return View('admin.brand.edit',$query)->render();
-    // }
- public function update(Request $request)
+    public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -125,7 +123,7 @@ class BrandController extends Controller
         $brand->category_id =  $categoryid;
         $brand->status = $request->status;
         $brand->commission = $request->commission;
-    
+        $brand->description = $request->description;
         if ($request->hasFile('brand_image')) {
 
             $image = $request->File('brand_image');

@@ -451,7 +451,7 @@ $(document).ready(function(){
                     }
                     if(data.created_at)
                     {
-                        var cdate = "<?php echo date("d F Y",strtotime($value->created_at)) ?>";
+                        var cdate = date(data.created_at);
                     }
                     var deleteurl = '{{ route("attraction.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);

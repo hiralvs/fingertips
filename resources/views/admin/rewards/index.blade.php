@@ -39,10 +39,10 @@
                   <h4 class="card-title" style="float:left">{{$title}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
-                        <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: green;">{{ session('success') }}</h4>
                         @endif
                         @if (session()->has('error'))
-                        <h4 style="text-align: center; color: red;">{{ session('error') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: red;">{{ session('error') }}</h4>
                         @endif
                     </div>
                   <div class="table-responsive">
@@ -85,6 +85,9 @@
 <script>
 
 $(document).ready(function(){
+    setTimeout(function(){
+           $("h4.mess").remove();
+        }, 5000 ); // 5 secs
         $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
@@ -108,7 +111,7 @@ $(document).ready(function(){
                         
                     if(data.created_at)
                     {
-                        var cdate = "<?php echo date("d F Y",strtotime($value->created_at)) ?>";
+                        var cdate = date(data.created_at);
                     }
                     var deleteurl = '{{ route("rewards.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);

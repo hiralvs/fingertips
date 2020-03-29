@@ -51,10 +51,10 @@
                   </select> -->
                 <div class="box-header ">
                         @if (session()->has('success'))
-                        <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
+                        <h4  class="mess"  style="text-align: center; color: green;">{{ session('success') }}</h4>
                         @endif
                         @if (session()->has('error'))
-                        <h4 style="text-align: center; color: red;">{{ session('error') }}</h4>
+                        <h4 class="mess"  style="text-align: center; color: red;">{{ session('error') }}</h4>
                         @endif
                 </div>
                 <div class="table-responsive">
@@ -87,7 +87,7 @@
                           <td>{{$value->unique_id}}</td>
                           <td>{{$value->name}}</td>
                           <td>{{$value->product_count}}</td>
-                          <td>{{$value->category_id}}</td>
+                          <td>{{$value->category_name}}</td>
                           <td>{{$value->commission}}</td>
                           
                           <td> @if($value->status == '1') 
@@ -174,7 +174,7 @@
                                                 </span>
                                             </div>
                                             <div class="form-group col-md-12"> 
-                                                <textarea class="description ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
+                                                <textarea class="description ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
                                             </div>
                                         </div>
                                             <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
@@ -211,10 +211,14 @@
 <script>
 $(document).ready(function(){
 
-        $('.category_id').multiselect({
-            columns: 1,
-            placeholder: 'Select Category'
-        });
+    setTimeout(function(){
+       $("h4.mess").remove();
+    }, 5000 ); // 5 secs
+    
+    $('.category_id').multiselect({
+        columns: 1,
+        placeholder: 'Select Category'
+    });
 
     $('.editBrandSubmit').click(function(e){
         var id = $(this).data('id');
@@ -260,7 +264,7 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('#editBrand'+id).modal('hide');
-                        window.location.reload();
+                        //window.location.reload();
                     }, 3000);
                 }
                 else
@@ -316,7 +320,7 @@ $(document).ready(function(){
                     setInterval(function(){ 
                          $('.statusMsg').html('');
                         $('#addBrand').modal('hide');
-                        //  $('#done-message').addClass('hide');
+                       window.location.reload();
                     }, 3000);
                 }
                 else
@@ -366,9 +370,7 @@ $(document).ready(function(){
                     }
                     if(data.created_at)
                     {
-                        var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
-                        cdate = cdate.replace(':date', data.created_at);
-                        //var cdate = "<?php //echo date("d F Y",strtotime($value->created_at)) ?>";
+                        var cdate = date(data.created_at);
                     }
                     var deleteurl = '{{ route("brand.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);

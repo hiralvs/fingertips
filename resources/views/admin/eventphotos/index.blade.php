@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content-wrapper">
+<div class="content-wrapper">Larissa
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
@@ -23,10 +23,10 @@
                   <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
-                        <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: green;">{{ session('success') }}</h4>
                         @endif
                         @if (session()->has('error'))
-                        <h4 style="text-align: center; color: red;">{{ session('error') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: red;">{{ session('error') }}</h4>
                         @endif
                     </div>
                   <div class="table-responsive">
@@ -35,7 +35,7 @@
                         <tr>
                             <th>@sortablelink('Photo Id')</th>
                             <th>@sortablelink('Photo')</th>
-                            <th>@sortablelink('mallname','Shops and Malls')</th>
+                            <th>@sortablelink('event_name','Event Name')</th>
                             <th>@sortablelink('created_at','Created On')</th>
                             <th>@sortablelink('Created By')</th>
                             <th>Action</th>
@@ -46,16 +46,16 @@
                             @foreach($data as $key => $value)
                         <tr>
                             <td>{{$value->unique_id}}</td>
-                            <td><img src="{{asset('public/upload/common_photos/')}}/{{$value->image_name}}" alt=""></td>
-                            <td>{{$value->mallname}}</td>
+                            <td><img src="{{asset('public/upload/photos/')}}/{{$value->image_name}}" alt=""></td>
+                            <td>{{$value->event_name}}</td>
                             <td>{{date("d F Y",strtotime($value->created_at))}}</td> 
                             <td>{{$value->created_by}}</td>
                             <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editPhotos{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a>
-                                <a class="delete" onclick="return confirm('Are you sure you want to delete this Photos?')" href="{{route('photos.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                                <a class="delete" onclick="return confirm('Are you sure you want to delete this Photos?')" href="{{route('eventphotos.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->
                         <div id="editPhotos{{$value->id}}" class="modal fade">
-                            <div class="modal-dialog  modal-xl" role="document">
+                            <div class="modal-dialog  modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title">Edit Photos</h1>
@@ -78,14 +78,16 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Malls and Shops</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <select name="eventname" id="eventname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @if(!empty($common_id) && $common_id->count() > 0)
                                                             @foreach ($common_id as $key => $pd)
-                                                                  <option value="{{$pd->id}}" {{ $value->common_id == $pd->id ? 'selected' : ''}} >{{$pd->name}}</option>
+                                                                  <option value="{{$pd->id}}" {{ $value->common_id == $pd->id ? 'selected' : ''}} >{{$pd->event_name}}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
+                                                    <input type="hidden" value="event" name="type">
+
                                                     <span class="text-danger">
                                                         <strong class="common_id-error"></strong>
                                                     </span>
@@ -98,7 +100,10 @@
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- edit /.modal -->
-                        @endforeach
+                        @endforeach @else
+                        <tr>
+                        <td colspan="6">No Records Found</td>
+                        </tr>
                         @endif
                       </tbody>
                     </table>
@@ -117,7 +122,10 @@
 <script>
    
 $(document).ready(function(){
-                   $(document).on('click','.editPhotosSubmit',function(e){
+    setTimeout(function(){
+           $("h4.mess").remove();
+        }, 5000 );
+    $(document).on('click','.editPhotosSubmit',function(e){
        
         var id = $(this).data('id');
         var formData = new FormData($("#editPhotosform"+id)[0]);
@@ -131,7 +139,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('photos.update') }}",
+                url: "{{ route('eventphotos.update') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -140,8 +148,8 @@ $(document).ready(function(){
                 success: function(result){
                     if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.common_id){
-                        $( '.common_id-error' ).html( result.errors.common_id[0] );
+                    if(result.errors.eventname){
+                        $( '.common_id-error' ).html( result.errors.eventname[0] );
                     }                                        
                 }
                 if(result.status == true)
@@ -171,7 +179,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('addPhotos') }}",
+                url: "{{ route('addEventPhotos') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -183,8 +191,8 @@ $(document).ready(function(){
                     if(result.errors.image_name){
                         $( '#image_name-error' ).html( result.errors.image_name[0] );
                     }
-                    if(result.errors.common_id){
-                        $( '#common_id-error' ).html( result.errors.common_id[0] );
+                    if(result.errors.eventname){
+                        $( '#common_id-error' ).html( result.errors.eventname[0] );
                     }
                 }
                 if(result.status == true)
@@ -223,7 +231,7 @@ $(document).ready(function(){
                 <form name="addPhotosform" id="addPhotosform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <label for="exampleSelectPhoto">Photo</label>
                             <input type="file" name="image_name" id="image_name" class="file-upload-default">
                             <div class="input-group col-xs-12">
@@ -231,19 +239,20 @@ $(document).ready(function(){
                                 <span class="input-group-append">
                                     <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                                 </span>
-                                <span class="text-danger">
-                                    <strong id="image_name-error"></strong>
-                                </span>
                             </div>
+                            <span class="text-danger">
+                                <strong id="image_name-error"></strong>
+                            </span>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <label for="exampleInputStatus">Shops and Malls</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <select name="eventname" id="eventname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
-                                    <option value="{{ $common->id }}">{{ $common->name }}</option>
+                                    <option value="{{ $common->id }}">{{ $common->event_name }}</option>
                                 @endforeach
                             </select>
+                            <input type="hidden" value="event" name="type">
                             <span class="text-danger">
                                 <strong id="common_id-error"></strong>
                             </span>

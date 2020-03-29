@@ -75,6 +75,12 @@ Route::post('productsearch', array('as' => 'product.productsearch', 'routegroup'
 Route::post('updateproduct', array('as' => 'product.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@update'));
 Route::get('product/delete/{id}', array('as' => 'product.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@delete'));
 
+Route::get('products_variant/{id}', 'admin\ProductController@product_variant')->name('products_variant');
+Route::post('/addproductvariant', 'admin\ProductController@addProductsVariant')->name('addproductvariant');
+Route::post('productvariantsearch', array('as' => 'productvariant.productsearch', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@variantsearch'));
+Route::post('updateproductvariant', array('as' => 'productvariant.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@variantupdate'));
+Route::get('productvariant/delete/{id}', array('as' => 'productvariant.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ProductController@variantdelete'));
+
 
 Route::get('/excel_export', 'ExportExcelController@index');
 Route::get('/expert_excel/excel','ExportExcelController@excel')->name('export_excel.excel');
@@ -227,10 +233,21 @@ Route::post('highlightssearch', array('as' => 'highlights.search', 'routegroup' 
 
 Route::get('/flashsale', 'admin\FlashsaleController@index')->name('flashsale');
 
-Route::get('/photos', 'admin\CommonPhotosController@index')->name('photos');
-Route::post('/addPhotos', 'admin\CommonPhotosController@addPhotos')->name('addPhotos');
-Route::get('photosdelete/{id}', array('as' => 'photos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
-Route::post('photosupdate', array('as' => 'photos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@update'));
+Route::get('/mallphotos', 'admin\CommonPhotosController@index')->name('mallphotos');
+Route::post('/addMallPhotos', 'admin\CommonPhotosController@addPhotos')->name('addMallPhotos');
+Route::get('mallphotosdelete/{id}', array('as' => 'mallphotos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
+Route::post('mallphotosupdate', array('as' => 'mallphotos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@update'));
+
+Route::get('/eventphotos', 'admin\CommonPhotosController@index')->name('eventphotos');
+Route::post('/addEventPhotos', 'admin\CommonPhotosController@addPhotos')->name('addEventPhotos');
+Route::get('eventphotosdelete/{id}', array('as' => 'eventphotos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
+Route::post('eventphotosupdate', array('as' => 'eventphotos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@update'));
+
+Route::get('/attractionphotos', 'admin\CommonPhotosController@index')->name('attractionphotos');
+Route::post('/addAttractionPhotos', 'admin\CommonPhotosController@addPhotos')->name('addAttractionPhotos');
+Route::get('attractionphotosdelete/{id}', array('as' => 'attractionphotos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
+Route::post('attractionphotosupdate', array('as' => 'attractionphotos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@update'));
+
 
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
 // Route::get('/orders', 'admin\LoginPrivacyController@index')->name('orders');
