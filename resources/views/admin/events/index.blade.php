@@ -491,8 +491,7 @@ $(document).ready(function(){
                 success: function(result){
                 if(result.status == true)
                 {
-                    var data = result.data;
-                    
+                    var data = result.data;                    
                     
                     var findnorecord = $('#eventstableData tr.norecord').length;
                     if(findnorecord > 0){

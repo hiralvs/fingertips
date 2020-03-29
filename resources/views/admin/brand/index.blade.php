@@ -274,6 +274,7 @@ $(document).ready(function(){
                 }
             });
         });
+    
     $('#addBrandSubmit').click(function(e){
         var formData = new FormData($("#addbrandform")[0]);
         var message = CKEDITOR.instances['desc'].getData();
@@ -330,7 +331,8 @@ $(document).ready(function(){
                 }
             });
         });
-        $(document).on('click','#search',function(){ 
+
+    $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -378,8 +380,8 @@ $(document).ready(function(){
                     "<td>"+brand_image+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.name+"</td>" +
-                    "<td>"+data.noofproducts+"</td>" +
-                    "<td>"+category_id+"</td>" +
+                    "<td>"+data.product_count+"</td>" +
+                    "<td>"+data.category_name+"</td>" +
                     // "<td>"+noofpresence+"</td>" +
                     "<td>"+data.commission+"</td>" +
                     "<td>"+status+"</td>" +
@@ -401,23 +403,31 @@ $(document).ready(function(){
 });
 function fnExcelReport()
 {
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#brandData')); //Serialised table
-    var tF = 'brand.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
     }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
-    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('brandexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "mall",
+                filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+   
 
     $('thead tr').last().append('<th>Action</th>');
 }

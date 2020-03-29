@@ -66,6 +66,8 @@ Route::post('/addbrand', 'admin\BrandController@addbrand')->name('addbrand');
 // Route::get('delete/{id}', array('as' => 'brand.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@delete'));
 Route::post('brandsearch', array('as' => 'brand.brandsearch', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@search'));
 Route::post('updatebrand', array('as' => 'brand.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\BrandController@update'));
+Route::get('/brandexport', 'admin\BrandController@export')->name('brandexport');
+
 
 Route::get('/dashboard', 'admin\DashboardController@index')->name('dashboard');
 
