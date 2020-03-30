@@ -182,13 +182,14 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
+        $role = $request->role;
 
-        $user = User::where('name','LIKE',"%{$search}%")
+        $user = User::where('role',$role)->where('name','LIKE',"%{$search}%")
         ->orWhere('unique_id', 'LIKE',"%{$search}%")->paginate();
-
         if($user)
         {
-            $arr = array('status' => true,"data"=>$user[0]);    
+            $data = $this->htmltoexportandsearch($user,true);
+            $arr = array('status' => true,"data"=> $data);    
         }
         else{
             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
@@ -196,5 +197,105 @@ class UserController extends Controller
 
         return Response()->json($arr);
 
+    }
+
+    public function adminexport(Request $request)
+    {
+        $role = $request->role;
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $query = User::where('role',$role);
+
+        if($request->search != "")
+        {
+            $query = $query->where('name','LIKE',"%{$search}%")
+        ->orWhere('unique_id', 'LIKE',"%{$search}%");
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata);
+    }
+
+    public function htmltoexportandsearch($finaldata,$search=false)
+    {
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Created on</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+                if($value['status'] == '0') 
+                {
+                    $status = "Active";
+                }
+                else if($value['status'] == '1'){
+                    $status = "Inactive";            
+                }
+                if($search == true)
+                {
+                    if($value['profile_pic']!= null)
+                    {
+                        $path = asset('public/upload').'/'.$value['profile_pic'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['profile_pic'];
+                }
+
+                $cdate = date('d F Y',strtotime($value['created_at']));
+                $html .="<tr>
+                    <td>".$image."</td>
+                    <td>".$value['unique_id']."</td>
+                    <td>".$value['name']."</td>
+                    <td>".$value['email']."</td>
+                    <td>".$value['gender']."</td>
+                    <td>".$value['role']."</td>
+                    <td>".$status."</td>
+                    <td>".$cdate."</td>";
+                if($search == true)
+                {
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-target='#editUser".$value->id."' ><i class='mdi mdi-table-edit'></i></a> 
+                            <a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href='".route('user.delete', $value->id)."'><i class='mdi mdi-delete'></i></a> 
+                          </td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="9">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
     }
 }

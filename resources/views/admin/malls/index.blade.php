@@ -244,7 +244,7 @@
                         @endforeach
                         @else
                         <tr>
-                        <td colspan="3">No Records Found</td>
+                        <td colspan="11">No Records Found</td>
                         </tr>
                         @endif
 
@@ -604,33 +604,33 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#mallstableData tr.norecord').remove();
                         }
-                    
-                        var image = '';
-                    if(data.image != null)
-                    {
-                        image = data.image;
-                    }
-                    if(data.created_at)
-                    {
-                        var cdate = date(data.created_at);
-                    }
-                    var deleteurl = '{{ route("shopsmalls.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var imageurl = "{{asset('public/upload/malls')}}";
-                    var tr_str = "<tr>"+
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td><img src="+imageurl+"/"+image+"></td>" +
-                    "<td>"+data.name+"</td>" +
-                    "<td>"+data.location+"</td>"+
-                    "<td>"+data.openinghrs+"</td>" +
-                    "<td>"+data.contact+"</td>" +
-                    "<td>"+data.type+"</td>" +
-                    "<td>"+data.propertyadmin+"</td>" +
-                    "<td>"+cdate+"</td>" +
-                    "<td>"+data.created_by+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editShopsandmalls'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Mall?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#mallstableData tbody").html(tr_str);
+                    $("#mallstableData tbody").html(data);
+                    //     var image = '';
+                    // if(data.image != null)
+                    // {
+                    //     image = data.image;
+                    // }
+                    // if(data.created_at)
+                    // {
+                    //     var cdate = date(data.created_at);
+                    // }
+                    // var deleteurl = '{{ route("shopsmalls.delete", ":id") }}';
+                    // deleteurl = deleteurl.replace(':id', data.id);
+                    // var imageurl = "{{asset('public/upload/malls')}}";
+                    // var tr_str = "<tr>"+
+                    // "<td>"+data.unique_id+"</td>" +
+                    // "<td><img src="+imageurl+"/"+image+"></td>" +
+                    // "<td>"+data.name+"</td>" +
+                    // "<td>"+data.location+"</td>"+
+                    // "<td>"+data.openinghrs+"</td>" +
+                    // "<td>"+data.contact+"</td>" +
+                    // "<td>"+data.type+"</td>" +
+                    // "<td>"+data.propertyadmin+"</td>" +
+                    // "<td>"+cdate+"</td>" +
+                    // "<td>"+data.created_by+"</td>" +
+                    // "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editShopsandmalls'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Mall?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    // "</tr>";
+                    // $("#mallstableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else
@@ -643,33 +643,30 @@ $(document).ready(function(){
 });
 function fnExcelReport()
 {
-  $("#mallstableData").table2excel({
-    // exclude CSS class
-    exclude: ".noExl",
-    name: "mall",
-    filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
-    fileext: ".xls" // file extension
-  }); 
-
-    // $('thead tr th').last().remove();
-    // var tT = new XMLSerializer().serializeToString(document.querySelector('#mallstableData')); //Serialised table
-    // var tF = 'report.xls'; //Filename
-    // var tB = new Blob([tT]); //Blub
-    // if(window.navigator.msSaveOrOpenBlob){
-    //     //Store Blob in IE
-    //     window.navigator.msSaveOrOpenBlob(tB, tF)
-    // }
-    // else{
-    //     //Store Blob in others
-    //     var tA = document.body.appendChild(document.createElement('a'));
-    //     tA.href = URL.createObjectURL(tB);
-    //     tA.download = tF;
-    //     tA.style.display = 'none';
-    //     tA.click();
-    //     tA.parentNode.removeChild(tA)
-    // }
-
-    // $('thead tr').last().append('<th>Action</th>');
+   var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('shopmallexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "shopmall",
+                filename: "shopmall" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
 }
 </script>
 @endsection
