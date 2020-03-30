@@ -173,8 +173,8 @@
                                                     <strong class="commission-error"></strong>
                                                 </span>
                                             </div>
-                                            <div class="form-group col-md-12"> 
-                                                <textarea class="description ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
+                                            <div class="form-group col-md-12">
+                                                <textarea class="form-control ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
                                             </div>
                                         </div>
                                             <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
@@ -214,17 +214,22 @@ $(document).ready(function(){
         $('.category_id').multiselect({
             columns: 1,
             placeholder: 'Select Category'
-        });
+            });
 
     $('.editBrandSubmit').click(function(e){
+
         var id = $(this).data('id');
         var formData = new FormData($("#editbrandform"+id)[0]);
-        var message = CKEDITOR.instances['description'+id].getData();
+
         $('.name-error' ).html( "" );
         $('.category_id-error' ).html( "" );
         $('.status-error' ).html( "" );
         $('.commission-error' ).html( "" );
-        formData.append('description',message);
+
+        var message = CKEDITOR.instances['description'+id].getData();
+
+        formData.append('description',message);    
+    
         var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
@@ -272,7 +277,7 @@ $(document).ready(function(){
         });
     $('#addBrandSubmit').click(function(e){
         var formData = new FormData($("#addbrandform")[0]);
-        var message = CKEDITOR.instances['desc'].getData();
+        var message = CKEDITOR.instances['description'].getData();
         console.log(message);
         $( '#name-error' ).html( "" );
         $( '#category_id-error' ).html( "" );
@@ -317,6 +322,7 @@ $(document).ready(function(){
                          $('.statusMsg').html('');
                         $('#addBrand').modal('hide');
                         //  $('#done-message').addClass('hide');
+                        window.location.reload();
                     }, 3000);
                 }
                 else
@@ -502,7 +508,7 @@ function fnExcelReport()
                     </div>				
                 </div>
                 <div class="form-group col-md-12"> 
-                    <textarea class="description ckeditor" id="desc" name="desc"></textarea>
+                    <textarea class="description ckeditor" id="description" name="description"></textarea>
                 </div>
                 <button type="button" class="btn btn-primary mr-2" id="addBrandSubmit">Submit</button>
                 <button type="button" class="btn btn-light" data-dismiss="modal">Close</button> 

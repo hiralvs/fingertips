@@ -52,8 +52,12 @@ class CommonhighlightController extends Controller
         } else {
             $direction='asc';
         }
-        $return_data['data'] = Highlights::orderBy('id', 'desc')->sortable()->paginate($perpage);
+        // $return_data['data'] = Highlights::orderBy('id', 'desc')->sortable()->paginate($perpage);
+        
         $return_data['common_id'] = ShopsandMalls::select('id', 'name')->get();
+        $return_data['data'] = Highlights::select('highlights.*', 'shopsandmalls.id as common_id', 'name')->leftjoin('shopsandmalls', 'highlights.common_id', '=', 'shopsandmalls.id')
+        ->orderBy($sort, $direction)->sortable()->paginate($perpage);
+
         
         // echo "<pre>";
         // print_r( $return_data['data']);

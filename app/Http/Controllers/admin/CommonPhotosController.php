@@ -51,7 +51,6 @@ class CommonPhotosController extends Controller
         } else {
             $direction='desc';
         }
-        $return_data['data'] = Photos::where('type','malls')->orderBy('id',)->sortable()->paginate($perpage);
         $return_data['data'] = Photos::select('photos.*','shopsandmalls.name as mallname')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'photos.common_id')->where('photos.type','malls')->orderBy($sort, $direction)->sortable()->paginate($perpage);
         $return_data['common_id'] = ShopsandMalls::select('id', 'name')->get();
         // echo "<pre>";

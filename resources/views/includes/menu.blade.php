@@ -42,9 +42,9 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('mallslider')}}">Slider Image</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('photos')}}">Photos</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>
                         {{-- <li class="nav-item"><a class="nav-link" href="{{route('checkin')}}">Check In</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('orders')}}">Orders</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mapimage')}}">Map Image</a></li> --}}
                       </ul>
                   </div>
