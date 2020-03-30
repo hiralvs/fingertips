@@ -123,7 +123,7 @@ class BrandController extends Controller
         $brand->category_id =  $categoryid;
         $brand->status = $request->status;
         $brand->commission = $request->commission;
-        $brand->description = $request->description;
+        $brand->description =  $request->description;
         if ($request->hasFile('brand_image')) {
 
             $image = $request->File('brand_image');

@@ -56,6 +56,7 @@
                             <th>@sortablelink('id')</th>
                             <th>Image</th>
                             <th>@sortablelink('Title')</th>
+                            <th>@sortablelink('Shopes And Malls')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -66,6 +67,7 @@
                           <td>{{$value->unique_id}}</td>
                           <td><img src="{{asset('public/upload/highlights/')}}/{{$value->image}}" alt=""></td>
                           <td>{{$value->title}}</td>
+                          <td>{{$value->name}}</td>
                           <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editHighlights{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
                           <a class="delete" onclick="return confirm('Are you sure you want to delete this Highlights?')" href="{{route('highlights.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
@@ -310,6 +312,7 @@ $(document).ready(function(){
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.image+"</td>" +
                     "<td>"+data.title+"</td>" +
+                    "<td>"+data.common_name+"</td>" +
                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editHighlights'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Highlights?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
                     $("#highlightstableData tbody").html(tr_str);

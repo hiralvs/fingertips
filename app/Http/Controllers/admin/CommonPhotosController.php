@@ -55,7 +55,6 @@ class CommonPhotosController extends Controller
         } else {
             $direction='desc';
         }
-
         if($lastsegment == 'eventphotos')
         {
             $return_data['title'] = trans('Event Photos');
