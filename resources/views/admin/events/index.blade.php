@@ -491,8 +491,7 @@ $(document).ready(function(){
                 success: function(result){
                 if(result.status == true)
                 {
-                    var data = result.data;
-                    
+                    var data = result.data;                    
                     
                     var findnorecord = $('#eventstableData tr.norecord').length;
                     if(findnorecord > 0){
@@ -506,7 +505,7 @@ $(document).ready(function(){
                     }
                     if(data.created_at)
                     {
-                        var cdate = "<?php echo date("d F Y",strtotime($value->created_at)) ?>";
+                        var cdate = date(data.created_at);
                     }
                     var deleteurl = '{{ route("events.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);

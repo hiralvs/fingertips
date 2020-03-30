@@ -25,10 +25,10 @@
                   <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
-                        <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
+                        <h4  class="mess"   style="text-align: center; color: green;">{{ session('success') }}</h4>
                         @endif
                         @if (session()->has('error'))
-                        <h4 style="text-align: center; color: red;">{{ session('error') }}</h4>
+                        <h4  class="mess"  style="text-align: center; color: red;">{{ session('error') }}</h4>
                         @endif
                     </div>
                   <div class="table-responsive">
@@ -165,6 +165,9 @@
 <script src="{{asset('public/js/file-upload.js')}}" ></script>
 
 <script>
+     setTimeout(function(){
+           $("h4.mess").remove();
+        }, 5000 );
     $('.editBannerSubmit').click(function(e){
         var id = $(this).data('id');
         var formData = new FormData($("#editbannerform"+id)[0]);
@@ -285,7 +288,7 @@ $('#addBannerSubmit').click(function(e){
                         bannerpic = data.bannerimage;
                     }
                     var deleteurl = '{{ route("banner.delete", ":id") }}';
-                    var imageurl = "{{asset('public/upload/baner/')}}";
+                    var imageurl = "{{asset('public/upload/banners/')}}";
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
                     // "<td>"+data.category_name+"</td>" +

@@ -54,9 +54,10 @@
                       <thead>
                         <tr>
                             <th>@sortablelink('slider_image_name','Slider Image')</th>
-                            <th>@sortablelink('image_id','Slider Image id')</th>
-                            <th>@sortablelink('created_at','Created On')</th>
+                            <th>@sortablelink('unique_id','Slider Image id')</th>
                             <th>@sortablelink('mallname','Shops and Malls')</th>
+                            <th>@sortablelink('created_at','Created On')</th>
+                            <th>@sortablelink('created_by','Created by')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -65,7 +66,8 @@
                             @foreach($data as $key => $value)
                         <tr>
                           <td><img src="{{asset('public/upload/sliders/')}}/{{$value->slider_image_name}}" alt=""></td>
-                          <td>{{$value->image_id}}</td>
+                          <td>{{$value->unique_id}}</td>
+                          <td>{{$value->mallname}}</td>
                           <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                           <td>{{$value->created_by}}</td>
                           <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editMallSlider{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
@@ -102,7 +104,7 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Malls and Shops</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <select name="mallname" id="mallname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @if(!empty($malls) && $malls->count() > 0)
                                                             @foreach ($malls as $key => $pd)
@@ -144,8 +146,6 @@
 
 <!-- content-wrapper ends -->
 <script src="{{asset('public/js/file-upload.js')}}" ></script> 
-<!-- //view-source:https://maps.googleapis.com/maps/api/js?key=AIzaSyBrZ7Gj6VQ4ReRytE4tQm0RFOFCQiMFl8U&libraries=places,geometry&callback=loadGoogleMap -->
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrZ7Gj6VQ4ReRytE4tQm0RFOFCQiMFl8U&libraries=places,geometry"></script>
 <style>
     .pac-container {
         z-index: 10000 !important;
@@ -186,9 +186,8 @@ $(document).ready(function(){
                 success: function(result){
                     if(result.errors) {
                     $(".statusMsg").hide();
-                    console.log(result.errors.common_id[0]);
-                    if(result.errors.common_id){
-                        $( '.common_id-error' ).html( result.errors.common_id[0] );
+                    if(result.errors.mallname){
+                        $( '.common_id-error' ).html( result.errors.mallname[0] );
                     }                    
                     if(result.errors.status){
                         $( '.image-error' ).html( result.errors.status[0] );
@@ -228,44 +227,42 @@ $(document).ready(function(){
                 contentType: false,
                 processData: false,
                 data: formData,
-                success: function(result){ alert('sdf');
-                console.log(result);
-                if(result.errors) {
-                    $(".statusMsg").hide();
-                                        console.log(result.errors);
- alert(result.errors.common_id);
-                    if(result.errors.common_id){
-                            $( '#common_id-error' ).html( result.errors.common_id[0] );
-                        }                  
-                    if(result.errors.status){
-                            $( '#image-error' ).html( result.errors.status[0] );
-                        }                  
-                }
-                if(result.status == true)
-                {
-                    var data = result.data;
-                    // var propertyadmin =  result.data.propertyadmin;
-                    $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
-                    setTimeout(function(){ 
-                        $('.statusMsg').html('');
-                        $("#addMallSliderform")[0].reset();
-                        $('#addMallSlider').modal('hide');
-                        window.location.reload();
-                    }, 3000);
+                success: function(result){ 
+                    if(result.errors) {
+                        $(".statusMsg").hide();
+                        if(result.errors.mallname){
+                                $( '#common_id-error' ).html( result.errors.mallname[0] );
+                            }                  
+                        if(result.errors.image){
+                                $( '#image-error' ).html( result.errors.image[0] );
+                            }                  
+                    }
+                    if(result.status == true)
+                    {
+                        var data = result.data;
+                        // var propertyadmin =  result.data.propertyadmin;
+                        $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
+                        setTimeout(function(){ 
+                            $('.statusMsg').html('');
+                            $("#addMallSliderform")[0].reset();
+                            $('#addMallSlider').modal('hide');
+                            window.location.reload();
+                        }, 3000);
 
-                    $("#addSliderform")[0].reset();
-                     window.location.reload();
-                    
-                    $("#addMallSliderform")[0].reset();
-                }
-                else
-                {
-                    $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-                }
+                        $("#addSliderform")[0].reset();
+                         window.location.reload();
+                        
+                        $("#addMallSliderform")[0].reset();
+                    }
+                    else
+                    {
+                        $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
+                    }
                 }
             });
         });
-         $(document).on('click','#search',function(){ 
+    
+    $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -281,21 +278,27 @@ $(document).ready(function(){
                     var data = result.data;
                     
                     
-                    var findnorecord = $('#sliderstableData tr.norecord').length;
+                    var findnorecord = $('#slidertableData tr.norecord').length;
                     if(findnorecord > 0){
-                        $('#sliderstableData tr.norecord').remove();
+                        $('#slidertableData tr.norecord').remove();
                     }
-                    
+                    var sliderpic = '';
+                    var imageurl = "{{asset('public/upload/sliders/')}}";
+                    if(data.slider_image_name != null)
+                    {
+                        sliderpic = "<img src="+imageurl+"/"+data.slider_image_name+">" ;
+                    }
                     var deleteurl = '{{ route("mallslider.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
+                    "<td>"+sliderpic+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.slidername+"</td>" +
                     "<td>"+data.mallname+"</td>" +
-                    "<td>"+data.status+"</td>" +
+                    "<td>"+date(data.created_at)+"</td>" +
+                    "<td>"+data.created_by+"</td>" +
                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMallSlider'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Slider?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    $("#brandstableData tbody").html(tr_str);
+                    $("#slidertableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else

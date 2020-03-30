@@ -42,10 +42,10 @@
                   <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
-                        <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: green;">{{ session('success') }}</h4>
                         @endif
                         @if (session()->has('error'))
-                        <h4 style="text-align: center; color: red;">{{ session('error') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: red;">{{ session('error') }}</h4>
                         @endif
                     </div>
                   <div class="table-responsive">
@@ -157,6 +157,9 @@
 <script>
    
 $(document).ready(function(){
+    setTimeout(function(){
+            $("h4.mess").remove();
+        }, 5000 ); 
     $('.editTrendingSubmit').click(function(e){
         var id = $(this).data('id');
         var formData = new FormData($("#editTrendform"+id)[0]);
@@ -306,12 +309,6 @@ $(document).ready(function(){
                     {
                         status = 'Inactive';
                     }
-                    // if(data.created_at)
-                    // {
-                    //     var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
-                    //     cdate = cdate.replace(':date', data.created_at);
-                    //     //var cdate = "<?php //echo date("d F Y",strtotime($value->created_at)) ?>";
-                    // }
                     var deleteurl = '{{ route("trending.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
@@ -323,7 +320,6 @@ $(document).ready(function(){
                     // "<td>"+cdate+"</td>" +
                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    console.log(tr_str);
                     $("#trendingtableData tbody").html(tr_str);
                     $("#paging").hide();
                 }

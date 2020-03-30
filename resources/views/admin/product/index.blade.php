@@ -73,6 +73,7 @@
                             <th>@sortablelink('created_at','Created on')</th>
                             <!-- <th>@sortablelink('created_at','Created on',['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow'])</th> -->
                             <th>Action</th>
+                            <th>Varient</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -104,6 +105,13 @@
                           <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                           <td><a class="edit open_modal" data-toggle="modal" data-target="#editProduct{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
                           <a class="delete" onclick="return confirm('Are you sure you want to delete this Product?')" href="{{route('product.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <td>
+                            <label class="toggle-switch">
+                                <input type="checkbox" data-id="{{ $value->id }}"  name="vairant" class="vairant" value="{{ $value->productvariantcount > 1 ? '1' : '0' }}" {{ $value->productvariantcount > 1 ? 'checked' : '' }}>
+                                <span class="toggle-slider round"></span>
+                              </label>
+                              <a href="{{route('products_variant', $value->id)}}" style="{{ $value->productvariantcount > 1 ? 'display: block;' : 'display: none' }}"  id="variantLink{{ $value->id }}" >variant</a>
+                          </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->
                         <div id="editProduct{{$value->id}}" class="modal fade">
@@ -249,6 +257,20 @@
 <script src="{{asset('public/js/file-upload.js')}}" ></script>
 <script>
 $(document).ready(function(){
+    
+    $(".vairant").click(function() {
+        var status = $(this).prop('checked') == true ? 1 : 0; 
+        var pid = $(this).data('id'); 
+        alert(pid);
+        if(status == 1)
+        {
+            $("#variantLink"+pid).css("display","block");
+        }
+        else if(status == 0)
+        {
+            $("#variantLink"+pid).css("display","none");
+        }
+    });
     $('.category_id').multiselect({
             columns: 1,
             placeholder: 'Select Category'

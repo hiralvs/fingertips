@@ -42,10 +42,10 @@
                   <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
-                        <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: green;">{{ session('success') }}</h4>
                         @endif
                         @if (session()->has('error'))
-                        <h4 style="text-align: center; color: red;">{{ session('error') }}</h4>
+                        <h4 class="mess" style="text-align: center; color: red;">{{ session('error') }}</h4>
                         @endif
                     </div>
                   <div class="table-responsive">

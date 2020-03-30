@@ -10,5 +10,9 @@ class Photos extends Model
 {
     use SoftDeletes;
     use Sortable;
-    protected $table="photos";    
+    protected $table="photos";   
+    public function notHavingImageInDb()
+    {
+        return (empty($this->image))?true:false;
+    } 
 }

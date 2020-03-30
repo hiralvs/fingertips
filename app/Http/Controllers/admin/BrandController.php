@@ -49,7 +49,7 @@ class BrandController extends Controller
         } else {
             $direction='desc';
         }
-        $return_data['data'] = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"))->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['data'] = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"),DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,brands.category_id)"),">",DB::raw("'0'"))->where('brands.status','0')->groupBy("brands.id")->orderBy($sort,$direction)->sortable()->paginate($perpage);
         
         $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         
@@ -71,6 +71,8 @@ class BrandController extends Controller
         }
     
         $request->request->remove('_token');
+        $request->request->remove('desc');
+
         $input = $request->all();
         $input['unique_id'] =  get_unique_id('brands');
         $input['category_id'] =  implode(",", $input['category_id']);
@@ -102,11 +104,7 @@ class BrandController extends Controller
         return redirect()->route('brand')->with('success', 'Brand Deleted Successfully');
     }
 
-    // public function edit(Request $request){
-    //     $query = Brand::where('id',$request->id);
-    //     return View('admin.brand.edit',$query)->render();
-    // }
- public function update(Request $request)
+    public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -126,7 +124,6 @@ class BrandController extends Controller
         $brand->status = $request->status;
         $brand->commission = $request->commission;
         $brand->description =  $request->description;
-    
         if ($request->hasFile('brand_image')) {
 
             $image = $request->File('brand_image');
@@ -152,8 +149,8 @@ class BrandController extends Controller
     {
         $search = $request->input('search');
 
-        $brand = Brand::where('name','LIKE',"%{$search}%")
-        ->orWhere('unique_id', 'LIKE',"%{$search}%")->paginate();
+        $brand = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"),DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,brands.category_id)"),">",DB::raw("'0'"))->where('name','LIKE',"%{$search}%")
+        ->orWhere('unique_id', 'LIKE',"%{$search}%")->groupBy("brands.id")->paginate();
 
         if($brand)
         {
@@ -163,6 +160,65 @@ class BrandController extends Controller
             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
         }
         return Response()->json($arr);
+    }
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $query = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"),DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,brands.category_id)"),">",DB::raw("'0'"))->where('brands.status','0')->groupBy("brands.id");
+
+        if($request->search != "")
+        {
+            $query = $query->where('name','LIKE',"%{$search}%")
+            ->orWhere('unique_id', 'LIKE',"%{$search}%");
+        }
+
+        $finaldata = $query->get();
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {       
+
+            $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                          <th>Brand Logo</th>
+                          <th>Id</th>
+                          <th>Name</th>
+                          <th>No Of Products</th>
+                          <th>Category</th>
+                          <th>Total Earnings</th>
+                          <th>Status</th>
+                          <th>Created on</th>
+                        </tr>
+                      </thead>
+                      <tbody>';     
+            foreach ($finaldata as $key => $value) 
+            {
+               
+                if($value['status'] == '1') 
+                {
+                    $status = "Inactive";
+                }
+                else{
+                    $status = "Active";            
+                }
+                $cdate = date('d F Y',strtotime($value['created_at']));
+                $html .="<tr><td>".$value['brand_image']."</td><td>".$value['unique_id']."</td>
+                <td>".$value['name']."</td>
+                            <td>".$value['product_count']."</td>
+                            <td>".$value['category_name']."</td>
+                            <td>".$value['commission']."'</td>
+                            <td>".$status."</td>
+                            <td>". $cdate ."</td>
+                        </tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="10">No Records Found</td></tr>';
+        }
+        $html .= '</tbody></table>';
+        echo $html;
     }
 
 }

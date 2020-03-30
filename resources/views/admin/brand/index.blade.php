@@ -51,10 +51,10 @@
                   </select> -->
                 <div class="box-header ">
                         @if (session()->has('success'))
-                        <h4 style="text-align: center; color: green;">{{ session('success') }}</h4>
+                        <h4  class="mess"  style="text-align: center; color: green;">{{ session('success') }}</h4>
                         @endif
                         @if (session()->has('error'))
-                        <h4 style="text-align: center; color: red;">{{ session('error') }}</h4>
+                        <h4 class="mess"  style="text-align: center; color: red;">{{ session('error') }}</h4>
                         @endif
                 </div>
                 <div class="table-responsive">
@@ -87,7 +87,7 @@
                           <td>{{$value->unique_id}}</td>
                           <td>{{$value->name}}</td>
                           <td>{{$value->product_count}}</td>
-                          <td>{{$value->category_id}}</td>
+                          <td>{{$value->category_name}}</td>
                           <td>{{$value->commission}}</td>
                           
                           <td> @if($value->status == '1') 
@@ -173,8 +173,8 @@
                                                     <strong class="commission-error"></strong>
                                                 </span>
                                             </div>
-                                            <div class="form-group col-md-12">
-                                                <textarea class="form-control ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
+                                            <div class="form-group col-md-12"> 
+                                                <textarea class="description ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
                                             </div>
                                         </div>
                                             <button type="button" class="btn btn-primary mr-2 editBrandSubmit" data-id="{{$value->id}}" id="addBrandSubmit">Save</button>
@@ -211,11 +211,14 @@
 <script>
 $(document).ready(function(){
 
-        $('.category_id').multiselect({
-            columns: 1,
-            placeholder: 'Select Category'
-            });
-
+    setTimeout(function(){
+       $("h4.mess").remove();
+    }, 5000 ); // 5 secs
+    
+    $('.category_id').multiselect({
+        columns: 1,
+        placeholder: 'Select Category'
+    });
     $('.editBrandSubmit').click(function(e){
 
         var id = $(this).data('id');
@@ -265,7 +268,7 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('#editBrand'+id).modal('hide');
-                        window.location.reload();
+                        //window.location.reload();
                     }, 3000);
                 }
                 else
@@ -275,6 +278,7 @@ $(document).ready(function(){
                 }
             });
         });
+    
     $('#addBrandSubmit').click(function(e){
         var formData = new FormData($("#addbrandform")[0]);
         var message = CKEDITOR.instances['description'].getData();
@@ -321,7 +325,6 @@ $(document).ready(function(){
                     setInterval(function(){ 
                          $('.statusMsg').html('');
                         $('#addBrand').modal('hide');
-                        //  $('#done-message').addClass('hide');
                         window.location.reload();
                     }, 3000);
                 }
@@ -332,7 +335,8 @@ $(document).ready(function(){
                 }
             });
         });
-        $(document).on('click','#search',function(){ 
+
+    $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -372,9 +376,7 @@ $(document).ready(function(){
                     }
                     if(data.created_at)
                     {
-                        var cdate = "<?php echo date("d F Y",strtotime(":date")) ?>";
-                        cdate = cdate.replace(':date', data.created_at);
-                        //var cdate = "<?php //echo date("d F Y",strtotime($value->created_at)) ?>";
+                        var cdate = date(data.created_at);
                     }
                     var deleteurl = '{{ route("brand.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
@@ -382,8 +384,8 @@ $(document).ready(function(){
                     "<td>"+brand_image+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.name+"</td>" +
-                    "<td>"+data.noofproducts+"</td>" +
-                    "<td>"+category_id+"</td>" +
+                    "<td>"+data.product_count+"</td>" +
+                    "<td>"+data.category_name+"</td>" +
                     // "<td>"+noofpresence+"</td>" +
                     "<td>"+data.commission+"</td>" +
                     "<td>"+status+"</td>" +
@@ -405,23 +407,31 @@ $(document).ready(function(){
 });
 function fnExcelReport()
 {
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#brandData')); //Serialised table
-    var tF = 'brand.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
     }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
-    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('brandexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "mall",
+                filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+   
 
     $('thead tr').last().append('<th>Action</th>');
 }
