@@ -76,7 +76,7 @@ class TrendingController extends Controller
 
             $path = public_path('upload/trending/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['image'] = $filename;
         }
         Trendingnow::unguard();
@@ -122,7 +122,7 @@ class TrendingController extends Controller
 
             $path = public_path('upload/trending/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $trendingnow->image = $filename;
         }
         Trendingnow::unguard();

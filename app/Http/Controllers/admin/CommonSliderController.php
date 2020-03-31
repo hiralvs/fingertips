@@ -132,7 +132,7 @@ class CommonSliderController extends Controller
             $path = public_path('upload/sliders/' . $filename);
             // $path = public_path('upload/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['slider_image_name'] = $filename;
         }
 
@@ -210,7 +210,7 @@ class CommonSliderController extends Controller
 
             $path = public_path('upload/sliders/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $slider->slider_image_name = $filename;
         }
 

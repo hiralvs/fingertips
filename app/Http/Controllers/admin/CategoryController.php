@@ -84,7 +84,7 @@ class CategoryController extends Controller
 
             $path = public_path('upload/category/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['cat_image'] = $filename;
         }
         Category::unguard();
@@ -128,7 +128,7 @@ class CategoryController extends Controller
 
             $path = public_path('upload/category/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $category->cat_image = $filename;
         }
         Category::unguard();

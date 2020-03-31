@@ -123,7 +123,7 @@ class ShopsandMallsController extends Controller
 
             $path = public_path('upload/malls/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['image'] = $filename;
         }
         ShopsandMalls::unguard();
@@ -192,7 +192,7 @@ class ShopsandMallsController extends Controller
 
             $path = public_path('upload/malls/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $malls->image = $filename;
         }
         ShopsandMalls::unguard();

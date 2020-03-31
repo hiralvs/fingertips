@@ -147,7 +147,7 @@ class CommonPhotosController extends Controller
             
             $path = public_path('upload/photos/' . $filename);
             
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['image_name'] = $filename;
         }
         Photos::unguard();
@@ -225,7 +225,7 @@ class CommonPhotosController extends Controller
 
             $path = public_path('upload/photos/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $photos->image_name = $filename;
         }
         Photos::unguard();

@@ -142,7 +142,7 @@ class CommonhighlightController extends Controller
             
             $path = public_path('upload/highlights/' . $filename);
             
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['image'] = $filename;
         }
         Highlights::unguard();

@@ -24,8 +24,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('editProfile', 'API\RegisterController@editProfile');
     Route::post('updateProfile','API\RegisterController@updateProfile');
     Route::post('checkinUser','API\CheckinController@checkinUser');
-
-
+    Route::post('addToCart','API\ProductController@addToCart');
+    Route::post('updateCart','API\ProductController@updateCart');
+    Route::post('deleteCart','API\ProductController@deleteCart');
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
 });
 
