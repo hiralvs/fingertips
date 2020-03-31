@@ -33,7 +33,6 @@
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
                 <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">
-                    <!-- <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('export_excel.excel')}}" tabindex=""     style="background-color:#454d56 !important;"> -->
                         EXPORT
                     </a>
                 </div>                
@@ -63,7 +62,7 @@
                       <thead>
                         <tr>
                             <th>@sortablelink('id')</th>
-                            <th>@sortablelink('sku_id')</th>
+                            <th>@sortablelink('sku_id','Sku Id')</th>
                             <th>Image</th>
                             <th>@sortablelink('name')</th>
                             <th>Category</th>
@@ -258,10 +257,9 @@
 <script>
 $(document).ready(function(){
     
-    $(".vairant").click(function() {
+    $(document).on("click",".vairant",function() {
         var status = $(this).prop('checked') == true ? 1 : 0; 
         var pid = $(this).data('id'); 
-        alert(pid);
         if(status == 1)
         {
             $("#variantLink"+pid).css("display","block");
@@ -425,55 +423,9 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#productData tbody tr.norecord').remove();
                         }
-                    
-                    var product_image = stock = category_id = status = '';
-                    if(data.product_image != null)
-                    {
-                        var imageurl = "{{asset('public/upload/products')}}";
-                        product_image = "<img src="+imageurl+"/"+data.product_image+">"  ;
-                    }
-                    if(data.stock != null)
-                    {
-                        stock = data.stock;
-                    }
-                    if(data.category_id != null)
-                    {
-                        category_id = data.category_id;
-                    }
-                    if(data.status == 'active')
-                    {
-                        status = 'Active';
-                    }
-                    else if(data.status == 'pending')
-                    {
-                        status = 'Pending';
-                    }
-                    else
-                    {
-                        status = 'Inactive';
-                    }
-                    if(data.created_at)
-                    {
-                        var cdate = date(data.created_at);
-                        //cdate = cdate.replace(':date', data.created_at);
-                    }
-                    var deleteurl = '{{ route("product.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-
-                    var tr_str = "<tr>"+
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.sku_id+"</td>" +
-                    "<td>"+product_image+"</td>" +
-                    "<td>"+data.name+"</td>" +
-                    "<td>"+data.category_name+"</td>" +
-                    "<td>"+data.price+"</td>" +
-                    "<td>"+data.stock+"</td>" +
-                    "<td>"+status+"</td>" +
-                    "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editProduct'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Product?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#productData tbody").html(tr_str);
+                     $("#productData tbody").html(data);
                     $("#paging").hide();
+                   
                 }
                 else
                 {
@@ -487,25 +439,30 @@ $(document).ready(function(){
 
 function fnExcelReport()
 {
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#productData')); //Serialised table
-    var tF = 'report.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
     }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
-    }
-
-    $('thead tr').last().append('<th>Action</th>');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('productexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "product",
+                filename: "product" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
 }
 </script>
 @endsection

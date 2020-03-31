@@ -23,6 +23,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('purchases','API\OrderController@purchases');
     Route::get('editProfile', 'API\RegisterController@editProfile');
     Route::post('updateProfile','API\RegisterController@updateProfile');
+    Route::post('checkinUser','API\CheckinController@checkinUser');
+
 
     //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
 });
@@ -53,7 +55,7 @@ Route::get('mallDetails/{id}', 'API\HomePageController@mallDetails');
 Route::get('attractionDetails/{id}', 'API\HomePageController@attractionDetails');
 Route::post('search', 'API\HomePageController@search');
 Route::get('privacypolicy', 'API\HomePageController@privacypolicy');    
-Route::get('privacypolicy', 'API\HomePageController@privacypolicy');    
+Route::get('termsandcondition', 'API\HomePageController@termsandcondition');    
 Route::get('homepagedetails/{type}', 'API\HomePageController@homepagedetails');  
 Route::get('eventFavorites', 'API\FavoriteController@eventFavorites');
 Route::get('mallsFavorites', 'API\FavoriteController@mallsFavorites');

@@ -150,11 +150,38 @@ class BrandController extends Controller
         $search = $request->input('search');
 
         $brand = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"),DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,brands.category_id)"),">",DB::raw("'0'"))->where('name','LIKE',"%{$search}%")
-        ->orWhere('unique_id', 'LIKE',"%{$search}%")->groupBy("brands.id")->paginate();
+        ->orWhere('unique_id', 'LIKE',"%{$search}%")->orWhere('category_name', 'LIKE',"%{$search}%")->groupBy("brands.id")->paginate();
 
         if($brand)
         {
-            $arr = array('status' => true,"data"=>$brand[0]);    
+            $html = $image ="";
+            foreach ($brand as $key => $value) {
+                if($value['brand_image'] != null) 
+                {
+                    $path = asset('public/upload/brands').'/'.$value->brand_image;
+                   $image = '<img src="'.$path.'" alt="">';
+                }
+
+                if($value['status'] == '1') 
+                {
+                    $status = "Inactive";
+                }
+                else{
+                    $status = "Active";            
+                }
+                $cdate = date('d F Y',strtotime($value['created_at']));
+                $html .="<tr><td>".$image."</td><td>".$value['unique_id']."</td>
+                <td>".$value['name']."</td>
+                            <td>".$value['product_count']."</td>
+                            <td>".$value['category_name']."</td>
+                            <td>".$value['commission']."'</td>
+                            <td>".$status."</td>
+                            <td>". $cdate ."</td>
+                            <td><a class='edit open_modal' data-toggle='modal' data-target='#editBrand".$value['id']."''><i class='mdi mdi-table-edit'></i></a> 
+                          <a class='delete' onclick='return confirm('Are you sure you want to delete this Brand?')' href=".route('brand.delete', $value->id)."><i class='mdi mdi-delete'></i></a> </td>
+                        </tr>";
+            }
+            $arr = array('status' => true,"data"=>$html);    
         }
         else{
             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
