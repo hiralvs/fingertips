@@ -11,4 +11,8 @@ class Highlights extends Model
     use SoftDeletes;
     use Sortable;
     protected $table="highlights";
+    public function notHavingImageInDb()
+    {
+        return (empty($this->image))?true:false;
+    }
 }
