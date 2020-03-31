@@ -61,6 +61,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('eventbrands')}}">Brands</a></li>   
                         <li class="nav-item"><a class="nav-link" href="{{route('eventslider')}}">Slider Image</a></li>   
                         <li class="nav-item"><a class="nav-link" href="{{route('eventphotos')}}">Photos</a></li>                 
+                        <li class="nav-item"><a class="nav-link" href="{{route('eventhighlights')}}">Highlights</a></li>                 
                       </ul>
                   </div>
               </li>
@@ -75,6 +76,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionbrands')}}">Brands</a></li>         
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionslider')}}">Slider Image</a></li>   
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionphotos')}}">Photos</a></li>            
+                        <li class="nav-item"><a class="nav-link" href="{{route('attractionhighlights')}}">Highlights</a></li>            
                       </ul>
                   </div>
               </li>
