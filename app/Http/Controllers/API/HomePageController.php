@@ -456,6 +456,23 @@ class HomePageController extends Controller
         if($privacy->count() > 0)
         {
             unset($privacy[0]->deleted_at);
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$privacy[0]];
+        }
+        else
+        {   
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
+        }
+        return response()->json($response);
+
+    }
+
+      /* Function used to insert privacy policy */
+    public function termsandcondition(Request $request)
+    {
+        $privacy = DB::table('settings')->where('type','termsandcondition')->get();
+        if($privacy->count() > 0)
+        {
+            unset($privacy[0]->deleted_at);
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$privacy];
         }
         else
@@ -465,6 +482,8 @@ class HomePageController extends Controller
         return response()->json($response);
 
     }
+
+
 
 
 }

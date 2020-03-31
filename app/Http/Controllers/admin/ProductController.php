@@ -176,17 +176,119 @@ class ProductController extends Controller
         $search = $request->input('search');
         $product = Product::select('products.*',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,products.category_id)"),">",DB::raw("'0'"))->where('products.name','LIKE',"%{$search}%")
         ->orWhere('products.unique_id', 'LIKE',"%{$search}%")->orWhere('category_name', 'LIKE',"%{$search}%")->groupBy("products.id")->paginate();
-        
-        //$product = Product::where('name','LIKE',"%{$search}%")->orWhere('unique_id', 'LIKE',"%{$search}%")->paginate();
 
         if($product)
         {
-            $arr = array('status' => true,"data"=>$product[0]);    
+            $data = $this->htmltoexportandsearch($product,true);
+            $arr = array('status' => true,"data"=>$data);    
         }
         else{
             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
         }
         return Response()->json($arr);
+    }
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $query = Product::select('products.*',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,products.category_id)"),">",DB::raw("'0'"))->groupBy("products.id");
+
+        if($request->search != "")
+        {
+            $query = $query->where('products.name','LIKE',"%{$search}%")
+            ->orWhere('products.unique_id', 'LIKE',"%{$search}%")->orWhere('category_name', 'LIKE',"%{$search}%");
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata);
+       
+    }
+
+    public function htmltoexportandsearch($finaldata,$search=false)
+    {
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                          <th>Id</th>
+                            <th>Sku Id</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Created on</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+               
+                if($value['status'] == 'inactive') 
+                {
+                    $status = "Inactive";
+                }
+                else if($value['status'] == 'active'){
+                    $status = "Active";            
+                }
+                else
+                {
+                    $status = "Pending"; 
+                }
+                if($search == true)
+                {
+                    if($value['product_image']!= null)
+                    {
+                        $path = asset('public/upload/products').'/'.$value['product_image'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['product_image'];
+                }
+                
+
+                $cdate = date('d F Y',strtotime($value['created_at']));
+                $html .="<tr><td>".$value['unique_id']."</td><td>".$value['sku_id']."</td><td>".$image ."</td><td>".$value['name']."</td><td>".$value['category_name']."</td><td>".$value['price']."</td><td>".$value['stock']."</td><td>".$status."</td><td>".$cdate."</td>";
+                if($search == true)
+                {
+                    $vcount = $value->productvariantcount > 1 ? '1' : '0';
+                    $checked =  $value->productvariantcount > 1 ? 'checked' : '' ;
+                    $style = $value->productvariantcount > 1 ? 'display: block;' : 'display: none';
+                    //echo "if";
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-target='#editProduct".$value->id."'><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Product?')' href=".route('product.delete', $value->id)."><i class='mdi mdi-delete'></i></a> </td><td><label class='toggle-switch'><input type='checkbox' data-id='".$value->id."'  name='vairant' class='vairant' value=".$vcount."  ".$checked."><span class='toggle-slider round'></span></label><a href=".route('products_variant', $value->id)." style='".$style."'  id='variantLink".$value->id."' >variant</a>
+                          </td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="10">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
     }
 
     public function product_variant(Request $request)
@@ -305,11 +407,101 @@ class ProductController extends Controller
         
         if($product)
         {
-            $arr = array('status' => true,"data"=>$product[0]);    
+            $data = $this->varhtmltoexportandsearch($product,true);      
+            $arr = array('status' => true,"data"=>$data);    
         }
         else{
             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
         }
         return Response()->json($arr);
     }
+
+    public function variantexport(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $query = ProductVariant::select('*');
+
+        if($request->search != "")
+        {
+            $query = $query->where('variant_image','LIKE',"%{$search}%")
+        ->orWhere('variant_name', 'LIKE',"%{$search}%")->orWhere('stock', 'LIKE',"%{$search}%")->orWhere('price', 'LIKE',"%{$search}%");
+        }
+
+        $finaldatav = $query->get();
+        $this->varhtmltoexportandsearch($finaldatav);       
+    }
+
+     public function varhtmltoexportandsearch($vfinaldata,$search=false)
+    {
+        $html = "";
+        if(!empty($vfinaldata) && $vfinaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Variant Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Created on</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($vfinaldata as $key => $value) 
+            {
+               if($search == true)
+                {
+                    if($value['variant_image']!= null)
+                    {
+                        $path = asset('public/upload/products').'/'.$value['variant_image'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['variant_image'];
+                }
+                
+                $cdate = date('d F Y',strtotime($value['created_at']));
+                $html .="<tr><td>".$value['unique_id']."</td><td>".$image ."</td><td>".$value['variant_name']."</td><td>".$value['price']."</td><td>".$value['stock']."</td><td>".$cdate."</td>";
+                if($search == true)
+                {
+                    $vcount = $value->productvariantcount > 1 ? '1' : '0';
+                    $checked =  $value->productvariantcount > 1 ? 'checked' : '' ;
+                    $style = $value->productvariantcount > 1 ? 'display: block;' : 'display: none';
+                    //echo "if";
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-target='#editProductVariant".$value->id."' ><i class='mdi mdi-table-edit'></i></a> 
+                          <a class='delete' onclick='return confirm('Are you sure you want to delete this Product Variant?')' href='".route('productvariant.delete', $value->id)."'><i class='mdi mdi-delete'></i></a> </td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="7">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
+    }
+
+
+
 }

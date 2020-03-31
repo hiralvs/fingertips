@@ -49,37 +49,11 @@
         </div>
         <div class="col-sm-6">
 			<div class="d-flex align-items-center justify-content-md-end">
-                <div class="pr-1 mb-3 mb-xl-0">
-                    <div class="input-group">
-                            <div class="input-group-prepend">
-                            <span class="input-group-text" id="search">
-                                <i class="mdi mdi-magnify"></i>
-                            </span>
-                            </div>
-                            <input type="text" class="form-control" placeholder="search" id="searchtext" aria-label="search" aria-describedby="search">
-                    </div>
-                </div>
-                <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
-                </div>
-                <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="btn btn-secondary" href="{{route('usermanagement')}}" tabindex="" >
-                        CLEAR
-                    </a>
-                </div>
-                <div class="pr-1 mb-3 mb-xl-0">
+                <div class="pr-1 mb-3">
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addUser" tabindex="">
                         ADD NEW
                     </a>
-                </div>
-                <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()"  tabindex="">
-                        EXPORT
-                    </a>
-                        <!-- <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                            Feedback
-                        </button> -->
-                </div>                
+                </div>           
             </div>
         </div>
     </div>
@@ -90,6 +64,35 @@
         <button class="tablinks brand_merchant" onclick="openCity(event, 'brand_merchant')">Brand Merchant</button>
     </div>
     <div id="admin" class="tabcontent">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-center justify-content-md-end">
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <div class="input-group">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="search">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="search" id="adminsearchtext" aria-label="search" aria-describedby="search">
+                        </div>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="adminsearch" class="btn btn-primary" onclick="searchfun('admin')"  tabindex="" style="">FILTER</a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="clear16" class="btn btn-secondary" href="{{route('usermanagement')}}" tabindex="" >
+                            CLEAR
+                        </a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('admin')"  tabindex="">
+                            EXPORT
+                        </a>
+                    </div>                
+                </div>
+            </div>
+        </div>
         <div class="row mt-4">
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
@@ -274,12 +277,99 @@
         </div>
     </div> <!--admin tabcontent ends -->
     <div id="customer" class="tabcontent">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-center justify-content-md-end">
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <div class="input-group">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="search">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="search" id="customersearchtext" aria-label="search" aria-describedby="search">
+                        </div>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="customersearch" class="btn btn-primary" onclick="searchfun('customer')"  tabindex="" style="">FILTER</a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="clear16" class="btn btn-secondary" href="{{route('usermanagement')}}" tabindex="" >
+                            CLEAR
+                        </a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('customer')"  tabindex="">
+                            EXPORT
+                        </a>
+                    </div>                
+                </div>
+            </div>
+        </div>
         @include('admin/user/customer')
     </div> <!--customer tabcontent ends -->
     <div id="property_admin" class="tabcontent">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-center justify-content-md-end">
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <div class="input-group">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="search">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                </div>
+                                <input type="text" class="form-control searchtext" placeholder="search" id="pasearchtext"  aria-label="search" aria-describedby="search">
+                        </div>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="pasearch" class="btn btn-primary" onclick="searchfun('property_admin')"  tabindex="" style="">FILTER</a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="clear16" class="btn btn-secondary" href="{{route('usermanagement')}}" tabindex="" >
+                            CLEAR
+                        </a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('property_admin')"  tabindex="">
+                            EXPORT
+                        </a>
+                    </div>                
+                </div>
+            </div>
+        </div>
         @include('admin/user/propertyadmin')
     </div> <!--PropertyAdmin tabcontent ends -->
     <div id="brand_merchant" class="tabcontent">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="d-flex align-items-center justify-content-md-end">
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <div class="input-group">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text" id="search">
+                                    <i class="mdi mdi-magnify"></i>
+                                </span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="search" id="bmsearchtext" aria-label="search" aria-describedby="search">
+                        </div>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="bmsearch" class="btn btn-primary" onclick="searchfun('brand_merchant')" tabindex="" style="">FILTER</a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="clear16" class="btn btn-secondary" href="{{route('usermanagement')}}" tabindex="" >
+                            CLEAR
+                        </a>
+                    </div>
+                    <div class="pr-1 mb-3 mb-xl-0">
+                        <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('brand_merchant')"  tabindex="">
+                            EXPORT
+                        </a>
+                    </div>                
+                </div>
+            </div>
+        </div>
         @include('admin/user/brandmerchant')
     </div> <!--BrandMerchant tabcontent ends -->
 </div><!-- content-wrapper ends -->
@@ -300,28 +390,105 @@ function openCity(evt, cityName) {
   document.getElementById(cityName).style.display = "block";
   evt.currentTarget.className += " active";
 }
-function fnExcelReport()
+function fnExcelReport(role)
 {
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#admintableData')); //Serialised table
-    var tF = 'brand.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
+    var search = "";
+    if(role == 'admin')
+    {
+        search = $("#adminsearchtext").val();
     }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
+    if(role == 'customer')
+    {
+        search = $("#customersearchtext").val();
     }
-
-    $('thead tr').last().append('<th>Action</th>');
+    if(role == 'property_admin')
+    {
+        search = $("#pasearchtext").val();
+    }
+    
+    if(role == 'brand_merchant')
+    {
+        search = $("#bmsearchtext").val();
+    }
+    
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('adminexport')}}",
+        method: 'get',
+        data: {'search':search,'role':role},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "user",
+                filename: "User" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
 }
+
+function searchfun(role)
+{
+    var search = "";
+    if(role == 'admin')
+    {
+        search = $("#adminsearchtext").val();
+    }
+    if(role == 'customer')
+    {
+        search = $("#customersearchtext").val();
+    }
+    if(role == 'property_admin')
+    {
+        search = $("#pasearchtext").val();
+    }
+    
+    if(role == 'brand_merchant')
+    {
+        search = $("#bmsearchtext").val();
+    }
+$('.statusMsg').html('');
+    $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });       
+        $.ajax({
+                url: "{{route('user.search')}}",
+                method: 'post',
+                data: {'search':search,'role':role},
+                success: function(result){
+                    if(result.status == true)
+                    {
+                        var data = result.data;                    
+                        
+                        var findnorecord = $('#'+role+'tableData tr.norecord').length;
+                        if(findnorecord > 0){
+                            $('#'+role+'tableData tr.norecord').remove();
+                            }
+                        $('#'+role+'tableData tbody').html(data);
+                        $(".tabcontent").css('display','none');
+                        document.getElementById(role).style.display = "block";
+                        $(".tablinks").removeClass("active");
+
+                        $("."+role).addClass("active");
+
+                        $("#"+role+"paging").hide();
+                    }
+                    else
+                    {
+                        $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
+                    }
+                }
+            });
+}
+
+
 $(document).ready(function(){
 
     setTimeout(function(){
@@ -339,6 +506,7 @@ $(document).ready(function(){
         }, 5000);
 
     document.getElementById(role).style.display = "block";
+    
     $(document).on('click','.editUserSubmit',function(e){
         var id = $(this).data('id');
         var formData = new FormData($("#edituserform"+id)[0]);
@@ -461,91 +629,13 @@ $(document).ready(function(){
                         $('.statusMsg').html('');
                         $("#adduserform")[0].reset();
                         $('#addUser').modal('hide');
+                        var url = window.location.href;
                         if (window.location.href.indexOf("?") > -1) 
-                        {
-                            var url = window.location.href;
+                        {                            
                             url = url.substring(0, url.indexOf('?'));
                         }
                         window.location.href = url + "?role="+data.role;
-                    }, 3000);
-                    
-                    // var findnorecord = $('#usertableData tr.norecord').length;
-                    // if(findnorecord > 0){
-                    //     $('#usertableData tr.norecord').remove();
-                    //     }
-                    
-                    // var profilepic = status = '';
-                    // var imageurl = "{{asset('public/upload/')}}";
-
-                    // if(data.profile_pic != null)
-                    // {
-                    //     profilepic = "<img src="+imageurl+"/"+data.profile_pic+">";
-                    // }
-                    // if(data.status == 0)
-                    // {
-                    //     status = 'Active';
-                    // }
-                    // else
-                    // {
-                    //     status = 'Inactive';
-                    // }
-                    // if(data.created_at)
-                    // {
-                    //     var cdate = "<?php //echo date("d F Y",strtotime($value->created_at)) ?>";
-                    // }
-                    // var deleteurl = '{{ route("user.delete", ":id") }}';
-                    // deleteurl = deleteurl.replace(':id', data.id);
-                    // var tr_str = "<tr>"+
-                    // "<td>"+profilepic+"</td>" +
-                    // "<td>"+data.unique_id+"</td>" +
-                    // "<td>"+data.name+"</td>" +
-                    // "<td>"+data.email+"</td>"+
-                    // "<td>"+data.gender+"</td>" +
-                    // "<td>"+data.role+"</td>" +
-                    // "<td>"+status+"</td>" +
-                    // "<td>"+cdate+"</td>" +
-                    // "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    // "</tr>";
-                    // $("#usertableData tbody").prepend(tr_str);
-                    // var gender = '';
-                    // if(data.gender == 'male')
-                    // {
-                    //     gender = 'selected';
-                    // }
-                    // else if(data.gender == 'female')
-                    // {
-                    //     gender = 'selected';
-                    // }
-                    // var role = '';
-                    // if(data.role == 'admin')
-                    // {
-                    //     role = 'selected';
-                    // }
-                    // else if(data.role == 'brand_merchant')
-                    // {
-                    //     role = 'selected';
-                    // }
-                    // else if(data.role == 'property_admin')
-                    // {
-                    //     role = 'selected';
-                    // }
-                    // else if(data.role == 'customer')
-                    // {
-                    //     role = 'selected';
-                    // }
-                    // var selstatus='';
-                    // if(data.status == 0)
-                    // {
-                    //     selstatus = 'selected';
-                    // }
-                    // else
-                    // {
-                    //     selstatus = 'selected';
-                    // }
-
-                    // $("#usertableData tbody").append('<div id="editUser'+data.id+'" class="modal fade"><div class="modal-dialog  modal-xl" role="document"><div class="modal-content"><div class="modal-header"><h1 class="modal-title">Edit User</h1></div><div class="modal-body"><p class="statusMsg"></p><form name="adduserform" id="edituserform'+data.id+'" role="form" method="POST" enctype= "multipart/form-data">@csrf<div class="row"><div class="form-group col-md-4"><label for="exampleInputName">Name</label><input type="text" class="form-control" required id="fullname" value="'+data.name+'" name="name" placeholder="Name"><input type="hidden" name="id" value="'+data.id+'"></div><div class="form-group col-md-4"><label for="exampleInputEmail1">Email id</label><input type="email" class="form-control" required id="email" name="email" value="'+data.email+'"  placeholder="Email"></div><div class="form-group col-md-4"><label for="exampleSelectGender">Gender</label><select class="form-control" name="gender" id="exampleSelectGender"><option value="male" '+gender+'>Male</option><option value="female" '+gender+'>Female</option></select></div></div><div class="row"><div class="form-group col-md-4"><label for="exampleInputRole">Role</label><select class="form-control" id="role" name="role"><option value="" selected="">Role</option><option value="admin" '+role+' >Admin</option><option value="brand_merchant" '+role+'>Brand Merchant</option><option value="property_admin" '+role+'>Property Admin</option><option value="customer" '+role+'>Customer</option></select></div><div class="form-group col-md-4"><label for="exampleInputStatus">Status</label><select class="form-control" id="status" name="status"><option value="" selected="">Status</option><option value="0" '+selstatus+'>Active</option><option value="1" '+selstatus+'>Inactive</option></select></div><div class="form-group col-md-4"><label for="exampleSelectPhoto">Photo</label><input type="file" name="profile_pic" class="file-upload-default"><div class="input-group col-xs-12"><input type="text" value="'+profilepic+'" class="form-control file-upload-info" disabled placeholder="Upload Image"><span class="input-group-append"><button class="file-upload-browse btn btn-primary" type="button">Upload</button></span></div></div></div><button type="button" class="btn btn-primary mr-2 editUserSubmit" data-id="'+data.id+'" id="addUserSubmit">Submit</button><button type="button" class="btn btn-light" data-dismiss="modal">Close</button> </form></div></div></div></div>');
-                    // $("#adduserform")[0].reset();
-                    
+                    }, 3000);                    
                 }
                 else
                 {
@@ -554,74 +644,6 @@ $(document).ready(function(){
                 }
             });
         });
-    $(document).on('click','#search',function(){ 
-        $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                }
-            });       
-        $.ajax({
-                url: "{{route('user.search')}}",
-                method: 'post',
-                data: {'search':$("#searchtext").val()},
-                success: function(result){
-                if(result.status == true)
-                {
-                    var data = result.data;
-                    
-                    
-                    var findnorecord = $('#'+data.role+'tableData tr.norecord').length;
-                    if(findnorecord > 0){
-                        $('#'+data.role+'tableData tr.norecord').remove();
-                        }
-                    
-                    var profilepic = status = '';
-                    if(data.profile_pic != null)
-                    {
-                        profilepic = data.profile_pic;
-                    }
-                    if(data.status == 0)
-                    {
-                        status = 'Active';
-                    }
-                    else
-                    {
-                        status = 'Inactive';
-                    }
-                    if(data.created_at)
-                    {
-                        var cdate = "<?php echo date("d F Y",strtotime($value->created_at)) ?>";
-                    }
-                    var deleteurl = '{{ route("user.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var imageurl = "{{asset('public/upload/')}}";
-                    var tr_str = "<tr>"+
-                    "<td><img src="+imageurl+"/"+profilepic+"></td>" +
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.name+"</td>" +
-                    "<td>"+data.email+"</td>"+
-                    "<td>"+data.gender+"</td>" +
-                    "<td>"+data.role+"</td>" +
-                    "<td>"+status+"</td>" +
-                    "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#"+data.role+"tableData tbody").html(tr_str);
-                    $(".tabcontent").css('display','none');
-                    document.getElementById(data.role).style.display = "block";
-                    $(".tablinks").removeClass("active");
-
-                    $("."+data.role).addClass("active");
-
-                    $("#"+data.role+"paging").hide();
-                }
-                else
-                {
-                    $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
-                }
-                }
-            });
-    });
 });
 </script>
 @endsection

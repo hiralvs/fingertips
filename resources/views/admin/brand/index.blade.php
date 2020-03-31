@@ -349,51 +349,14 @@ $(document).ready(function(){
                 success: function(result){
                 if(result.status == true)
                 {
-                    var data = result.data;
-                    
+                    var finaldata = result.data;
                     
                     var findnorecord = $('#brandData tr.norecord').length;
                     if(findnorecord > 0){
                         $('#brandData tr.norecord').remove();
                         }
-                    
-                    var brand_image = commission = status = '';
-                    if(data.brand_image != null)
-                    {
-                        brand_image = data.brand_image;
-                    }
-                    if(data.commission != null)
-                    {
-                        commission = data.commission;
-                    }
-                    if(data.status == 0)
-                    {
-                        status = 'Active';
-                    }
-                    else
-                    {
-                        status = 'Inactive';
-                    }
-                    if(data.created_at)
-                    {
-                        var cdate = date(data.created_at);
-                    }
-                    var deleteurl = '{{ route("brand.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+brand_image+"</td>" +
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.name+"</td>" +
-                    "<td>"+data.product_count+"</td>" +
-                    "<td>"+data.category_name+"</td>" +
-                    // "<td>"+noofpresence+"</td>" +
-                    "<td>"+data.commission+"</td>" +
-                    "<td>"+status+"</td>" +
-                    "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    console.log(tr_str);
-                    $("#brandData tbody").html(tr_str);
+                    $("#brandData tbody").html(finaldata);
+                   
                     $("#paging").hide();
                 }
                 else
@@ -425,15 +388,12 @@ function fnExcelReport()
             $(result).table2excel({
                 // exclude CSS class
                 exclude: ".noExl",
-                name: "mall",
-                filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                name: "brand",
+                filename: "brand" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
                 fileext: ".xls" // file extension
               }); 
         }
     });
-   
-
-    $('thead tr').last().append('<th>Action</th>');
 }
 </script>
 @endsection

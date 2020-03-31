@@ -33,7 +33,6 @@
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
                 <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">
-                    <!-- <a id="export14" class="waves-effect waves-light btn btn_box_shadow exportAccount element" href="{{route('export_excel.excel')}}" tabindex=""     style="background-color:#454d56 !important;"> -->
                         EXPORT
                     </a>
                 </div>                
@@ -157,7 +156,7 @@
                        
                         @else
                         <tr>
-                        <td colspan="10">No Records Found</td>
+                        <td colspan="7">No Records Found</td>
                         </tr>
                         @endif
 
@@ -283,36 +282,37 @@ $(document).ready(function(){
                         $('#productData tbody tr.norecord').remove();
                         }
                     
-                    var variant_image = stock = category_id = status = '';
-                    if(data.variant_image != null)
-                    {
-                        var imageurl = "{{asset('public/upload/products')}}";
-                        variant_image = "<img src="+imageurl+"/"+data.variant_image+">"  ;
-                    }
-                    if(data.stock != null)
-                    {
-                        stock = data.stock;
-                    }
-                  
-                    if(data.created_at)
-                    {
-                        var cdate = date(data.created_at);
-                        //cdate = cdate.replace(':date', data.created_at);
-                    }
-                    var deleteurl = '{{ route("productvariant.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-
-                    var tr_str = "<tr>"+
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+variant_image+"</td>" +
-                    "<td>"+data.variant_name+"</td>" +
-                    "<td>"+data.price+"</td>" +
-                    "<td>"+data.stock+"</td>" +
-                    "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editProductVariant'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Product Variant?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#productData tbody").html(tr_str);
+                    $("#productData tbody").html(data);
                     $("#paging").hide();
+                    // var variant_image = stock = category_id = status = '';
+                    // if(data.variant_image != null)
+                    // {
+                    //     var imageurl = "{{asset('public/upload/products')}}";
+                    //     variant_image = "<img src="+imageurl+"/"+data.variant_image+">"  ;
+                    // }
+                    // if(data.stock != null)
+                    // {
+                    //     stock = data.stock;
+                    // }
+                  
+                    // if(data.created_at)
+                    // {
+                    //     var cdate = date(data.created_at);
+                    //     //cdate = cdate.replace(':date', data.created_at);
+                    // }
+                    // var deleteurl = '{{ route("productvariant.delete", ":id") }}';
+                    // deleteurl = deleteurl.replace(':id', data.id);
+
+                    // var tr_str = "<tr>"+
+                    // "<td>"+data.unique_id+"</td>" +
+                    // "<td>"+variant_image+"</td>" +
+                    // "<td>"+data.variant_name+"</td>" +
+                    // "<td>"+data.price+"</td>" +
+                    // "<td>"+data.stock+"</td>" +
+                    // "<td>"+cdate+"</td>" +
+                    // "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editProductVariant'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Product Variant?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    // "</tr>";
+                    
                 }
                 else
                 {
@@ -326,25 +326,30 @@ $(document).ready(function(){
 
 function fnExcelReport()
 {
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#productData')); //Serialised table
-    var tF = 'report.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
+   var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
     }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
-    }
-
-    $('thead tr').last().append('<th>Action</th>');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('productvariantexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "productvariant",
+                filename: "productvariant" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
 }
 </script>
 @endsection
