@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content-wrapper">Larissa
+<div class="content-wrapper">
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
@@ -30,7 +30,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addEventdHighlights" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('event')"  tabindex="">EXPORT</a>
                 </div>
             </div>
         </div>
@@ -49,13 +49,13 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="eventhighlightstableData">
+                    <table class="table table-hover" id="highlightstableData">
                       <thead>
                         <tr>
                             <th>@sortablelink('Id')</th>
                             <th>Image</th>
                             <th>@sortablelink('Title')</th>
-                            <th>@sortablelink('Events')</th>
+                            <th>@sortablelink('event_name','Events')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -64,7 +64,11 @@
                             @foreach($data as $key => $value)
                         <tr>
                           <td>{{$value->unique_id}}</td>
-                          <td><img src="{{asset('public/upload/highlights/')}}/{{$value->image}}" alt=""></td>
+                          <td>@if($value->image!= null)
+                                    <img src="{{asset('public/upload/highlights/')}}{{'/'.$value->image}}" alt="">
+                                @else
+    
+                                @endif</td>
                           <td>{{$value->title}}</td>
                           <td>{{$value->event_name}}</td>
                           <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editEventHighlights{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
@@ -102,13 +106,15 @@
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Event Name</label>
-                                                    <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <select name="eventname" id="eventname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @foreach ($common_id as $common)
                                                             <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->event_name }}</option>
                                                         @endforeach
                                                     </select>
+                                                    <span class="text-danger">
+                                                        <strong class="eventname-error"></strong>
+                                                    </span>
                                                     <input type="hidden" value="event" name="type">
                                                 </div> 
                                             </div>
@@ -135,7 +141,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-md-12">
-                                                    <textarea class="form-control ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
+                                                    <textarea class="form-control ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
                                                 </div>
                                             </div>
                                             <button type="button" class="btn btn-primary mr-2 editEventHighlightsSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
@@ -182,6 +188,7 @@ $(document).ready(function(){
         var formData = new FormData($("#editEventHighlightsform"+id)[0]);
 
             $( '.title-error' ).html( "" ); 
+            $( '.eventname-error' ).html( "" );    
             var message = CKEDITOR.instances['description'+id].getData();
             
 
@@ -206,6 +213,9 @@ $(document).ready(function(){
                     if(result.errors.title){
                         $( '.title-error' ).html( result.errors.title[0] );
                     }
+                    if(result.errors.eventname){
+                        $( '.eventname-error' ).html( result.errors.eventname[0] );
+                    }
                 }
                 if(result.status == true)
                 {
@@ -227,8 +237,8 @@ $(document).ready(function(){
             var formData = new FormData($("#addHighlightsform")[0]);
             var message = CKEDITOR.instances['description'].getData();
             formData.append('description',message);
-            console.log(message);
-            // $( '#title-error' ).html( "" );    
+            $( '#title-error' ).html( "" );   
+            $( '#eventname-error' ).html( "" );    
 
             e.preventDefault();
             $.ajaxSetup({
@@ -244,12 +254,16 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
-                if(result.errors) {
+                if(result.errors) 
+                {
                     $(".statusMsg").hide(); 
                     if(result.errors.title){
                             $( '#title-error' ).html( result.errors.title[0] );
                         }
-                    }
+                    if(result.errors.eventname){
+                            $( '#eventname-error' ).html( result.errors.eventname[0] );
+                        }
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -274,7 +288,64 @@ $(document).ready(function(){
                 }
             });
         });
+    $(document).on('click','#search',function(){ 
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });       
+        $.ajax({
+                url: "{{route('eventhighlights.search')}}",
+                method: 'post',
+                data: {'search':$("#searchtext").val(),'type':'event'},
+                success: function(result){
+                if(result.status == true)
+                {
+                    var data = result.data;
+                    
+                    
+                    var findnorecord = $('#highlightstableData tr.norecord').length;
+                    if(findnorecord > 0){
+                        $('#highlightstableData tr.norecord').remove();
+                    }
+                    $("#highlightstableData tbody").html(data);
+                    $("#paging").hide();                   
+                }
+                else
+                {
+                    $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
+                }
+                }
+            });
+    }); 
     });
+function fnExcelReport(type)
+{
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('eventhighlights.export')}}",
+        method: 'get',
+        data: {'search':search,'type':type},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "eventhightlight",
+                filename: "eventhightlight" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 </script>
 @endsection
 
@@ -309,13 +380,16 @@ $(document).ready(function(){
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Event Name</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <select name="eventname" id="eventname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
                                     <option value="{{ $common->id }}">{{ $common->event_name }}</option>
                                 @endforeach
                             </select>
                             <input type="hidden" value="event" name="type">
+                             <span class="text-danger">
+                                <strong id="eventname-error"></strong>
+                            </span>
                         </div>
                     </div>
                     <div class="row">
