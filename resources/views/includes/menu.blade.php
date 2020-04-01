@@ -30,7 +30,7 @@
               </li>
               <li class="nav-item">
                   <a href="{{route('shopsmalls')}}" class="nav-link">
-                    <i class="mdi mdi-finance menu-icon"></i>
+                    <i class="mdi mdi-basket menu-icon"></i>
                     <span class="menu-title">Shops & Malls</span>
                     <i class="menu-arrow"></i>
                   </a>
@@ -50,13 +50,13 @@
                       </ul>
                     </div>
                   </li>
-                  <li class="nav-item">
-                    <a href="{{route('event')}}" class="nav-link">
-                      <i class="mdi mdi-finance menu-icon"></i>
-                      <span class="menu-title">Events</span>
-                      <i class="menu-arrow"></i>
-                    </a>
-                    <div class="submenu">
+              <li class="nav-item">
+                  <a href="{{route('event')}}" class="nav-link">
+                    <i class="mdi mdi-image-filter-frames menu-icon"></i>
+                    <span class="menu-title">Events</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+                  <div class="submenu">
                       <ul class="submenu-item">
                         <li class="nav-item"><a class="nav-link" href="{{route('eventbrands')}}">Brands</a></li>   
                         <li class="nav-item"><a class="nav-link" href="{{route('eventslider')}}">Slider Image</a></li>   
@@ -68,7 +68,7 @@
               </li>
               <li class="nav-item">
                   <a href="{{route('attractions')}}" class="nav-link">
-                    <i class="mdi mdi-finance menu-icon"></i>
+                    <i class="mdi mdi-barrel menu-icon"></i>
                     <span class="menu-title">Attractions</span>
                     <i class="menu-arrow"></i>
                   </a>
@@ -84,14 +84,14 @@
               </li>
               <li class="nav-item">
                   <a href="{{route('rewards')}}" class="nav-link">
-                    <i class="mdi mdi-finance menu-icon"></i>
+                    <i class="mdi mdi mdi-paper-cut-vertical menu-icon"></i>
                     <span class="menu-title">Rewards</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
               <li class="nav-item">
                   <a href="{{route('notifications')}}" class="nav-link">
-                    <i class="mdi mdi-finance menu-icon"></i>
+                    <i class="mdi mdi-clipboard-text menu-icon"></i>
                     <span class="menu-title">Notifications</span>
                     <i class="menu-arrow"></i>
                   </a>
@@ -105,7 +105,7 @@
               </li>
               <li class="nav-item">
                   <a href="{{route('sponsors')}}" class="nav-link">
-                    <i class="mdi mdi-emoticon menu-icon"></i>
+                    <i class="mdi mdi-certificate  menu-icon"></i>
                     <span class="menu-title">Sponsors</span>
                     <i class="menu-arrow"></i>
                   </a>
