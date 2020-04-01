@@ -43,6 +43,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('mallphotos')}}">Photos</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mallmapimage')}}">Map Image</a></li>
                         {{-- <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li> --}}
+                        <li class="nav-item"><a class="nav-link" href="{{route('mallhighlights')}}">Highlights</a></li>
                         {{-- <li class="nav-item"><a class="nav-link" href="{{route('checkin')}}">Check In</a></li>
                         
                         <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>

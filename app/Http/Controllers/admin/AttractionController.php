@@ -101,7 +101,7 @@ class AttractionController extends Controller
 
             $path = public_path('upload/attractions/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['attraction_image'] = $filename;
         }
         Attractions::unguard();
@@ -163,7 +163,7 @@ class AttractionController extends Controller
 
             $path = public_path('upload/attraction/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $attraction->attraction_image = $filename;
         }
         Attractions::unguard();

@@ -84,7 +84,7 @@ class BrandController extends Controller
 
             $path = public_path('upload/brands/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['brand_image'] = $filename;
         }
         Brand::unguard();
@@ -131,7 +131,7 @@ class BrandController extends Controller
 
             $path = public_path('upload/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $brand->brand_image = $filename;
         }
         Brand::unguard();

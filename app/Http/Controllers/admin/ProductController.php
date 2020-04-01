@@ -99,7 +99,7 @@ class ProductController extends Controller
 
             $path = public_path('upload/products/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['product_image'] = $filename;
         }
         Product::unguard();
@@ -158,7 +158,7 @@ class ProductController extends Controller
 
             $path = public_path('upload/products/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $product->product_image = $filename;
         }
         $product->save();
@@ -343,7 +343,7 @@ class ProductController extends Controller
 
             $path = public_path('upload/products/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['variant_image'] = $filename;
         }
         ProductVariant::unguard();
@@ -385,7 +385,7 @@ class ProductController extends Controller
 
             $path = public_path('upload/products/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $productvar->variant_image = $filename;
         }
         $productvar->save();

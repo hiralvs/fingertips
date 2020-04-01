@@ -84,7 +84,7 @@ class BannerController extends Controller
             $path = public_path('upload/banners/' . $filename);
             // $path = public_path('upload/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['bannerimage'] = $filename;
         }
         Banner::unguard();
@@ -143,7 +143,7 @@ class BannerController extends Controller
 
             $path = public_path('upload/banner/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $banner->bannerimage = $filename;
         }
         Banner::unguard();

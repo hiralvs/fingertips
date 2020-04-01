@@ -25,13 +25,13 @@
                     <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="btn btn-secondary" href="{{route('highlights')}}" tabindex="" >CLEAR</a>
+                    <a id="clear16" class="btn btn-secondary" href="{{route('mallhighlights')}}" tabindex="" >CLEAR</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addhighlights" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('malls')" tabindex="">EXPORT</a>
                 </div>             
             </div>
         </div>
@@ -55,21 +55,28 @@
                         <tr>
                             <th>@sortablelink('id')</th>
                             <th>Image</th>
-                            <th>@sortablelink('Title')</th>
-                            <th>@sortablelink('Shopes And Malls')</th>
+                            <th>@sortablelink('title','Title')</th>
+                            <th>@sortablelink('mallname','Shopes And Malls')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         @if(!empty($data) && $data->count() > 0)
                             @foreach($data as $key => $value)
+
+
                         <tr>
                           <td>{{$value->unique_id}}</td>
-                          <td><img src="{{asset('public/upload/highlights/')}}/{{$value->image}}" alt=""></td>
+                          <td> @if($value->image!= null)
+                                    <img src="{{asset('public/upload/highlights/')}}{{'/'.$value->image}}" alt="">
+                                @else
+    
+                                @endif
+                          </td>
                           <td>{{$value->title}}</td>
-                          <td>{{$value->name}}</td>
+                          <td>{{$value->mallname}}</td>
                           <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editHighlights{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Highlights?')" href="{{route('highlights.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Highlights?')" href="{{route('mallhighlights.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->
                         <div id="editHighlights{{$value->id}}" class="modal fade">
@@ -102,9 +109,8 @@
                                                     </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Shopes Name</label>
-                                                    <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <label for="exampleInputStatus">Shop and Mall Name</label>
+                                                    <select name="mallname" id="mallname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @foreach ($common_id as $common)
                                                             <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->name }}</option>
@@ -116,6 +122,7 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputPassword">Start Date</label>
                                                     <input type="date" class="form-control datepicker" value="{{$value->start_date}}" id="start_date" name="start_date" placeholder="Start Date">
+                                                    <input type="hidden" name="type" value="malls">
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputPassword">Start Time</label>
@@ -135,7 +142,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-md-12">
-                                                    <textarea class="form-control ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
+                                                    <textarea class="form-control ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
                                                 </div>
                                             </div>
                                             <button type="button" class="btn btn-primary mr-2 editHighlightsSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
@@ -193,7 +200,7 @@ $(document).ready(function(){
         var id = $(this).data('id');
         var formData = new FormData($("#editHighlightsform"+id)[0]);
 
-            $( '.title-error' ).html( "" ); 
+        $( '.title-error' ).html( "" ); 
         
         var message = CKEDITOR.instances['description'+id].getData();
 
@@ -206,7 +213,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('highlights.update') }}",
+                url: "{{ route('mallhighlights.update') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -238,9 +245,9 @@ $(document).ready(function(){
             var formData = new FormData($("#addHighlightsform")[0]);
             var message = CKEDITOR.instances['description'].getData();
             formData.append('description',message);
-            console.log(message);
-            $( '#title-error' ).html( "" );    
 
+            $( '#title-error' ).html( "" );    
+            $( '#mallname-error' ).html( "" );
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -257,10 +264,15 @@ $(document).ready(function(){
                 success: function(result){
                 if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.title){
-                            $( '#title-error' ).html( result.errors.title[0] );
-                        }
+                    if(result.errors.title)
+                    {
+                        $( '#title-error' ).html( result.errors.title[0] );
                     }
+                    if(result.errors.mallname)
+                    {
+                        $( '#mallname-error' ).html( result.errors.mallname[0] );
+                    }
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -285,16 +297,17 @@ $(document).ready(function(){
                 }
             });
         });
-         $(document).on('click','#search',function(){ 
+    
+    $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
             });       
         $.ajax({
-                url: "{{route('highlights.search')}}",
+                url: "{{route('mallhighlights.search')}}",
                 method: 'post',
-                data: {'search':$("#searchtext").val()},
+                data: {'search':$("#searchtext").val(),'type':'malls'},
                 success: function(result){
                 if(result.status == true)
                 {
@@ -305,18 +318,8 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#highlightstableData tr.norecord').remove();
                     }
-                    
-                    var deleteurl = '{{ route("highlights.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.image+"</td>" +
-                    "<td>"+data.title+"</td>" +
-                    "<td>"+data.common_name+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editHighlights'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Highlights?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#highlightstableData tbody").html(tr_str);
-                    $("#paging").hide();
+                    $("#highlightstableData tbody").html(data);
+                    $("#paging").hide();                   
                 }
                 else
                 {
@@ -326,6 +329,33 @@ $(document).ready(function(){
             });
     }); 
 });
+function fnExcelReport(type)
+{
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('mallhighlights.export')}}",
+        method: 'get',
+        data: {'search':search,'type':type},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "mallhightlight",
+                filename: "mallhightlight" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 
 </script>
 @endsection
@@ -351,22 +381,26 @@ $(document).ready(function(){
                                     <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                                 </span>
                             </div>
+                            <input type="hidden" name="type" value="malls">
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputName">Title</label>
-                            <input type="text" required class="form-control" Re id="title" name="title" placeholder="Title">
+                            <input type="text" required class="form-control" id="title" name="title" placeholder="Title">
                             <span class="text-danger">
                                 <strong id="title-error"></strong>
                             </span>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Shopes Name</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <label for="exampleInputStatus">Mall and Shops Name</label>
+                            <select name="mallname" id="mallname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
                                     <option value="{{ $common->id }}">{{ $common->name }}</option>
                                 @endforeach
                             </select>
+                             <span class="text-danger">
+                                <strong id="mallname-error"></strong>
+                            </span>
                         </div>
                     </div>
                     <div class="row">

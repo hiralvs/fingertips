@@ -242,17 +242,6 @@ Route::post('/addAttractionPhotos', 'admin\CommonPhotosController@addPhotos')->n
 Route::get('attractionphotosdelete/{id}', array('as' => 'attractionphotos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
 Route::post('attractionphotosupdate', array('as' => 'attractionphotos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@update'));
 
-Route::get('/eventhighlights', 'admin\CommonHighlightController@index')->name('eventhighlights');
-Route::post('/addEventHighlights', 'admin\CommonHighlightController@addHighlights')->name('addHighlights');
-Route::get('eventhighlightsdelete/{id}', array('as' => 'eventhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@delete'));
-Route::post('eventhighlightsupdate', array('as' => 'eventhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@update'));
-
-Route::post('/addAttractionHighlights', 'admin\CommonHighlightController@addHighlights')->name('addHighlights');
-Route::get('/attractionhighlights', 'admin\CommonHighlightController@index')->name('attractionhighlights');
-Route::get('attractionhighlightsdelete/{id}', array('as' => 'attractionhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@delete'));
-Route::post('attractionphotosupdate', array('as' => 'attractionphotos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@update'));
-
-
 Route::get('/eventmapimage', 'admin\CommonMapImageController@index')->name('eventmapimage');
 Route::post('/addEventmapimage', 'admin\CommonMapImageController@addMapImage')->name('addEventmapimage');
 Route::get('eventmapimagedelete/{id}', array('as' => 'eventmapimage.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@delete'));
@@ -271,18 +260,26 @@ Route::get('mallmapimagedelete/{id}', array('as' => 'mallmapimage.delete', 'rout
 Route::post('mallmapimageupdate', array('as' => 'mallmapimage.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@update'));
 Route::post('mallmapimagesearch', array('as' => 'mallmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
 
-// Route::get('/attractionhighlights', 'admin\CommonHighlightController@index')->name('attractionhighlights');
-// Route::post('/addAttractionHighlights', 'admin\CommonHighlightController@addHighlights')->name('addAttractionHighlights');
-// Route::get('attractionhighlightsdelete/{id}', array('as' => 'attractionhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@delete'));
-// Route::post('attractionhighlightsupdate', array('as' => 'attractionhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@update'));
+Route::get('/eventhighlights', 'admin\CommonhighlightController@index')->name('eventhighlights');
+Route::post('/addEventHighlights', 'admin\CommonhighlightController@addHighlights')->name('addHighlights');
+Route::get('eventhighlightsdelete/{id}', array('as' => 'eventhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@delete'));
+Route::post('eventhighlightsupdate', array('as' => 'eventhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@update'));
+Route::post('eventhighlightssearch', array('as' => 'eventhighlights.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@search'));
+Route::get('eventhighlightsexport', array('as' => 'eventhighlights.export', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@export'));
 
-// Route::get('/highlights', 'admin\CommonhighlightController@index')->name('highlights');
-// Route::post('/addHighlights', 'admin\CommonhighlightController@addHighlights')->name('addHighlights');
-// Route::get('highlightsdelete/{id}', array('as' => 'highlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@delete'));
-// Route::post('highlightsupdate', array('as' => 'highlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@update'));
-// Route::post('highlightssearch', array('as' => 'highlights.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@search'));
+Route::get('/attractionhighlights', 'admin\CommonhighlightController@index')->name('attractionhighlights');
+Route::post('/addAttractionHighlights', 'admin\CommonhighlightController@addHighlights')->name('addHighlights');
+Route::get('attractionhighlightsdelete/{id}', array('as' => 'attractionhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@delete'));
+Route::post('attractionhighlightsupdate', array('as' => 'attractionhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@update'));
+Route::post('attractionhighlightssearch', array('as' => 'attractionhighlights.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@search'));
+Route::get('attractionhighlightsexport', array('as' => 'attractionhighlights.export', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@export'));
 
-
+Route::get('/mallhighlights', 'admin\CommonhighlightController@index')->name('mallhighlights');
+Route::post('/addHighlights', 'admin\CommonhighlightController@addHighlights')->name('addHighlights');
+Route::get('mallhighlightsdelete/{id}', array('as' => 'mallhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@delete'));
+Route::post('mallhighlightsupdate', array('as' => 'mallhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@update'));
+Route::post('mallhighlightssearch', array('as' => 'mallhighlights.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@search'));
+Route::get('mallhighlightsexport', array('as' => 'mallhighlights.export', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@export'));
 
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
 // Route::get('/orders', 'admin\LoginPrivacyController@index')->name('orders');

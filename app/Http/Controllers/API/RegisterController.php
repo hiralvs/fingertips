@@ -27,17 +27,28 @@ class RegisterController extends Controller
     
     public function register(Request $request)
     {   
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'c_password' => 'required|same:password',
-            //'dob' => 'required',
-            'role' => 'required',
-            //'gender' => 'required',
-            'mobile' => 'required',
-        ]);
-   
+        if(isset($request->social_type) && $request->social_type != "")
+        {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email',
+                'social_id' => 'required',
+            ]);
+        }
+        else
+        {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email',
+                'password' => 'required',
+                'c_password' => 'required|same:password',
+                //'dob' => 'required',
+                'role' => 'required',
+                //'gender' => 'required',
+                'mobile' => 'required',
+            ]);
+        }
+           
         if($validator->fails()){
             $response = [
                 'success' => false,
@@ -50,27 +61,82 @@ class RegisterController extends Controller
         {
         	try
         	{
-	            $input = $request->all();
-	            $input['password'] = bcrypt($input['password']);
-	            $input['unique_id'] =  get_unique_id('users');
-	            $input['role'] = $input['role'];
-	            $input['gender'] = isset($input['gender']) ? $input['gender'] : NULL;
-	            $input['mobile'] = $input['mobile'];
-                $input['dob'] = isset($input['dob']) ? date('Y-m-d',strtotime($input['dob'])) : NULL;
-                $input['email_verification_token'] = Str::random(32);
-	            if ($request->hasFile('profilepic')) {
-	    
-	                $image = $request->File('profilepic');
-	                $filename = time() . '.' . $image->getClientOriginalExtension();
-	    
-	                $path = public_path('upload/' . $filename);
-	    
-	                Image::make($image->getRealPath())->resize(50, 50)->save($path);
-	                $input['profile_pic'] = $filename;
-	            }
+                if(isset($request->social_type) && $request->social_type != "")
+                {
+                    $usercount = User::where('email',$request->email)->get()->count();
+
+                    if($usercount > 0)
+                    {
+                        $user = User::where('email',$request->email)->first();
+
+                        $user->name = $request->name;
+                        $user->email = $request->email;
+                        $user->role  = $request->role;
+                        $user->social_id = $request->social_id;
+                        $user->social_type = $request->social_type;
+
+                        User::unguard();
+
+                        $user->save();
+                        $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
+                        $user->gender = (is_null($user->gender) || $user->gender == "") ? "":$user->gender;
+                        $user->dob = (is_null($user->dob) || $user->dob == "") ? "":$user->dob;
+                        $user->customer_id = (is_null($user->customer_id) || $user->customer_id == "") ? "":$user->customer_id;
+                        $response = [
+                            'success' => true,
+                            'status' => 200,
+                            'token' => $user->createToken('MyApp')->accessToken,
+                            'data'    => $user,
+                            'message' => 'User register successfully.',
+                        ];
+
+                        return response()->json($response);
+                    }
+                    else
+                    {
+                        $input = array();
+                        $input = array(
+                            'unique_id' => get_unique_id('users'), 
+                            'name' => $request->name,
+                            'email' => $request->email,
+                            'role'=> $request->role,
+                            'social_id' => $request->social_id,
+                            'social_type' => $request->social_type,
+                            'email_verification_token' => Str::random(32)
+                        ); 
+                        
+                        User::unguard();
+                        $user = User::create($input);   
+                    }                    
+                }
+                else
+                {
+                    $request->request->remove('c_password');
+    	            $input = $request->all();
+
+    	            $input['password'] = bcrypt($input['password']);
+    	            $input['unique_id'] =  get_unique_id('users');
+    	            $input['role'] = $input['role'];
+    	            $input['gender'] = isset($input['gender']) ? $input['gender'] : NULL;
+    	            $input['mobile'] = $input['mobile'];
+                    $input['dob'] = isset($input['dob']) ? date('Y-m-d',strtotime($input['dob'])) : NULL;
+                    $input['email_verification_token'] = Str::random(32);
+    	            if ($request->hasFile('profilepic')) {
+    	    
+    	                $image = $request->File('profilepic');
+    	                $filename = time() . '.' . $image->getClientOriginalExtension();
+    	    
+    	                $path = public_path('upload/' . $filename);
+    	    
+    	                Image::make($image->getRealPath())->save($path);
+    	                $input['profile_pic'] = $filename;
+    	            }
+                    
+                    User::unguard();
+                    $user = User::create($input);
+                }
 	           // $otp = rand(100000,999999);
-	            
-	            $user = User::create($input);
+               
 	            // code to send otp to user
 	            if($user->id)
 	            {
@@ -328,7 +394,6 @@ class RegisterController extends Controller
     }
 
     /* Functio used to verify email*/
-
     public function resendverifyEmail(Request $request)
     {
         $id = $request->route('id');
@@ -368,7 +433,5 @@ class RegisterController extends Controller
 
         return response()->json($response);
     }
-
 }
-
 ?>

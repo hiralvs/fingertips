@@ -116,7 +116,7 @@ class EventsController extends Controller
 
             $path = public_path('upload/events/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['event_image'] = $filename;
         }
         Events::unguard();
@@ -189,7 +189,7 @@ class EventsController extends Controller
 
             $path = public_path('upload/events/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $events->event_image = $filename;
         }
         Events::unguard();
