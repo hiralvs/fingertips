@@ -1,7 +1,8 @@
+
 @extends('layouts.app')
 
 @section('content')
-<div class="content-wrapper">Larissa
+<div class="content-wrapper">
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
@@ -9,7 +10,7 @@
             </div>
         </div>
         <div class="col-sm-6">
-			<div class="d-flex align-items-center justify-content-md-end">  
+			<div class="d-flex align-items-center justify-content-md-end">
                 <div class="pr-1 mb-3 mb-xl-0">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -19,19 +20,19 @@
                         </div>
                         <input type="text" class="form-control" placeholder="search" id="searchtext" aria-label="search" aria-describedby="search">
                     </div>
-                </div>   
+                </div>  
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="btn btn-secondary" href="{{route('eventmapimage')}}" tabindex="" >CLEAR</a>
+                    <a id="clear16" class="btn btn-secondary" href="{{route('mallmapimage')}}" tabindex="" >CLEAR</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addEventMapImage" tabindex="">ADD NEW</a>
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addMallmapimage" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
-                </div>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
+                </div>             
             </div>
         </div>
     </div>
@@ -39,7 +40,7 @@
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title" style="float:left">{{$title ?? ''}}</h4>
+                  <h4 class="card-title" style="float:left">{{$title}}</h4>
                   <div class="box-header ">
                         @if (session()->has('success'))
                         <h4 class="mess" style="text-align: center; color: green;">{{ session('success') }}</h4>
@@ -49,12 +50,12 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="#eventmapimagetableData">
+                    <table class="table table-hover" id="#mallmapimagetableData">
                       <thead>
                         <tr>
-                            <th>Event Image Map</th>
-                            <th>@sortablelink('Map Image Id')</th>
-                            <th>@sortablelink('Event Name')</th>
+                            <th>Mall Image</th>
+                            <th>@sortablelink('Mall Image Id')</th>
+                            <th>@sortablelink('Mall Name')</th>
                             <th>@sortablelink('Created On')</th>
                             <th>Action</th>
                         </tr>
@@ -65,22 +66,22 @@
                         <tr>
                           <td><img src="{{asset('public/upload/mall_image/')}}/{{$value->map_image_name}}" alt=""></td>
                           <td>{{$value->unique_id}}</td>
-                          <td>{{$value->event_name}}</td>
+                          <td>{{$value->mallname}}</td>
                           <td>{{$value->created_at}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editMapImage{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Event MapImage?')" href="{{route('eventmapimage.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editMallMapImage{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Mall Image?')" href="{{route('mallmapimage.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                     <!-- Edit Modal HTML Markup -->
-                        <div id="editMapImage{{$value->id}}" class="modal fade">
+                        <div id="editMallMapImage{{$value->id}}" class="modal fade">
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit EventMapImage</h1>
+                                        <h1 class="modal-title">Edit MallImage</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
                                     @csrf
-                                    <form name="addEventMapImage" id="editEventMapImageform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
+                                    <form name="addMallMapImage" id="editMallMapImageform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
                                             <div class="row">
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleSelectPhoto">Photo</label>
@@ -93,30 +94,31 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Event Name</label>
+                                                    <label for="exampleInputStatus">Mall Name</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
                                                     <select name="common_id" id="commonname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @foreach ($common_id as $common)
-                                                            <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->event_name }}</option>
+                                                            <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->name }}</option>
                                                         @endforeach
                                                     </select>
-                                                    <input type="hidden" value="event" name="type">
+                                                    <input type="hidden" value="malls" name="type">
                                                 </div> 
                                             </div>
-                                            <button type="button" class="btn btn-primary mr-2 editEventMapImageSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
+                                            <button type="button" class="btn btn-primary mr-2 editMallMapImageSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
                                             <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                                         </form>
                                     </div>
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- /edit.modal -->
-
-                        @endforeach @else
+                        @endforeach
+                        @else
                         <tr>
-                        <td colspan="6">No Records Found</td>
+                        <td colspan="3">No Records Found</td>
                         </tr>
                         @endif
+
                       </tbody>
                     </table>
 
@@ -129,17 +131,24 @@
             </div>
     </div>
 </div>
+
 <!-- content-wrapper ends -->
-<script src="{{asset('public/js/file-upload.js')}}" ></script>
+<script src="{{asset('public/js/file-upload.js')}}" ></script> 
+<!-- //view-source:https://maps.googleapis.com/maps/api/js?key=AIzaSyBrZ7Gj6VQ4ReRytE4tQm0RFOFCQiMFl8U&libraries=places,geometry&callback=loadGoogleMap -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrZ7Gj6VQ4ReRytE4tQm0RFOFCQiMFl8U&libraries=places,geometry"></script>
+<style>
+    .pac-container {
+        z-index: 10000 !important;
+    }
+</style>  
+
 <script>
-   
-$(document).ready(function(){
-           
-    $(document).on('click','.editEventMapImageSubmit',function(e){
+   $(document).ready(function(){
+       $(document).on('click','.editMallMapImageSubmit',function(e){
        
         var id = $(this).data('id');
-        var formData = new FormData($("#editEventMapImageform"+id)[0]);           
-            $( '.common_id-error' ).html( "" ); 
+        var formData = new FormData($("#editMallMapImageform"+id)[0]);           
+            // $( '.common_id-error' ).html( "" ); 
 
             var id = $(this).data('id');
             e.preventDefault();
@@ -149,7 +158,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('eventmapimage.update') }}",
+                url: "{{ route('mallmapimage.update') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -158,15 +167,15 @@ $(document).ready(function(){
                 success: function(result){
                     if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.eventname){
-                        $( '.common_id-error' ).html( result.errors.eventname[0] );
+                    if(result.errors.attractionname){
+                        $( '.common_id-error' ).html( result.errors.attractionname[0] );
                     }
                 }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
-                        $('#editMapImage'+id).modal('hide');
+                        $('#editMallMapImage'+id).modal('hide');
                         window.location.reload();
                     }, 3000);
                 }
@@ -177,8 +186,8 @@ $(document).ready(function(){
                 }
             });
         });
-    $('#addEventMapImageSubmit').click(function(e){
-            var formData = new FormData($("#addMapImageform")[0]);
+            $('#addMallMapImageSubmit').click(function(e){
+            var formData = new FormData($("#addMallMapform")[0]);
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -186,7 +195,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('addEventmapimage') }}",
+                url: "{{ route('addMallmapimage') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -206,12 +215,12 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
-                        $("#addEventmapimageform")[0].reset();
-                        $('#addEventmapimage').modal('hide');
+                        $("#addMallmapimageform")[0].reset();
+                        $('#addMallmapimage').modal('hide');
                         window.location.reload();
                     }, 3000);
 
-                    $("#addMapImageform")[0].reset();
+                    $("#addMallMapform")[0].reset();
                      window.location.reload();
                     
                     // $("#addMallBrandform")[0].reset();
@@ -223,35 +232,35 @@ $(document).ready(function(){
                 }
             });
         });
-        $(document).on('click','#search',function(){ 
+         $(document).on('click','#search',function(){ 
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
             });       
         $.ajax({
-                url: "{{route('eventmapimage.search')}}",
+                url: "{{route('mallmapimage.search')}}",
                 method: 'post',
-                data: {'search':$("#searchtext").val(),'type' : 'event'},
+                data: {'search':$("#searchtext").val(),'type' : 'malls'},
                 success: function(result){
                 if(result.status == true)
                 {
-                    var data = result.data;         
-                    var findnorecord = $('#eventmapimagetableData tr.norecord').length;
-                    if(findnorecord > 0){
-                        $('#eventmapimagetableData tr.norecord').remove();
-                    }
+                    var data = result.data;
                     
-                    var deleteurl = '{{ route("eventmapimage.delete", ":id") }}';
+                    var findnorecord = $('#mallmapimagetableData tr.norecord').length;
+                    if(findnorecord > 0){
+                        $('#mallmapimagetableData tr.norecord').remove();
+                    }
+                    var deleteurl = '{{ route("mallmapimage.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
+                    "<td>"+data.map_image_name+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.common_id+"</td>" +
-                    "<td>"+data.event_name+"</td>" +
                     "<td>"+data.created_at+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMapImage'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this EventMapImage?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMallMapImage'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Mall Image?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    $("#eventmapimagetableData tbody").html(tr_str);
+                    $("#mallmapimagetableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else
@@ -260,13 +269,13 @@ $(document).ready(function(){
                 }
                 }
             });
-        }); 
-});
-</script>
+    });   
+    });
+</script>       
 @endsection
 
 <!-- Modal HTML Markup -->
-<div id="addEventMapImage" class="modal fade">
+<div id="addMallmapimage" class="modal fade">
     <div class="modal-dialog  modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -274,7 +283,7 @@ $(document).ready(function(){
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
-                <form name="addMapImageform" id="addMapImageform" role="form" method="POST" enctype= "multipart/form-data">
+                <form name="addMallMapform" id="addMallMapform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-4">
@@ -288,17 +297,17 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Event Name</label>
+                            <label for="exampleInputStatus">Mall Name</label>
                             <select name="common_id" id="commonname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
-                                    <option value="{{ $common->id }}">{{ $common->event_name }}</option>
+                                    <option value="{{ $common->id }}">{{ $common->name }}</option>
                                 @endforeach
                             </select>
-                            <input type="hidden" value="event" name="type">
+                            <input type="hidden" value="malls" name="type">
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary mr-2" id="addEventMapImageSubmit">Submit</button>
+                    <button type="button" class="btn btn-primary mr-2" id="addMallMapImageSubmit">Submit</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                 </form>
             </div>
