@@ -83,13 +83,10 @@ class CommonMapImageController extends Controller
         if ($request->type == 'malls') {
             $validator = Validator::make($request->all(), [
                 'mallname' => 'required',
-                'image_name' => 'required|image',
+                'map_image_name' => 'required|image',
             ]);
 
-            if ($validator->fails()) {
-                return Response()->json(['errors' => $validator->errors()]);
-            }
-            $common_name =  $request->name;
+            $common_name =  $request->mallname;
         }
 
         if ($request->type == 'event') {
@@ -97,22 +94,16 @@ class CommonMapImageController extends Controller
                 'eventname' => 'required',
             ]);
 
-            if ($validator->fails()) {
-                return Response()->json(['errors' => $validator->errors()]);
-            }
-            $common_name =  $request->event_name;
+            $common_name =  $request->eventname;
         }
 
         if ($request->type == 'attraction') {
             $validator = Validator::make($request->all(), [
-                'title' => 'required',
+                'map_image_name' => 'required',
                 'attractionname' => 'required',
             ]);
 
-            if ($validator->fails()) {
-                return Response()->json(['errors' => $validator->errors()]);
-            }
-            $common_name =  $request->attraction_name;
+            $common_name =  $request->attractionname;
         }
 
         if ($validator->fails()) {
@@ -215,7 +206,7 @@ class CommonMapImageController extends Controller
        
         if (!empty($mapimages)) {
             $data = Map_images::find($request->id);
-            $arr = array('msg' => 'Map_images Updated Successfully', 'status' => true,'data'=> $data);
+            $arr = array('msg' => 'Map images Updated Successfully', 'status' => true,'data'=> $data);
         } else {
             $arr = array('msg' => 'Something goes to wrong. Please try again latr', 'status' => false);
         }

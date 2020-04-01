@@ -176,18 +176,22 @@ Route::post('/addMallBrand', 'admin\CommonBrandsController@addMallBrand')->name(
 Route::post('mallbrandsupdate', array('as' => 'mallbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@update'));
 Route::get('mallbrandsdelete/{id}', array('as' => 'mallbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@delete'));
 Route::post('mallbrandssearch', array('as' => 'mallbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@search'));
+Route::get('/mallbrandexport', 'admin\CommonBrandsController@export')->name('mallbrandexport');
+
 
 Route::get('/eventbrands', 'admin\CommonBrandsController@index')->name('eventbrands');
 Route::post('/addEventBrand', 'admin\CommonBrandsController@addMallBrand')->name('addEventBrand');
 Route::post('eventbrandsupdate', array('as' => 'eventbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@update'));
 Route::get('eventbrandsdelete/{id}', array('as' => 'eventbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@delete'));
 Route::post('eventbrandssearch', array('as' => 'eventbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@search'));
+Route::get('/eventbrandexport', 'admin\CommonBrandsController@export')->name('eventbrandexport');
 
 Route::get('/attractionbrands', 'admin\CommonBrandsController@index')->name('attractionbrands');
 Route::post('/addAttractionBrand', 'admin\CommonBrandsController@addMallBrand')->name('addAttractionBrand');
 Route::post('attractionbrandsupdate', array('as' => 'attractionbrands.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@update'));
 Route::get('attractionbrandsdelete/{id}', array('as' => 'attractionbrands.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@delete'));
 Route::post('attractionbrandssearch', array('as' => 'attractionbrands.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonBrandsController@search'));
+Route::get('/attractionbrandexport', 'admin\CommonBrandsController@export')->name('attractionbrandexport');
 
 Route::get('/mallslider', 'admin\CommonSliderController@index')->name('mallslider');
 Route::post('/addMallSlider', 'admin\CommonSliderController@addCommonSlider')->name('addMallSlider');

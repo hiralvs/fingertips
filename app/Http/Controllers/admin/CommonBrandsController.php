@@ -161,18 +161,18 @@ class CommonBrandsController extends Controller
         $type = $request->input('type');
         if($type == 'attraction')
         {
-            $brandconnection = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','attraction_name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('attractions', 'attractions.id', '=', 'brands_connection.common_id')->where(function ($query) {
+            $brandconnection = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','attraction_name as name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('attractions', 'attractions.id', '=', 'brands_connection.common_id')->where(function ($query) {
                 $query->where('brands_connection.type', 'attraction');
                 })->where(function ($query)   use ($search){
                     $query->where('brands.name','LIKE',"%{$search}%")
                     ->orWhere('brands_connection.unique_id','=',"%{search}%")
                     ->orWhere('brand_id', 'LIKE',"%{$search}%")
-                    ->orWhere('attraction_name', 'LIKE',"%{$search}%");
+                    ->orWhere('attractions.attraction_name', 'LIKE',"%{$search}%");
                 })->paginate();
         }
         if($type == 'malls')
         {
-            $brandconnection = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','shopsandmalls.name as mallname')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'brands_connection.common_id')->where(function ($query) {
+            $brandconnection = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','shopsandmalls.name as name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'brands_connection.common_id')->where(function ($query) {
                 $query->where('brands_connection.type', 'malls');
                 })->where(function ($query)   use ($search){
                     $query->where('brands.name','LIKE',"%{$search}%")
@@ -183,7 +183,7 @@ class CommonBrandsController extends Controller
         }
         if($type == 'event')
         {
-            $brandconnection = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','event_name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('events', 'events.id', '=', 'brands_connection.common_id')->where(function ($query) {
+            $brandconnection = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','event_name as name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('events', 'events.id', '=', 'brands_connection.common_id')->where(function ($query) {
                 $query->where('brands_connection.type', 'event');
                 })->where(function ($query)   use ($search){
                     $query->where('brands.name','LIKE',"%{$search}%")
@@ -195,7 +195,8 @@ class CommonBrandsController extends Controller
 
          if($brandconnection)
          {
-             $arr = array('status' => true,"data"=>$brandconnection[0]);    
+            $data = $this->htmltoexportandsearch($brandconnection,$type,true);
+            $arr = array('status' => true,"data"=>$data);    
          }
          else{
              $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
@@ -203,7 +204,125 @@ class CommonBrandsController extends Controller
  
          return Response()->json($arr);
  
-     }
+    }
 
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $lastsegment = $request->type;
+        if ($lastsegment == 'event') 
+        {
+            $query = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','event_name as name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('events', 'events.id', '=', 'brands_connection.common_id')->where(function ($query) {
+                $query->where('brands_connection.type', 'event');
+                });
+            if($request->search != "")
+            {
+                $query = $query->where(function ($query)   use ($search){
+                    $query->where('brands.name','LIKE',"%{$search}%")
+                    ->orWhere('brands_connection.unique_id','=',"%{search}%")
+                    ->orWhere('brand_id', 'LIKE',"%{$search}%")
+                    ->orWhere('event_name', 'LIKE',"%{$search}%"); 
+                });
+            }
+        } 
+        elseif ($lastsegment == 'malls') 
+        {
+            $query = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','shopsandmalls.name as name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'brands_connection.common_id')->where(function ($query) {
+                $query->where('brands_connection.type', 'malls');
+                });
+
+            if($request->search != "")
+            {
+                $query = $query->where(function ($query)   use ($search){
+                    $query->where('brands.name','LIKE',"%{$search}%")
+                    ->orWhere('brands_connection.unique_id','=',"%{search}%")
+                    ->orWhere('brand_id', 'LIKE',"%{$search}%")
+                    ->orWhere('shopsandmalls.name', 'LIKE',"%{$search}%");
+                     });
+            }
+            
+        } 
+        elseif ($lastsegment == 'attraction') 
+        {
+           $query = Brand_Connection::select('brands_connection.*', 'brands.id as brandid','brands.name as brandname','attraction_name as name')->leftjoin('brands', 'brands_connection.brand_id', '=', 'brands.id')->leftjoin('attractions', 'attractions.id', '=', 'brands_connection.common_id')->where(function ($query) {
+                $query->where('brands_connection.type', 'attraction');
+                });
+            if($request->search != "")
+            {
+                $query = $query->where(function ($query)   use ($search){
+                    $query->where('brands.name','LIKE',"%{$search}%")
+                    ->orWhere('brands_connection.unique_id','=',"%{search}%")
+                    ->orWhere('brand_id', 'LIKE',"%{$search}%")
+                    ->orWhere('attraction_name', 'LIKE',"%{$search}%");
+                     }); 
+            }
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata,$lastsegment);
+       
+    }
+
+    public function htmltoexportandsearch($finaldata,$type,$search=false)
+    {
+        if($type == 'malls')
+        {
+            $th = 'Shops and Malls Name';
+            $deleteroute = "mallbrands.delete";
+        }
+        else if($type=='event')
+        {
+            $th = 'Event Name';
+            $deleteroute = "eventbrands.delete";
+        }
+        elseif ($type == 'attraction') {
+             $th = 'Attraction Name';
+             $deleteroute = "attractionbrands.delete";
+        }
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>'. $th.'</th>
+                            <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+                
+                $html .="<tr><td>".$value['unique_id']."</td><td>".$value['brandname'] ."</td><td>".$value['name']."</td><td>".$value['status']."</td>";
+                if($search == true)
+                {                    
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-id='".$value->id."' data-target='#editMallBrands".$value->id."' ><i class='mdi mdi-table-edit'></i></a> 
+                          <a class='delete' onclick='return confirm('Are you sure you want to delete this Brand?')' href='".route($deleteroute , $value->id)."'><i class='mdi mdi-delete'></i></a></td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="5">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
+    }
 
 }

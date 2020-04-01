@@ -54,9 +54,9 @@
                       <thead>
                         <tr>
                             <th>Attraction Image</th>
-                            <th>@sortablelink('Attractiom Image Id')</th>
-                            <th>@sortablelink('Attraction Name')</th>
-                            <th>@sortablelink('Created On')</th>
+                            <th>@sortablelink('unique_id','Attractiom Image Id')</th>
+                            <th>@sortablelink('attraction_name','Attraction Name')</th>
+                            <th>@sortablelink('created_at','Created On')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -96,7 +96,7 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Attraction Name</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <select name="attractionname" id="attractionname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @foreach ($common_id as $common)
                                                             <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->attraction_name }}</option>
@@ -115,7 +115,7 @@
                         @endforeach
                         @else
                         <tr>
-                        <td colspan="3">No Records Found</td>
+                        <td colspan="5">No Records Found</td>
                         </tr>
                         @endif
 
@@ -189,6 +189,8 @@
             $('#addAttractionMapImageSubmit').click(function(e){
             var formData = new FormData($("#addAttractionMapImageform")[0]);
             e.preventDefault();
+            $( '#common_id-error' ).html( "" ); 
+            $( '#map_image_name-error' ).html( "" );         
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -204,10 +206,14 @@
                 success: function(result){
                 if(result.errors) {
                     $(".statusMsg").hide(); 
-                    if(result.errors.title){
-                            $( '#title-error' ).html( result.errors.title[0] );
+                    if(result.errors.attractionname){
+                            $( '#common_id-error' ).html( result.errors.attractionname[0] );
                         }
+                    if(result.errors.map_image_name)
+                    {
+                        $( '#map_image_name-error' ).html( result.errors.map_image_name[0] ); 
                     }
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -251,12 +257,18 @@
                     if(findnorecord > 0){
                         $('#attractionmapimagetableData tr.norecord').remove();
                     }
+                     if(data.map_image_name != null)
+                    {
+                        var imageurl = "{{asset('public/upload/mall_image')}}";
+                        map_image_name = "<img src="+imageurl+"/"+data.map_image_name+">" ;
+                    }
+
                     var deleteurl = '{{ route("attractionmapimage.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
-                    "<td>"+data.map_image_name+"</td>" +
+                    "<td>"+map_image_name+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.common_id+"</td>" +
+                    "<td>"+data.attraction_name+"</td>" +
                     "<td>"+data.created_at+"</td>" +
                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editAttractionMapImage'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Attraction Map?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
@@ -296,15 +308,21 @@
                                     <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                                 </span>
                             </div>
+                              <span class="text-danger">
+                                <strong id="map_image_name-error"></strong>
+                            </span>
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Attraction Name</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <select name="attractionname" id="attractionname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
                                     <option value="{{ $common->id }}">{{ $common->attraction_name }}</option>
                                 @endforeach
                             </select>
+                             <span class="text-danger">
+                                <strong id="common_id-error"></strong>
+                            </span>
                             <input type="hidden" value="attraction" name="type">
                         </div> 
                     </div>
