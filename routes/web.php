@@ -260,7 +260,16 @@ Route::post('eventmapimageupdate', array('as' => 'eventmapimage.update', 'routeg
 Route::post('eventmapimagesearch', array('as' => 'eventmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
 
 Route::get('/attractionmapimage', 'admin\CommonMapImageController@index')->name('attractionmapimage');
-Route::get('/addAttractionMapImage', 'admin\CommonMapImageController@addMapImage')->name('addAttractionMapImage');
+Route::get('/addAttractionmapimage', 'admin\CommonMapImageController@addMapImage')->name('addAttractionmapimage');
+Route::get('attractionmapimagedelete/{id}', array('as' => 'attractionmapimage.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@delete'));
+Route::post('attractionmapimageupdate', array('as' => 'attractionmapimage.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@update'));
+Route::post('attractionmapimagesearch', array('as' => 'attractionmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
+
+Route::get('/mallmapimage', 'admin\CommonMapImageController@index')->name('mallmapimage');
+Route::Post('/addMallmapimage', 'admin\CommonMapImageController@addMapImage')->name('addMallmapimage');
+Route::get('mallmapimagedelete/{id}', array('as' => 'mallmapimage.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@delete'));
+Route::post('mallmapimageupdate', array('as' => 'mallmapimage.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@update'));
+Route::post('mallmapimagesearch', array('as' => 'mallmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
 
 // Route::get('/attractionhighlights', 'admin\CommonHighlightController@index')->name('attractionhighlights');
 // Route::post('/addAttractionHighlights', 'admin\CommonHighlightController@addHighlights')->name('addAttractionHighlights');

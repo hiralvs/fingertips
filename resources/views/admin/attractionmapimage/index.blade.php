@@ -25,10 +25,10 @@
                     <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="btn btn-secondary" href="{{route('eventbrands')}}" tabindex="" >CLEAR</a>
+                    <a id="clear16" class="btn btn-secondary" href="{{route('attractionmapimage')}}" tabindex="" >CLEAR</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addEventBrand" tabindex="">ADD NEW</a>
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addAttractionMapImage" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
@@ -50,13 +50,13 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="eventbrandstableData">
+                    <table class="table table-hover" id="attractionmapimagetableData">
                       <thead>
                         <tr>
-                            <th>@sortablelink('id')</th>
-                            <th>@sortablelink('Name')</th>
-                            <th>@sortablelink('event_name','Event Name')</th>
-                            <th>Status</th>
+                            <th>Attraction Image</th>
+                            <th>@sortablelink('Attractiom Image Id')</th>
+                            <th>@sortablelink('Attraction Name')</th>
+                            <th>@sortablelink('Created On')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -64,70 +64,48 @@
                         @if(!empty($data) && $data->count() > 0)
                             @foreach($data as $key => $value)
                         <tr>
+                          <td><img src="{{asset('public/upload/mall_image/')}}/{{$value->map_image_name}}" alt=""></td>
                           <td>{{$value->unique_id}}</td>
-                          <td>{{$value->brandname}}</td>
-                          <td>{{$value->event_name}}</td>
-                          <td>{{$value->status}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editEventBrands{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Brand?')" href="{{route('eventbrands.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <td>{{$value->attraction_name}}</td>
+                          <td>{{$value->created_at}}</td>
+                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editAttractionMapImage{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Attraction Map Image?')" href="{{route('attractionmapimage.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
-                        <!-- Edit Modal HTML Markup -->
-                        <div id="editEventBrands{{$value->id}}" class="modal fade">
+                    <!-- Edit Modal HTML Markup -->
+                        <div id="editAttractionMapImage{{$value->id}}" class="modal fade">
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit Event Brand</h1>
+                                        <h1 class="modal-title">Edit AttractionMapImage</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
-                                        <form name="editEventBrandform" id="editEventBrandsform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
-                                            @csrf
+                                    @csrf
+                                    <form name="addAttractionMapImage" id="editAttractionMapImageform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
                                             <div class="row">
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Brand Name</label>
-                                                    <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="brand_id" id="brandname" class="form-control brand_id">
-                                                        <option value=""> -- Select One --</option>
-                                                        @if(!empty($brand_id) && $brand_id->count() > 0)
-                                                            @foreach($brand_id as $key => $pd)
-                                                                <option value="{{$pd->id}}" {{ $value->brand_id == $pd->id ? 'selected' : ''}} >{{$pd->name}}</option>
-                                                            @endforeach
-                                                        @endif
-                                                    </select>
-                                                     <span class="text-danger">
-                                                        <strong class="brand_id-error"></strong>
-                                                    </span>
-                                                </div>   
+                                                    <label for="exampleSelectPhoto">Photo</label>
+                                                    <input type="file" name="map_image_name" class="file-upload-default">
+                                                    <div class="input-group col-xs-12">
+                                                        <input type="text" value="{{$value->map_image_name}}" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                                        <span class="input-group-append">
+                                                        <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Event Name</label>
+                                                    <label for="exampleInputStatus">Attraction Name</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
                                                     <select name="common_id" id="commonname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
-                                                        @if(!empty($events) && $events->count() > 0)
-                                                            @foreach ($events as $key => $pd)
-                                                                  <option value="{{$pd->id}}" {{ $value->common_id == $pd->id ? 'selected' : ''}} >{{$pd->event_name}}</option>
-                                                            @endforeach
-                                                        @endif
+                                                        @foreach ($common_id as $common)
+                                                            <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->attraction_name }}</option>
+                                                        @endforeach
                                                     </select>
-                                                    <span class="text-danger">
-                                                        <strong class="common_id-error"></strong>
-                                                    </span>
-                                                    <input type="hidden" value="event" name="type">
-                                                </div> 
-                                                <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">Status</label>
-                                                    <select class="form-control status" id="status" name="status">
-                                                        <option value="" selected="">Status</option>
-                                                        <option value="Active" {{ $value->status == 'Active' ? 'selected' : ''}}>Active</option>
-                                                        <option value="Inactive" {{ $value->status == 'Inactive' ? 'selected' : ''}}>Inactive</option>
-                                                    </select>
-                                                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                                                    <span class="text-danger">
-                                                        <strong class="status-error"></strong>
-                                                    </span>
+                                                    <input type="hidden" value="attraction" name="type">
                                                 </div> 
                                             </div>
-                                            <button type="button" class="btn btn-primary mr-2 editEventBrandsSubmit" data-id="{{$value->id}}" id="editEventBrandsSubmit">Submit</button>
+                                            <button type="button" class="btn btn-primary mr-2 editAttractionMapImageSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
                                             <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                                         </form>
                                     </div>
@@ -165,19 +143,14 @@
 </style>  
 
 <script>
-   
-$(document).ready(function(){
-     setTimeout(function(){
-           $("h4.mess").remove();
-        }, 5000 );
-    $(document).on('click','.editEventBrandsSubmit',function(e){
+   $(document).ready(function(){
+       $(document).on('click','.editAttractionMapImageSubmit',function(e){
        
         var id = $(this).data('id');
+        var formData = new FormData($("#editAttractionMapImageform"+id)[0]);           
+            $( '.common_id-error' ).html( "" ); 
 
-        $( '.brand_id-error' ).html( "" );
-        $( '.common_id-error' ).html( "" );
-        $( '.status-error' ).html( "" ); 
-        var id = $(this).data('id');
+            var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -185,27 +158,24 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('eventbrands.update') }}",
+                url: "{{ route('attractionmapimage.update') }}",
                 method: 'post',
-                data: $("#editEventBrandsform"+id).serialize(),
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
                 success: function(result){
                     if(result.errors) {
                     $(".statusMsg").hide();
-                    if(result.errors.brand_id){
-                        $( '.brand_id-error' ).html( result.errors.brand_id[0] );
+                    if(result.errors.attractionname){
+                        $( '.common_id-error' ).html( result.errors.attractionname[0] );
                     }
-                    if(result.errors.common_id){
-                        $( '.common_id-error' ).html( result.errors.common_id[0] );
-                    }                    
-                    if(result.errors.status){
-                        $( '.status-error' ).html( result.errors.status[0] );
-                    }                    
                 }
                 if(result.status == true)
                 {
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
-                        $('#editMallBrands'+id).modal('hide');
+                        $('#editAttractionMapImage'+id).modal('hide');
                         window.location.reload();
                     }, 3000);
                 }
@@ -216,12 +186,8 @@ $(document).ready(function(){
                 }
             });
         });
-    $('#addAttractionMapImageSubmit').click(function(e){
-            
-            // $( '#brand_id-error' ).html( "" );
-            // $( '#common_id-error' ).html( "" );
-            // $( '#status-error' ).html( "" );    
-
+            $('#addAttractionMapImageSubmit').click(function(e){
+            var formData = new FormData($("#addAttractionMapImageform")[0]);
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -229,22 +195,19 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('addAttractionMapImage') }}",
+                url: "{{ route('addEventmapimage') }}",
                 method: 'post',
-                data: $("#addAttractionMapImageform").serialize(),
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
                 success: function(result){
                 if(result.errors) {
-                    $(".statusMsg").hide();
-                    if(result.errors.brand_id){
-                            $( '#brand_id-error' ).html( result.errors.brand_id[0] );
+                    $(".statusMsg").hide(); 
+                    if(result.errors.title){
+                            $( '#title-error' ).html( result.errors.title[0] );
                         }
-                    if(result.errors.common_id){
-                            $( '#common_id-error' ).html( result.errors.common_id[0] );
-                        }                  
-                    if(result.errors.status){
-                            $( '#status-error' ).html( result.errors.status[0] );
-                        }                  
-                }
+                    }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -252,15 +215,15 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
-                        $("#addAttractionMapImageform")[0].reset();
-                        $('#addAttractionMapImage').modal('hide');
+                        $("#addEventmapimageform")[0].reset();
+                        $('#addEventmapimage').modal('hide');
                         window.location.reload();
                     }, 3000);
 
-                    $("#addeventform")[0].reset();
+                    $("#addAttractionMapImageform")[0].reset();
                      window.location.reload();
                     
-                    $("#addAttractionMapImageform")[0].reset();
+                    // $("#addMallBrandform")[0].reset();
                 }
                 else
                 {
@@ -276,30 +239,28 @@ $(document).ready(function(){
                 }
             });       
         $.ajax({
-                url: "{{route('eventbrands.search')}}",
+                url: "{{route('attractionmapimage.search')}}",
                 method: 'post',
-                data: {'search':$("#searchtext").val(),'type' : 'event'},
+                data: {'search':$("#searchtext").val(),'type' : 'attraction'},
                 success: function(result){
                 if(result.status == true)
                 {
                     var data = result.data;
                     
-                    
-                    var findnorecord = $('#eventbrandstableData tr.norecord').length;
+                    var findnorecord = $('#attractionmapimagetableData tr.norecord').length;
                     if(findnorecord > 0){
-                        $('#eventbrandstableData tr.norecord').remove();
+                        $('#attractionmapimagetableData tr.norecord').remove();
                     }
-                    
-                    var deleteurl = '{{ route("eventbrands.delete", ":id") }}';
+                    var deleteurl = '{{ route("attractionmapimage.delete", ":id") }}';
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
+                    "<td>"+data.map_image_name+"</td>" +
                     "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.brandname+"</td>" +
-                    "<td>"+data.event_name+"</td>" +
-                    "<td>"+data.status+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editEventBrands'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this BrandEvent?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    "<td>"+data.common_id+"</td>" +
+                    "<td>"+data.created_at+"</td>" +
+                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editAttractionMapImage'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Attraction Map?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    $("#eventbrandstableData tbody").html(tr_str);
+                    $("#attractionmapimagetableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else
@@ -308,31 +269,9 @@ $(document).ready(function(){
                 }
                 }
             });
-    }); 
-});
-function fnExcelReport()
-{
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#brandstableData')); //Serialised table
-    var tF = 'report.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
-    }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
-    }
-
-    $('thead tr').last().append('<th>Action</th>');
-}
-</script>
+    });   
+    });
+</script>       
 @endsection
 
 <!-- Modal HTML Markup -->
