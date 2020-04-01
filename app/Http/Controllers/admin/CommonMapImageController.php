@@ -6,7 +6,7 @@ use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
-use App\Highlights;
+use App\Map_images;
 use App\Attractions;
 use App\Category;
 use App\Events;
@@ -15,7 +15,7 @@ use App\ShopsandMalls;
 use DB;
 use Validator;
 
-class CommonHighlightController extends Controller
+class CommonMapImageController extends Controller
 {
     
     /**
@@ -36,8 +36,8 @@ class CommonHighlightController extends Controller
 
         $auth = Auth::user();
         // $return_data = array();
-        $return_data['title'] = trans('Highlights');
-        $return_data['meta_title'] = trans('Highlights');
+        $return_data['title'] = trans('MapImage List');
+        $return_data['meta_title'] = trans('MapImage List');
 
         if ($request->per_page) {
             $perpage = $request->per_page;
@@ -48,38 +48,37 @@ class CommonHighlightController extends Controller
         if ($request->sort) {
             $sort=$request->sort;
         } else {
-            $sort='highlights.id';
+            $sort='map_images.id';
         }
 
         if ($request->direction) {
             $direction=$request->direction;
         } else {
-            $direction='asc';
+            $direction='desc';
         }
+        if ($lastsegment == 'eventmapimage') {
+            $return_data['title'] = trans('Event MapImage List');
+            $return_data['meta_title'] = trans('Event MapImage List');
+            $return_data['data'] = Map_images::select('map_images.*', 'event_name')->leftjoin('events', 'events.id', '=', 'map_images.common_id')->where('map_images.type', 'event')->orderBy($sort, $direction)->sortable()->paginate($perpage);
 
-        if ($lastsegment == 'eventhighlights') {
-            $return_data['title'] = trans('Event Highlights');
-            $return_data['meta_title'] = trans('Event Highlights');
-            $return_data['data'] = Highlights::select('highlights.*', 'event_name')->leftjoin('events', 'events.id', '=', 'highlights.common_id')->where('highlights.type', 'event')->orderBy($sort, $direction)->sortable()->paginate($perpage);
             $return_data['common_id'] = Events::select('id', 'event_name')->get();
-            return View('admin.eventhighlights.index', $return_data)->render();
-        } elseif ($lastsegment == 'mallhighlights') {
-            $return_data['title'] = trans('Mall Highlights');
-            $return_data['meta_title'] = trans('Mall Highlights');
-            $return_data['data'] = Highlights::select('highlights.*', 'shopsandmalls.name as mallname')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'highlights.common_id')->where('highlights.type', 'malls')->orderBy($sort, $direction)->sortable()->paginate($perpage);
+            return View('admin.eventmapimage.index', $return_data)->render();
+        }
+         elseif ($lastsegment == 'mallphotos') {
+            $return_data['title'] = trans('Mall Photos');
+            $return_data['meta_title'] = trans('Mall Photos');
+            $return_data['data'] = Photos::select('photos.*', 'shopsandmalls.name as mallname')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'photos.common_id')->where('photos.type', 'malls')->orderBy($sort, $direction)->sortable()->paginate($perpage);
             $return_data['common_id'] = ShopsandMalls::select('id', 'name')->get();
-            return View('admin.mallhighlights.index', $return_data)->render();
-        } elseif ($lastsegment == 'attractionhighlights') {
-            $return_data['title'] = trans('Attraction Highlights');
-            $return_data['meta_title'] = trans('Attraction Highlights');
-            $return_data['data'] = Highlights::select('highlights.*', 'attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'highlights.common_id')->where('highlights.type', 'attraction')->orderBy($sort, $direction)->sortable()->paginate($perpage);
+            return View('admin.mallphotos.index', $return_data)->render();
+        } elseif ($lastsegment == 'attractionmapimage') {
+            $return_data['title'] = trans('Attraction MapImage List');
+            $return_data['meta_title'] = trans('Attraction MapImage List');
+            $return_data['data'] = Map_images::select('map_images.*', 'attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'map_images.common_id')->where('map_images.type', 'attraction')->orderBy($sort, $direction)->sortable()->paginate($perpage);
             $return_data['common_id'] = Attractions::select('id', 'attraction_name')->get();
-            return View('admin.attractionhighlights.index', $return_data)->render();
+            return View('admin.attractionmapimage.index', $return_data)->render();
         }
     }
-    
-
-    public function addHighlights(Request $request)
+    public function addMapImage(Request $request)
     {
         if ($request->type == 'malls') {
             $validator = Validator::make($request->all(), [
@@ -95,7 +94,6 @@ class CommonHighlightController extends Controller
 
         if ($request->type == 'event') {
             $validator = Validator::make($request->all(), [
-                'title' => 'required',
                 'common_id' => 'required',
             ]);
 
@@ -130,58 +128,50 @@ class CommonHighlightController extends Controller
 
         $request->request->remove('_token');
         $input = array(
-            'unique_id' => get_unique_id("Highlights"),
+            'unique_id' => get_unique_id("map_images"),
             'common_id'=>$request->common_id,
             'type'=>  $request->type,
-            'title'=>  $request->title,
-            'start_date'=>$request->start_date,
-            'end_date'=>$request->end_date,
-            'start_time'=>$request->start_time,
-            'end_time'=>$request->end_time,
-            'description'=>$request->description,
         );
         
-        if ($request->hasFile('image')) {
-            $image = $request->File('image');
+        if ($request->hasFile('map_image_name')) {
+            $image = $request->File('map_image_name');
             $filename = time() . '.' . $image->getClientOriginalExtension();
             
-            $path = public_path('upload/highlights/' . $filename);
+            $path = public_path('upload/mall_image/' . $filename);
             
             Image::make($image->getRealPath())->resize(50, 50)->save($path);
-            $input['image'] = $filename;
+            $input['map_image_name'] = $filename;
         }
-        Highlights::unguard();
-        $check = Highlights::create($input)->id;
+        Map_images::unguard();
+        $check = Map_images::create($input)->id;
     
         $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         if ($check) {
-            $data = Highlights::find($check);
-            $arr = array('msg' => 'Highlights Added Successfully', 'status' => true,'data'=> $data);
+            $data = Map_images::find($check);
+            $arr = array('msg' => 'Map Image Added Successfully', 'status' => true,'data'=> $data);
         }
         return Response()->json($arr);
     }
-
     public function delete(Request $request)
     {
         $lastsegment = request()->segments();
         if ($lastsegment[0] == 'mallhighlightsdelete') {
             $lastsegment = 'mallhighlights';
         }
-        if ($lastsegment[0] == 'eventhighlightsdelete') {
-            $lastsegment = 'eventhighlights';
+        if ($lastsegment[0] == 'eventmapimagedelete') {
+            $lastsegment = 'eventmapimage';
         }
         if ($lastsegment[0] == 'attractionhighlightsdelete') {
             $lastsegment = 'attractionhighlights';
         }
 
-        $query = Highlights::where('id', $request->id);
+        $query = Map_images::where('id', $request->id);
         $query->delete();
-        return redirect()->route($lastsegment)->with('success', 'Highlights Deleted Successfully');
+        return redirect()->route($lastsegment)->with('success', 'MapImage Deleted Successfully');
     }
-
     public function update(Request $request)
     {
-        $highlights = Highlights::find($request->id);
+        $mapimages = Map_images::find($request->id);
 
         if ($request->type == 'malls') {
             $validator = Validator::make($request->all(), [
@@ -191,8 +181,7 @@ class CommonHighlightController extends Controller
         }
         if ($request->type == 'event') {
             $validator = Validator::make($request->all(), [
-                'title' => 'required',
-                // 'common_id' => 'required',
+                'common_id' => 'required',
             ]);
             $common_name =  $request->event_name;
         }
@@ -203,41 +192,61 @@ class CommonHighlightController extends Controller
             $common_name =  $request->attractionname;
         }
 
-        if ($highlights->notHavingImageInDb()) {
-            $rules['image'] = 'required|image';
+        if ($mapimages->notHavingImageInDb()) {
+            $rules['map_image_name'] = 'required|image';
         }
 
         if ($validator->fails()) {
             return Response()->json(['errors' => $validator->errors()]);
         }
 
-        $highlights->common_id = $request->common_id ;
-        $highlights->type = $request->type;
-        $highlights->title = $request->title;
-        $highlights->start_date = $request->start_date;
-        $highlights->end_date = $request->end_date;
-        $highlights->start_time = $request->start_time;
-        $highlights->end_time = $request->end_time;
-        $highlights->description = $request->description;
-        
-        if ($request->hasFile('image')) {
-            $image = $request->File('image');
+        $mapimages->common_id = $request->common_id ;
+        $mapimages->type = $request->type;        
+        if ($request->hasFile('map_image_name')) {
+            $image = $request->File('map_image_name');
             $filename = time() . '.' . $image->getClientOriginalExtension();
 
-            $path = public_path('upload/highlights/' . $filename);
+            $path = public_path('upload/mall_image/' . $filename);
 
             Image::make($image->getRealPath())->resize(50, 50)->save($path);
-            $highlights->image = $filename;
+            $mapimages->map_image_name = $filename;
         }
-        Highlights::unguard();
-        $highlights->save();
+        Map_images::unguard();
+        $mapimages->save();
        
-        if (!empty($highlights)) {
-            $data = Highlights::find($request->id);
-            $arr = array('msg' => 'Highlights Updated Successfully', 'status' => true,'data'=> $data);
+        if (!empty($mapimages)) {
+            $data = Map_images::find($request->id);
+            $arr = array('msg' => 'Map_images Updated Successfully', 'status' => true,'data'=> $data);
         } else {
             $arr = array('msg' => 'Something goes to wrong. Please try again latr', 'status' => false);
         }
         return Response()->json($arr);
     }
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+        $type = $request->input('type');
+        if($type == 'event')
+        {
+            $map_images = Map_images::select('map_images.*', 'events.id as eventid','events.event_name as eventname','event_name')
+            ->leftjoin('events', 'map_images.common_id', '=', 'events.id')
+                     ->where(function ($query) {
+                $query->where('map_images.type', 'event');
+                })->where(function ($query)   use ($search){
+                    $query->where('events.event_name','LIKE',"%{$search}%")
+                    ->orWhere('map_images.unique_id','LIKE',"%{search}%")
+                    ->orWhere('common_id', 'LIKE',"%{$search}%");
+                })->paginate();
+        }        
+         if($map_images)
+         {
+             $arr = array('status' => true,"data"=>$map_images[0]);    
+         }
+         else{
+             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
+         }
+ 
+         return Response()->json($arr);
+ 
+     }
 }

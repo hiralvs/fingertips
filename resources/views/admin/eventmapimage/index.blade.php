@@ -24,10 +24,10 @@
                     <a id="search" class="btn btn-primary"  tabindex="" style="">FILTER</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="clear16" class="btn btn-secondary" href="{{route('attractionhighlights')}}" tabindex="" >CLEAR</a>
+                    <a id="clear16" class="btn btn-secondary" href="{{route('eventmapimage')}}" tabindex="" >CLEAR</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addAttractiondHighlights" tabindex="">ADD NEW</a>
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addEventMapImage" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
@@ -49,13 +49,13 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="eventhighlightstableData">
+                    <table class="table table-hover" id="#eventmapimagetableData">
                       <thead>
                         <tr>
-                            <th>@sortablelink('Id')</th>
-                            <th>Image</th>
-                            <th>@sortablelink('Title')</th>
-                            <th>@sortablelink('Attraction')</th>
+                            <th>Mall Image Map</th>
+                            <th>@sortablelink('Map Image Id')</th>
+                            <th>@sortablelink('Event Name')</th>
+                            <th>@sortablelink('Created On')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -63,15 +63,15 @@
                         @if(!empty($data) && $data->count() > 0)
                             @foreach($data as $key => $value)
                         <tr>
+                          <td><img src="{{asset('public/upload/mall_image/')}}/{{$value->map_image_name}}" alt=""></td>
                           <td>{{$value->unique_id}}</td>
-                          <td><img src="{{asset('public/upload/highlights/')}}/{{$value->image}}" alt=""></td>
-                          <td>{{$value->title}}</td>
-                          <td>{{$value->attraction_name}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editEventHighlights{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Attraction Highlights?')" href="{{route('attractionhighlights.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <td>{{$value->event_name}}</td>
+                          <td>{{$value->created_at}}</td>
+                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editMapImage{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Event MapImage?')" href="{{route('eventmapimage.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                     <!-- Edit Modal HTML Markup -->
-                        <div id="editEventHighlights{{$value->id}}" class="modal fade">
+                        <div id="editMapImage{{$value->id}}" class="modal fade">
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -79,26 +79,18 @@
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
-                                        <form name="addEventdHighlights" id="editEventHighlightsform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
-                                            @csrf
+                                    @csrf
+                                    <form name="addEventMapImage" id="editEventMapImageform{{$value->id}}" role="form" method="POST" enctype= "multipart/form-data">
                                             <div class="row">
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleSelectPhoto">Photo</label>
-                                                    <input type="file" name="image" class="file-upload-default">
+                                                    <input type="file" name="map_image_name" class="file-upload-default">
                                                     <div class="input-group col-xs-12">
-                                                        <input type="text" value="{{$value->image}}" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                                        <input type="text" value="{{$value->map_image_name}}" class="form-control file-upload-info" disabled placeholder="Upload Image">
                                                         <span class="input-group-append">
                                                         <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
                                                         </span>
                                                     </div>
-                                                </div>
-                                                <div class="form-group col-md-4">
-                                                    <label for="exampleInputName">Title</label>
-                                                    <input type="text" required class="form-control" Re id="title" value="{{$value->title}}" name="title" placeholder="Title">
-                                                    <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <span class="text-danger">
-                                                        <strong class="title-error"></strong>
-                                                    </span>
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Event Name</label>
@@ -112,39 +104,14 @@
                                                     <input type="hidden" value="event" name="type">
                                                 </div> 
                                             </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-4">
-                                                    <label for="exampleInputPassword">Start Date</label>
-                                                    <input type="date" class="form-control datepicker" value="{{$value->start_date}}" id="start_date" name="start_date" placeholder="Start Date">
-                                                </div>
-                                                <div class="form-group col-md-4">
-                                                    <label for="exampleInputPassword">Start Time</label>
-                                                    <input type="text" class="form-control timepicker" value="{{$value->start_time}}" id="start_time" name="start_time" placeholder="Start Time">
-                                                </div>
-                                                <div class="form-group col-md-4">
-                                                    <label for="exampleSelectGender">End Date</label>
-                                                    <input type="date" class="form-control datepicker" value="{{$value->end_date}}" id="end_date" name="end_date" placeholder="End Date">
-                                                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-4">
-                                                    <label for="exampleInputPassword">End Time</label>
-                                                    <input type="text" class="form-control timepicker" value="{{$value->end_time}}" id="end_time" name="end_time" placeholder="End Time">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="form-group col-md-12">
-                                                    <textarea class="form-control ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-primary mr-2 editEventHighlightsSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
+                                            <button type="button" class="btn btn-primary mr-2 editEventMapImageSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
                                             <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                                         </form>
                                     </div>
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- /edit.modal -->
+
                         @endforeach @else
                         <tr>
                         <td colspan="6">No Records Found</td>
@@ -167,21 +134,14 @@
 <script>
    
 $(document).ready(function(){
-    setTimeout(function(){
-           $("h4.mess").remove();
-        }, 5000 );
+           
+    $(document).on('click','.editEventMapImageSubmit',function(e){
+       
+        var id = $(this).data('id');
+        var formData = new FormData($("#editEventMapImageform"+id)[0]);           
+            $( '.common_id-error' ).html( "" ); 
 
-         $('.timepicker').datetimepicker({
-            format: 'HH:mm:ss'
-        });
-        
-    $('#addAttractionHighlightsSubmit').click(function(e){
-            var formData = new FormData($("#addAttractionHighlightsform")[0]);
-            var message = CKEDITOR.instances['description'].getData();
-            formData.append('description',message);
-            console.log(message);
-            // $( '#title-error' ).html( "" );    
-
+            var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -189,7 +149,44 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('addHighlights') }}",
+                url: "{{ route('eventmapimage.update') }}",
+                method: 'post',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function(result){
+                    if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.eventname){
+                        $( '.common_id-error' ).html( result.errors.eventname[0] );
+                    }
+                }
+                if(result.status == true)
+                {
+                    $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
+                    setTimeout(function(){ 
+                        $('#editMapImage'+id).modal('hide');
+                        window.location.reload();
+                    }, 3000);
+                }
+                else
+                {
+                    $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
+                }
+                }
+            });
+        });
+    $('#addEventMapImageSubmit').click(function(e){
+            var formData = new FormData($("#addMapImageform")[0]);
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ route('addEventmapimage') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -209,12 +206,12 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
-                        $("#addAttractionHighlightsform")[0].reset();
-                        $('#addHighlights').modal('hide');
+                        $("#addEventmapimageform")[0].reset();
+                        $('#addEventmapimage').modal('hide');
                         window.location.reload();
                     }, 3000);
 
-                    $("#addHighlightsform")[0].reset();
+                    $("#addMapImageform")[0].reset();
                      window.location.reload();
                     
                     // $("#addMallBrandform")[0].reset();
@@ -226,25 +223,63 @@ $(document).ready(function(){
                 }
             });
         });
-    });
+        $(document).on('click','#search',function(){ 
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });       
+        $.ajax({
+                url: "{{route('eventmapimage.search')}}",
+                method: 'post',
+                data: {'search':$("#searchtext").val(),'type' : 'event'},
+                success: function(result){
+                if(result.status == true)
+                {
+                    var data = result.data;         
+                    var findnorecord = $('#eventmapimagetableData tr.norecord').length;
+                    if(findnorecord > 0){
+                        $('#eventmapimagetableData tr.norecord').remove();
+                    }
+                    
+                    var deleteurl = '{{ route("eventmapimage.delete", ":id") }}';
+                    deleteurl = deleteurl.replace(':id', data.id);
+                    var tr_str = "<tr>"+
+                    "<td>"+data.unique_id+"</td>" +
+                    "<td>"+data.common_id+"</td>" +
+                    "<td>"+data.event_name+"</td>" +
+                    "<td>"+data.created_at+"</td>" +
+                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMapImage'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this EventMapImage?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    "</tr>";
+                    $("#eventmapimagetableData tbody").html(tr_str);
+                    $("#paging").hide();
+                }
+                else
+                {
+                    $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
+                }
+                }
+            });
+        }); 
+});
 </script>
 @endsection
 
 <!-- Modal HTML Markup -->
-<div id="addAttractiondHighlights" class="modal fade">
+<div id="addEventMapImage" class="modal fade">
     <div class="modal-dialog  modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add Highlights</h1>
+                <h1 class="modal-title">Add Map Image</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
-                <form name="addAttractionHighlightsform" id="addAttractionHighlightsform" role="form" method="POST" enctype= "multipart/form-data">
+                <form name="addMapImageform" id="addMapImageform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="exampleSelectPhoto">Photo</label>
-                            <input type="file" name="image" class="file-upload-default">
+                            <input type="file" name="map_image_name" class="file-upload-default">
                             <div class="input-group col-xs-12">
                                 <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
                                 <span class="input-group-append">
@@ -253,50 +288,17 @@ $(document).ready(function(){
                             </div>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="exampleInputName">Title</label>
-                            <input type="text" required class="form-control" Re id="title" name="title" placeholder="Title">
-                            <span class="text-danger">
-                                <strong id="title-error"></strong>
-                            </span>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="exampleInputStatus">Attraction Name</label>
+                            <label for="exampleInputStatus">Event Name</label>
                             <select name="common_id" id="commonname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
-                                    <option value="{{ $common->id }}">{{ $common->attraction_name }}</option>
+                                    <option value="{{ $common->id }}">{{ $common->event_name }}</option>
                                 @endforeach
                             </select>
-                            <input type="hidden" value="attraction" name="type">
+                            <input type="hidden" value="event" name="type">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label for="exampleInputPassword">Start Date</label>
-                            <input type="date" class="form-control datepicker" id="start_date" name="start_date" placeholder="Start Date">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="exampleInputPassword">Start Time</label>
-                            <input type="text" class="form-control timepicker" id="start_time" name="start_time" placeholder="Start Time">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="exampleSelectGender">End Date</label>
-                            <input type="date" class="form-control datepicker" id="end_date" name="end_date" placeholder="End Date">
-                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label for="exampleInputPassword">End Time</label>
-                            <input type="text" class="form-control timepicker" id="end_time" name="end_time" placeholder="End Time">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <textarea class="form-control ckeditor" id="description" name="description"></textarea>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary mr-2" id="addAttractionHighlightsSubmit">Submit</button>
+                    <button type="button" class="btn btn-primary mr-2" id="addEventMapImageSubmit">Submit</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
                 </form>
             </div>

@@ -247,10 +247,25 @@ Route::post('/addEventHighlights', 'admin\CommonHighlightController@addHighlight
 Route::get('eventhighlightsdelete/{id}', array('as' => 'eventhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@delete'));
 Route::post('eventhighlightsupdate', array('as' => 'eventhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@update'));
 
-Route::get('/attractionhighlights', 'admin\CommonHighlightController@index')->name('attractionhighlights');
 Route::post('/addAttractionHighlights', 'admin\CommonHighlightController@addHighlights')->name('addHighlights');
+Route::get('/attractionhighlights', 'admin\CommonHighlightController@index')->name('attractionhighlights');
 Route::get('attractionhighlightsdelete/{id}', array('as' => 'attractionhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@delete'));
-Route::post('attractionhighlightsupdate', array('as' => 'attractionhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@update'));
+Route::post('attractionphotosupdate', array('as' => 'attractionphotos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@update'));
+
+
+Route::get('/eventmapimage', 'admin\CommonMapImageController@index')->name('eventmapimage');
+Route::post('/addEventmapimage', 'admin\CommonMapImageController@addMapImage')->name('addEventmapimage');
+Route::get('eventmapimagedelete/{id}', array('as' => 'eventmapimage.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@delete'));
+Route::post('eventmapimageupdate', array('as' => 'eventmapimage.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@update'));
+Route::post('eventmapimagesearch', array('as' => 'eventmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
+
+Route::get('/attractionmapimage', 'admin\CommonMapImageController@index')->name('attractionmapimage');
+Route::get('/addAttractionMapImage', 'admin\CommonMapImageController@addMapImage')->name('addAttractionMapImage');
+
+// Route::get('/attractionhighlights', 'admin\CommonHighlightController@index')->name('attractionhighlights');
+// Route::post('/addAttractionHighlights', 'admin\CommonHighlightController@addHighlights')->name('addAttractionHighlights');
+// Route::get('attractionhighlightsdelete/{id}', array('as' => 'attractionhighlights.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@delete'));
+// Route::post('attractionhighlightsupdate', array('as' => 'attractionhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonHighlightController@update'));
 
 // Route::get('/highlights', 'admin\CommonhighlightController@index')->name('highlights');
 // Route::post('/addHighlights', 'admin\CommonhighlightController@addHighlights')->name('addHighlights');
