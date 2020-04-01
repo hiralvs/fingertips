@@ -102,7 +102,7 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Malls and Shops</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <select name="common_id" id="common_id" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @if(!empty($common_id) && $common_id->count() > 0)
                                                             @foreach ($common_id as $key => $pd)
@@ -377,7 +377,7 @@ function fnExcelReport()
                         </div>   
                         <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Malls and Shops</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <select name="common_id" id="common_id" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
                                     <option value="{{ $common->id }}">{{ $common->name }}</option>

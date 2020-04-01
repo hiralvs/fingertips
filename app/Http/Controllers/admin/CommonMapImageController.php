@@ -82,7 +82,8 @@ class CommonMapImageController extends Controller
     {
         if ($request->type == 'malls') {
             $validator = Validator::make($request->all(), [
-                'common_id' => 'required',
+                'mallname' => 'required',
+                'image_name' => 'required|image',
             ]);
 
             if ($validator->fails()) {
@@ -93,7 +94,7 @@ class CommonMapImageController extends Controller
 
         if ($request->type == 'event') {
             $validator = Validator::make($request->all(), [
-                'common_id' => 'required',
+                'eventname' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -104,7 +105,8 @@ class CommonMapImageController extends Controller
 
         if ($request->type == 'attraction') {
             $validator = Validator::make($request->all(), [
-                'common_id' => 'required',
+                'title' => 'required',
+                'attractionname' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -117,7 +119,6 @@ class CommonMapImageController extends Controller
             return Response()->json(['errors' => $validator->errors()]);
         }
         
-        $common_name = 'common_id';
         $user = Auth::user();
         $username = "";
         if (!empty($user)) {
@@ -127,7 +128,7 @@ class CommonMapImageController extends Controller
         $request->request->remove('_token');
         $input = array(
             'unique_id' => get_unique_id("map_images"),
-            'common_id'=>$request->common_id,
+            'common_id'=>$common_name,
             'type'=>  $request->type,
         );
         
@@ -137,7 +138,7 @@ class CommonMapImageController extends Controller
             
             $path = public_path('upload/mall_image/' . $filename);
             
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['map_image_name'] = $filename;
         }
         Map_images::unguard();
@@ -173,19 +174,19 @@ class CommonMapImageController extends Controller
 
         if ($request->type == 'malls') {
             $validator = Validator::make($request->all(), [
-                'common_id' => 'required',
+                'mallname' => 'required',
             ]);
             $common_name =  $request->mallname;
         }
         if ($request->type == 'event') {
             $validator = Validator::make($request->all(), [
-                'common_id' => 'required',
+                'eventname' => 'required',
             ]);
-            $common_name =  $request->event_name;
+            $common_name =  $request->eventname;
         }
         if ($request->type == 'attraction') {
             $validator = Validator::make($request->all(), [
-            'common_id' => 'required',
+            'attractionname' => 'required',
             ]);
             $common_name =  $request->attractionname;
         }
@@ -198,7 +199,7 @@ class CommonMapImageController extends Controller
             return Response()->json(['errors' => $validator->errors()]);
         }
 
-        $mapimages->common_id = $request->common_id ;
+        $mapimages->common_id = $common_name ;
         $mapimages->type = $request->type;        
         if ($request->hasFile('map_image_name')) {
             $image = $request->File('map_image_name');
@@ -206,7 +207,7 @@ class CommonMapImageController extends Controller
 
             $path = public_path('upload/mall_image/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $mapimages->map_image_name = $filename;
         }
         Map_images::unguard();

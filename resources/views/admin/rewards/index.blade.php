@@ -27,7 +27,7 @@
                     <a id="clear16" class="btn btn-secondary" href="{{route('rewards')}}" tabindex="" >CLEAR</a>
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
                 </div>             
             </div>
         </div>
@@ -49,9 +49,9 @@
                     <table class="table table-hover" id="rewardstableData">
                       <thead>
                         <tr>
-                          <th>@sortablelink('Customer Name')</th>
-                          <th>@sortablelink('Wallet Value')</th>
-                          <th>@sortablelink('Member Since')</th>
+                          <th>@sortablelink('name','Customer Name')</th>
+                          <th>@sortablelink('earned','Wallet Value')</th>
+                          <!-- <th>@sortablelink('created_at','Member Since')</th> -->
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -61,8 +61,6 @@
                         <tr>
                              <td>{{$value->name}}</td>
                              <td>{{$value->earned}}</td>
-                             <td>{{date("d F Y",strtotime($value->created_at))}}</td>
-                             
                             <td>
                                 <a class="delete" onclick="return confirm('Are you sure you want to delete this Reward?')" href="{{route('rewards.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
@@ -108,22 +106,7 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#rewardstableData tr.norecord').remove();
                         }
-                        
-                    if(data.created_at)
-                    {
-                        var cdate = date(data.created_at);
-                    }
-                    var deleteurl = '{{ route("rewards.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+data.name+"</td>" +
-                    "<td>"+data.earned+"</td>" +
-                    "<td>"+data.used+"</td>"+
-                    "<td>"+data.redeem+"</td>" +
-                    "<td>"+cdate+"</td>" +
-                    "<td><a class='delete' onclick='return confirm('Are you sure you want to delete this Reward?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#rewardstableData tbody").html(tr_str);
+                     $("#rewardstableData tbody").html(data);
                     $("#paging").hide();
                 }
                 else
@@ -134,6 +117,33 @@ $(document).ready(function(){
             });
     });
 });
+function fnExcelReport()
+{
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('rewardexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "rewards",
+                filename: "rewards" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 </script>
 @endsection
 

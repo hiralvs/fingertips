@@ -35,7 +35,7 @@ class CategoryController extends Controller
         }
         else
         {
-            $perpage = 3;
+            $perpage = 10;
         }
 
         if($request->sort)
@@ -156,7 +156,7 @@ class CategoryController extends Controller
         }
         else
         {
-            $perpage = 3;
+            $perpage = 10;
         }
 
         if($request->sort)

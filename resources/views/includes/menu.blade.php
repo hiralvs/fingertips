@@ -16,7 +16,7 @@
               </li>
               <li class="nav-item">
                   <a href="{{route('products')}}" class="nav-link">
-                    <i class="mdi mdi-cube-outline menu-icon"></i>
+                    <i class="mdi mdi mdi-package-variant menu-icon"></i>
                     <span class="menu-title">Products</span>
                     <i class="menu-arrow"></i>
                   </a>
@@ -131,11 +131,6 @@
                           <li class="nav-item"><a class="nav-link" href="{{route('loginprivacy')}}">Login Privacy</a></li>
                       </ul>
                   </div>
-              </li>
-              <li class="nav-item">
-                  <a href="docs/documentation.html" class="nav-link">
-                    <i class="mdi mdi-file-document-box-outline menu-icon"></i>
-                    <span class="menu-title">Documentation</span></a>
               </li>
             </ul>
         </div>

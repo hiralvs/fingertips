@@ -11,7 +11,7 @@
         <div class="col-sm-6">
 			<div class="d-flex align-items-center justify-content-md-end">
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="waves-effect waves-light btn btn_box_shadow btn element" data-toggle="modal" data-target="#addTax" tabindex="" style="">
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addTax" tabindex="" style="">
                         ADD NEW
                     </a>
                 </div>               
@@ -77,6 +77,10 @@
                         </div><!-- edit /.modal -->
                         
                         @endforeach
+                        @else
+                            <tr>
+                            <td colspan="2">No Records Found</td>
+                            </tr>
                         @endif
 
                       </tbody>

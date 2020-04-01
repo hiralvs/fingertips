@@ -176,7 +176,7 @@ class CommonSliderController extends Controller
         	$validator = Validator::make($request->all(), [
 	            'mallname' => 'required',
 	        ]);
-        	$common_name =  $request->mallsnname;
+        	$common_name =  $request->mallname;
         }
         if($request->type == 'event')
         {

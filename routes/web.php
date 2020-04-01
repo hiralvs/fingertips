@@ -125,6 +125,8 @@ Route::post('eventssearch', array('as' => 'events.search', 'routegroup' => 'grp_
 Route::get('/rewards', 'admin\RewardsController@index')->name('rewards');
 Route::get('rewardsdelete/{id}', array('as' => 'rewards.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardsController@delete'));
 Route::post('rewardssearch', array('as' => 'rewards.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardsController@search'));
+Route::get('/rewardexport', 'admin\RewardsController@export')->name('rewardexport');
+
 
 Route::get('/privacy', 'admin\PrivacyController@index')->name('privacy');
 Route::post('/addPrivacy', 'admin\PrivacyController@addPrivacy')->name('addPrivacy');
@@ -210,12 +212,14 @@ Route::post('/addTrending', 'admin\TrendingController@addTrending')->name('addTr
 Route::post('trendingupdate', array('as' => 'trending.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TrendingController@update'));
 Route::get('trendingdelete/{id}', array('as' => 'trending.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TrendingController@delete'));
 Route::post('trendingsearch', array('as' => 'trending.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\TrendingController@search'));
+Route::get('/trendingexport', 'admin\TrendingController@export')->name('trendingexport');
 
 Route::get('/sponsors', 'admin\SponsorController@index')->name('sponsors');
 Route::post('/addSponsors', 'admin\SponsorController@addSponsors')->name('addSponsors');
 Route::get('sponsorsdelete/{id}', array('as' => 'sponsors.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SponsorController@delete'));
 Route::post('sponsorsupdate', array('as' => 'sponsors.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SponsorController@update'));
 Route::post('sponsorssearch', array('as' => 'sponsors.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SponsorController@search'));
+Route::get('/sponserexport', 'admin\SponsorController@export')->name('sponserexport');
 
 Route::get('/directory', 'admin\DirectoryController@index')->name('directory');
 Route::post('/addDirectory', 'admin\DirectoryController@addDirectory')->name('addDirectory');

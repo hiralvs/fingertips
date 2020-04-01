@@ -49,7 +49,7 @@ class BrandController extends Controller
         } else {
             $direction='desc';
         }
-        $return_data['data'] = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"),DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,brands.category_id)"),">",DB::raw("'0'"))->where('brands.status','0')->groupBy("brands.id")->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['data'] = Brand::select('brands.*',DB::raw("(SELECT COUNT(products.id) FROM products WHERE products.brand_id = brands.id) as product_count"),DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,brands.category_id)"),">",DB::raw("'0'"))->groupBy("brands.id")->orderBy($sort,$direction)->sortable()->paginate($perpage);
         
         $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         

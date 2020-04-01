@@ -30,7 +30,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addSponsors" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
                 </div>
             </div>
         </div>
@@ -52,10 +52,10 @@
                     <table class="table table-hover" id="sponsorstableData">
                       <thead>
                         <tr>
-                            <th>@sortablelink('Id')</th>
+                            <th>@sortablelink('id','Id')</th>
                             <th>Image</th>
-                            <th>@sortablelink('Title')</th>
-                            <th>@sortablelink('URL')</th>
+                            <th>@sortablelink('title','Title')</th>
+                            <th>@sortablelink('url','URL')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -63,7 +63,7 @@
                         @if(!empty($data) && $data->count() > 0)
                             @foreach($data as $key => $value)
                         <tr>
-                            <td>{{$value->id}}</td>
+                            <td>{{$key+1}}</td>
                             <td><img src="{{asset('public/upload/sponsors/')}}/{{$value->image}}" alt=""></td>
                             <td>{{$value->title}}</td>
                             <td>{{$value->url}}</td>
@@ -119,7 +119,11 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- edit /.modal -->
                         @endforeach
-                        @endif
+                        @else
+                            <tr>
+                            <td colspan="5">No Records Found</td>
+                            </tr>
+                            @endif
                       </tbody>
                     </table>
 
@@ -255,37 +259,38 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#sponsorstableData tr.norecord').remove();
                         }
-                    
-                    var id = image = title = link = '';
-                    if(data.id != null)
-                    {
-                        id = data.id;
-                    }
-                    if(data.image != null)
-                    {
-                        image = data.image;
-                    }
-                    if(data.title != null)
-                    {
-                        title = data.title;
-                    }
-                    if(data.url != null)
-                    {
-                        url = data.url;
-                    }
-                    var deleteurl = '{{ route("sponsors.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+id+"</td>" +
-                    "<td>"+image+"</td>" +
-                    "<td>"+title+"</td>" +
-                    "<td>"+url+"</td>" +
-                    // "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    console.log(tr_str);
-                    $("#sponsorstableData tbody").html(tr_str);
+                    $("#sponsorstableData tbody").html(data);
                     $("#paging").hide();
+                    // var id = image = title = link = '';
+                    // if(data.id != null)
+                    // {
+                    //     id = data.id;
+                    // }
+                    // if(data.image != null)
+                    // {
+                    //     image = data.image;
+                    // }
+                    // if(data.title != null)
+                    // {
+                    //     title = data.title;
+                    // }
+                    // if(data.url != null)
+                    // {
+                    //     url = data.url;
+                    // }
+                    // var deleteurl = '{{ route("sponsors.delete", ":id") }}';
+                    // deleteurl = deleteurl.replace(':id', data.id);
+                    // var tr_str = "<tr>"+
+                    // "<td>"+id+"</td>" +
+                    // "<td>"+image+"</td>" +
+                    // "<td>"+title+"</td>" +
+                    // "<td>"+url+"</td>" +
+                    // // "<td>"+cdate+"</td>" +
+                    // "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
+                    // "</tr>";
+                    // console.log(tr_str);
+                    // $("#sponsorstableData tbody").html(tr_str);
+                    // $("#paging").hide();
                 }
                 else
                 {
@@ -295,6 +300,33 @@ $(document).ready(function(){
             });
     });
 });
+function fnExcelReport()
+{
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('sponserexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "sponser",
+                filename: "sponser" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 </script>
 @endsection
 <!-- Modal HTML Markup -->

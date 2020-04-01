@@ -282,7 +282,6 @@ $(document).ready(function(){
     $('#addBrandSubmit').click(function(e){
         var formData = new FormData($("#addbrandform")[0]);
         var message = CKEDITOR.instances['description'].getData();
-        console.log(message);
         $( '#name-error' ).html( "" );
         $( '#category_id-error' ).html( "" );
         $( '#status-error' ).html( "" );

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content-wrapper">Larissa
+<div class="content-wrapper">
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
@@ -49,13 +49,13 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="#eventmapimagetableData">
+                    <table class="table table-hover" id="mapimagetableData">
                       <thead>
                         <tr>
-                            <th>Event Image Map</th>
-                            <th>@sortablelink('Map Image Id')</th>
-                            <th>@sortablelink('Event Name')</th>
-                            <th>@sortablelink('Created On')</th>
+                            <th>Event Map Image</th>
+                            <th>@sortablelink('unique_id','Map Image Id')</th>
+                            <th>@sortablelink('event_name','Event Name')</th>
+                            <th>@sortablelink('created_at','Created On')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -95,7 +95,7 @@
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Event Name</label>
                                                     <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <select name="eventname" id="eventname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @foreach ($common_id as $common)
                                                             <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->event_name }}</option>
@@ -179,6 +179,7 @@ $(document).ready(function(){
         });
     $('#addEventMapImageSubmit').click(function(e){
             var formData = new FormData($("#addMapImageform")[0]);
+            $( '#common_id-error' ).html( "" ); 
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -195,8 +196,8 @@ $(document).ready(function(){
                 success: function(result){
                 if(result.errors) {
                     $(".statusMsg").hide(); 
-                    if(result.errors.title){
-                            $( '#title-error' ).html( result.errors.title[0] );
+                    if(result.errors.eventname){
+                            $( '#common_id-error' ).html( result.errors.eventname[0] );
                         }
                     }
                 if(result.status == true)
@@ -237,9 +238,9 @@ $(document).ready(function(){
                 if(result.status == true)
                 {
                     var data = result.data;         
-                    var findnorecord = $('#eventmapimagetableData tr.norecord').length;
+                    var findnorecord = $('#mapimagetableData tr.norecord').length;
                     if(findnorecord > 0){
-                        $('#eventmapimagetableData tr.norecord').remove();
+                        $('#mapimagetableData tr.norecord').remove();
                     }
                     
                     var deleteurl = '{{ route("eventmapimage.delete", ":id") }}';
@@ -251,7 +252,7 @@ $(document).ready(function(){
                     "<td>"+data.created_at+"</td>" +
                     "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMapImage'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this EventMapImage?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
                     "</tr>";
-                    $("#eventmapimagetableData tbody").html(tr_str);
+                    $("#mapimagetableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else
@@ -289,12 +290,15 @@ $(document).ready(function(){
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Event Name</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <select name="eventname" id="eventname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
                                     <option value="{{ $common->id }}">{{ $common->event_name }}</option>
                                 @endforeach
                             </select>
+                            <span class="text-danger">
+                                <strong id="common_id-error"></strong>
+                            </span>
                             <input type="hidden" value="event" name="type">
                         </div>
                     </div>

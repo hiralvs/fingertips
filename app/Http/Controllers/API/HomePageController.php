@@ -76,7 +76,7 @@ class HomePageController extends Controller
         $page = $request->page ? $request->page : 1;
         $limit = $request->limit?  $request->limit : 10;
         $offset = ($page - 1) * $limit;
-        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->offset($offset)->limit($limit)->get();
+        $attraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"))->offset($offset)->limit($limit)->get();
         $totalrecords = Attractions::all()->count(); 
         $totalpage = (int) ceil($totalrecords / $limit);
         if($attraction->count() > 0)
@@ -143,7 +143,7 @@ class HomePageController extends Controller
     public function featuredAttraction(Request $request)
     {
         $url =env('APP_URL');
-        $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
+        $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
         if($featuredAttraction->count() > 0)
         {
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$featuredAttraction];
@@ -212,7 +212,7 @@ class HomePageController extends Controller
         $success = array();
         $type = $request->route('type'); // type can be event, malls and attraction
         $banners = Banner::select('banners.id','banners.type',DB::raw('IFNULL(banners.url , "" ) as url'),DB::raw('IFNULL(banners.ema , "" ) as ema'),DB::raw('IFNULL(banners.property_user_id , "" ) as property_user_id'),DB::raw("CONCAT('','$url/public/upload/banners/',bannerimage) as bannerimage"))->where('location',$type)->get();
-        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(["brands_connection.type"=>$type])->get();
+        $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(["brands_connection.type"=>$type])->groupBy('products.id')->get();
         if($banners->count() > 0)
         {
             // $banners[0]->url = is_null($banners[0]->url) ? "":$banners[0]->url;
@@ -239,7 +239,7 @@ class HomePageController extends Controller
         }
         if($type == 'attraction')
         {
-            $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attraction/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
+            $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
             $success['featuredAttraction'] =  $featuredAttraction ;
         }
         // print_r( $success);
@@ -473,7 +473,7 @@ class HomePageController extends Controller
         if($privacy->count() > 0)
         {
             unset($privacy[0]->deleted_at);
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$privacy];
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$privacy[0]];
         }
         else
         {   

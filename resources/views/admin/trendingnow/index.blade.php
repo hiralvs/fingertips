@@ -30,7 +30,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addTrending" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
                 </div>
             </div>
         </div>
@@ -54,9 +54,9 @@
                         <tr>
                             <th>@sortablelink('Id')</th>
                             <th>Image</th>
-                            <th>@sortablelink('Title')</th>
-                            <th>@sortablelink('URL')</th>
-                            <th>@sortablelink('Status')</th>
+                            <th>@sortablelink('title','Title')</th>
+                            <th>@sortablelink('link','URL')</th>
+                            <th>@sortablelink('status','Status')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -139,7 +139,11 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- edit /.modal -->
                         @endforeach
-                        @endif
+                        @else
+                            <tr>
+                            <td colspan="6">No Records Found</td>
+                            </tr>
+                            @endif
                       </tbody>
                     </table>
 
@@ -283,44 +287,7 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#trendingtableData tr.norecord').remove();
                         }
-                    
-                    var unique_id = image = title = link = status = '';
-                    if(data.unique_id != null)
-                    {
-                        unique_id = data.unique_id;
-                    }
-                    if(data.image != null)
-                    {
-                        image = data.image;
-                    }
-                    if(data.title != null)
-                    {
-                        title = data.title;
-                    }
-                    if(data.link != null)
-                    {
-                        link = data.link;
-                    }
-                    if(data.status == 0)
-                    {
-                        status = 'Active';
-                    }
-                    else
-                    {
-                        status = 'Inactive';
-                    }
-                    var deleteurl = '{{ route("trending.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+unique_id+"</td>" +
-                    "<td>"+image+"</td>" +
-                    "<td>"+title+"</td>" +
-                    "<td>"+link+"</td>" +
-                    "<td>"+status+"</td>" +
-                    // "<td>"+cdate+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editUser'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this User?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#trendingtableData tbody").html(tr_str);
+                    $("#trendingtableData tbody").html(data);
                     $("#paging").hide();
                 }
                 else
@@ -331,6 +298,33 @@ $(document).ready(function(){
             });
     });
 });
+function fnExcelReport()
+{
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('trendingexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "trending",
+                filename: "trending" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 </script>
 @endsection
 <!-- Modal HTML Markup -->

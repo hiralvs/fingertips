@@ -161,7 +161,7 @@ class AttractionController extends Controller
             $image = $request->File('attraction_image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
 
-            $path = public_path('upload/attraction/' . $filename);
+            $path = public_path('upload/attractions/' . $filename);
 
             Image::make($image->getRealPath())->save($path);
             $attraction->attraction_image = $filename;
@@ -171,7 +171,7 @@ class AttractionController extends Controller
        
         if (!empty($attraction)) {
             $data = Attractions::find($request->id);
-            $arr = array('msg' => 'attractions Updated Successfully', 'status' => true,'data'=> $data);
+            $arr = array('msg' => 'Attractions Updated Successfully', 'status' => true,'data'=> $data);
         } else {
             $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         }

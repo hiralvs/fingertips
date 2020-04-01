@@ -126,7 +126,7 @@ class NotificationController extends Controller
        
         if (!empty($notification)) {
             $data = Notification::find($request->id);
-            $arr = array('msg' => 'notification Updated Successfully', 'status' => true,'data'=> $data);
+            $arr = array('msg' => 'Notification Updated Successfully', 'status' => true,'data'=> $data);
         } else {
             $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         }

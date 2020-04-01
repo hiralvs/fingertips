@@ -174,7 +174,7 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
-        $product = Product::select('products.*',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,products.category_id)"),">",DB::raw("'0'"))->where('products.name','LIKE',"%{$search}%")
+        $product = Product::select('products.*',DB::raw("GROUP_CONCAT(category_name) as category_name"),DB::raw("(SELECT COUNT(product_variant.id) FROM product_variant WHERE product_variant.product_id = products.id) as productvariantcount"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,products.category_id)"),">",DB::raw("'0'"))->where('products.name','LIKE',"%{$search}%")
         ->orWhere('products.unique_id', 'LIKE',"%{$search}%")->orWhere('category_name', 'LIKE',"%{$search}%")->groupBy("products.id")->paginate();
 
         if($product)
@@ -265,9 +265,9 @@ class ProductController extends Controller
                 $html .="<tr><td>".$value['unique_id']."</td><td>".$value['sku_id']."</td><td>".$image ."</td><td>".$value['name']."</td><td>".$value['category_name']."</td><td>".$value['price']."</td><td>".$value['stock']."</td><td>".$status."</td><td>".$cdate."</td>";
                 if($search == true)
                 {
-                    $vcount = $value->productvariantcount > 1 ? '1' : '0';
-                    $checked =  $value->productvariantcount > 1 ? 'checked' : '' ;
-                    $style = $value->productvariantcount > 1 ? 'display: block;' : 'display: none';
+                    $vcount = $value->productvariantcount >= 1 ? '1' : '0';
+                    $checked =  $value->productvariantcount >= 1 ? 'checked' : '' ;
+                    $style = $value->productvariantcount >= 1 ? 'display: block;' : 'display: none';
                     //echo "if";
                     $html .="<td><a class='edit open_modal' data-toggle='modal' data-target='#editProduct".$value->id."'><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Product?')' href=".route('product.delete', $value->id)."><i class='mdi mdi-delete'></i></a> </td><td><label class='toggle-switch'><input type='checkbox' data-id='".$value->id."'  name='vairant' class='vairant' value=".$vcount."  ".$checked."><span class='toggle-slider round'></span></label><a href=".route('products_variant', $value->id)." style='".$style."'  id='variantLink".$value->id."' >variant</a>
                           </td>";

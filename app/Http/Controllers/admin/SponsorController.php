@@ -135,17 +135,100 @@ class SponsorController extends Controller
     {
         $search = $request->input('search');
 
-        $brand = Sponsor::where('title','LIKE',"%{$search}%")
+        $sponser = Sponsor::where('title','LIKE',"%{$search}%")
         ->orWhere('url', 'LIKE',"%{$search}%")
         ->paginate();
 
-        if($brand)
+        if($sponser)
         {
-            $arr = array('status' => true,"data"=>$brand[0]);    
+            $data = $this->htmltoexportandsearch($sponser,true);
+            $arr = array('status' => true,"data"=>$data);    
         }
         else{
             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
         }
         return Response()->json($arr);
+    }
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $query = Sponsor::select('*');
+
+        if($request->search != "")
+        {
+            $query = $query->where('title','LIKE',"%{$search}%")
+        ->orWhere('url', 'LIKE',"%{$search}%");
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata);
+       
+    }
+
+    public function htmltoexportandsearch($finaldata,$search=false)
+    {
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>URL</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+                $id = $key+1;  
+                if($search == true)
+                {
+                    if($value['image']!= null)
+                    {
+                        $path = asset('public/upload/sponsors').'/'.$value['image'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['image'];
+                }
+                
+                $html .="<tr><td>".$id."</td><td>".$image ."</td><td>".$value['title']."</td><td>".$value['url']."</td>";
+                if($search == true)
+                {
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-id='".$value->id."' data-target='#editSponsor".$value->id."' ><i class='mdi mdi-table-edit'></i></a>
+                                <a class='delete' onclick='return confirm('Are you sure you want to delete this Sponsers?')' href='".route('sponsors.delete', $value->id)."'><i class='mdi mdi-delete'></i></a>
+                          </td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="5">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
     }
 }

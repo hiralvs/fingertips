@@ -72,7 +72,7 @@
                             <th>@sortablelink('created_at','Created on')</th>
                             <!-- <th>@sortablelink('created_at','Created on',['filter' => 'active, visible'], ['class' => 'btn btn-block', 'rel' => 'nofollow'])</th> -->
                             <th>Action</th>
-                            <th>Varient</th>
+                            <th>Variant</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -106,10 +106,10 @@
                           <a class="delete" onclick="return confirm('Are you sure you want to delete this Product?')" href="{{route('product.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                           <td>
                             <label class="toggle-switch">
-                                <input type="checkbox" data-id="{{ $value->id }}"  name="vairant" class="vairant" value="{{ $value->productvariantcount > 1 ? '1' : '0' }}" {{ $value->productvariantcount > 1 ? 'checked' : '' }}>
+                                <input type="checkbox" data-id="{{ $value->id }}"  name="vairant" class="vairant" value="{{ $value->productvariantcount >= 1 ? '1' : '0' }}" {{ $value->productvariantcount >= 1 ? 'checked' : '' }}>
                                 <span class="toggle-slider round"></span>
                               </label>
-                              <a href="{{route('products_variant', $value->id)}}" style="{{ $value->productvariantcount > 1 ? 'display: block;' : 'display: none' }}"  id="variantLink{{ $value->id }}" >variant</a>
+                              <a href="{{route('products_variant', $value->id)}}" style="{{ $value->productvariantcount >= 1 ? 'display: block;' : 'display: none' }}"  id="variantLink{{ $value->id }}" >variant</a>
                           </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->

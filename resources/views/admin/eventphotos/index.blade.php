@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content-wrapper">Larissa
+<div class="content-wrapper">
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">

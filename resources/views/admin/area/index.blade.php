@@ -175,6 +175,8 @@ $(document).ready(function(){
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
                         $('#addArea').modal('hide');
+                        $("#addAreaform")[0].reset();
+                        window.location.reload();
                     }, 3000);
                     
                     var findnorecord = $('#areatableData tr.norecord').length;
@@ -183,15 +185,6 @@ $(document).ready(function(){
                         $('#areatableData tr.norecord').remove();
                     }
                    
-                    var deleteurl = '{{ route("area.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+data.area_name+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editArea'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Area?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#areatableData tbody").prepend(tr_str);
-                    $("#areatableData tbody").append('<div id="editArea'+data.id+'" class="modal fade"><div class="modal-dialog  modal-xl" role="document"><div class="modal-content"><div class="modal-header"><h1 class="modal-title">Edit Area</h1></div><div class="modal-body"><p class="statusMsg"></p><form name="editArea" id="editAreaform'+data.id+'" role="form" method="POST" enctype= "multipart/form-data">@csrf<div class="row"><div class="form-group col-md-4"><label for="exampleInputName">Area Name</label><input type="text" class="form-control" required id="area_name" value="'+data.area_name+'" name="area_name" placeholder="Name"><input type="hidden" name="id" value="'+data.id+'">"></div></div><button type="button" class="btn btn-primary mr-2 editAreaSubmit" data-id="'+data.id+'" id="editAreaSubmit">Submit</button><button type="button" class="btn btn-light" data-dismiss="modal">Close</button></form></div></div></div></div>');
-                    $("#addAreaform")[0].reset();
                 }
                 else
                 {

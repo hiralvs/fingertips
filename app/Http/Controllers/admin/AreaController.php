@@ -36,7 +36,7 @@ class AreaController extends Controller
         }
         else
         {
-            $perpage = 3;
+            $perpage = 10;
         }
 
         if($request->sort)
