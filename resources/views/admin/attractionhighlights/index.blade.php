@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="content-wrapper">Larissa
+<div class="content-wrapper">
     <div class="row">
         <div class="col-sm-6 mb-4 mb-xl-0">
 			<div class="d-lg-flex align-items-center">
@@ -32,6 +32,9 @@
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
                 </div>
+                <div class="pr-1 mb-3 mb-xl-0">
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('attraction')"  tabindex="">EXPORT</a>
+                </div>
             </div>
         </div>
     </div>
@@ -49,13 +52,13 @@
                         @endif
                     </div>
                   <div class="table-responsive">
-                    <table class="table table-hover" id="eventhighlightstableData">
+                    <table class="table table-hover" id="highlightstableData">
                       <thead>
                         <tr>
                             <th>@sortablelink('Id')</th>
                             <th>Image</th>
                             <th>@sortablelink('Title')</th>
-                            <th>@sortablelink('Attraction')</th>
+                            <th>@sortablelink('attraction_name','Attraction')</th>
                             <th>Action</th>
                         </tr>
                       </thead>
@@ -64,14 +67,18 @@
                             @foreach($data as $key => $value)
                         <tr>
                           <td>{{$value->unique_id}}</td>
-                          <td><img src="{{asset('public/upload/highlights/')}}/{{$value->image}}" alt=""></td>
+                          <td>@if($value->image!= null)
+                                    <img src="{{asset('public/upload/highlights/')}}{{'/'.$value->image}}" alt="">
+                                @else
+    
+                                @endif</td>
                           <td>{{$value->title}}</td>
                           <td>{{$value->attraction_name}}</td>
-                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editEventHighlights{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
+                          <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editAttractionHighlights{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
                           <a class="delete" onclick="return confirm('Are you sure you want to delete this Attraction Highlights?')" href="{{route('attractionhighlights.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                     <!-- Edit Modal HTML Markup -->
-                        <div id="editEventHighlights{{$value->id}}" class="modal fade">
+                        <div id="editAttractionHighlights{{$value->id}}" class="modal fade">
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -102,14 +109,16 @@
                                                 </div>
                                                 <div class="form-group col-md-4">
                                                     <label for="exampleInputStatus">Event Name</label>
-                                                    <input type="hidden" name="id" value="{{$value->id}}">
-                                                    <select name="common_id" id="commonname" class="form-control common_id">
+                                                    <select name="attractionname" id="attractionname" class="form-control common_id">
                                                         <option value=""> -- Select One --</option>
                                                         @foreach ($common_id as $common)
-                                                            <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->event_name }}</option>
+                                                            <option value="{{ $common->id }}" {{ $value->common_id == $common->id ? 'selected' : ''}}>{{ $common->attraction_name }}</option>
                                                         @endforeach
                                                     </select>
-                                                    <input type="hidden" value="event" name="type">
+                                                       <span class="text-danger">
+                                                        <strong class="attractionname-error"></strong>
+                                                    </span>
+                                                    <input type="hidden" value="attraction" name="type">
                                                 </div> 
                                             </div>
                                             <div class="row">
@@ -135,7 +144,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="form-group col-md-12">
-                                                    <textarea class="form-control ckeditor" id="description{{$value->id}}" name="description">{{$value->description}}</textarea>
+                                                    <textarea class="form-control ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
                                                 </div>
                                             </div>
                                             <button type="button" class="btn btn-primary mr-2 editEventHighlightsSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
@@ -175,13 +184,62 @@ $(document).ready(function(){
             format: 'HH:mm:ss'
         });
         
+        $(document).on('click','.editEventHighlightsSubmit',function(e){
+       
+        var id = $(this).data('id');
+        var formData = new FormData($("#editEventHighlightsform"+id)[0]);
+
+            $( '.title-error' ).html( "" ); 
+                        $( '.attractionname-error' ).html( "" );    
+            var message = CKEDITOR.instances['description'+id].getData();
+            
+
+        formData.append('description',message);
+        var id = $(this).data('id');
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ route('eventhighlights.update') }}",
+                method: 'post',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function(result){
+                    if(result.errors) {
+                    $(".statusMsg").hide();
+                    if(result.errors.title){
+                        $( '.title-error' ).html( result.errors.title[0] );
+                    }
+                    if(result.errors.attractionname){
+                        $( '.attractionname-error' ).html( result.errors.attractionname[0] );
+                    }
+                }
+                if(result.status == true)
+                {
+                    $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
+                    setTimeout(function(){ 
+                        $('#editEventHighlights'+id).modal('hide');
+                        window.location.reload();
+                    }, 3000);
+                }
+                else
+                {
+                    $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
+                }
+                }
+            });
+        });
     $('#addAttractionHighlightsSubmit').click(function(e){
-            var formData = new FormData($("#addAttractionHighlightsform")[0]);
+            var formData = new FormData($("#addHighlightsform")[0]);
             var message = CKEDITOR.instances['description'].getData();
             formData.append('description',message);
-            console.log(message);
-            // $( '#title-error' ).html( "" );    
-
+            $( '#title-error' ).html( "" );    
+            $( '#attractionname-error' ).html( "" ); 
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -196,12 +254,16 @@ $(document).ready(function(){
                 processData: false,
                 data: formData,
                 success: function(result){
-                if(result.errors) {
+                if(result.errors) 
+                {
                     $(".statusMsg").hide(); 
                     if(result.errors.title){
                             $( '#title-error' ).html( result.errors.title[0] );
                         }
-                    }
+                        if(result.errors.attractionname){
+                            $( '#attractionname-error' ).html( result.errors.attractionname[0] );
+                        }
+                }
                 if(result.status == true)
                 {
                     var data = result.data;
@@ -209,8 +271,8 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
-                        $("#addAttractionHighlightsform")[0].reset();
-                        $('#addHighlights').modal('hide');
+                        $("#addHighlightsform")[0].reset();
+                        $('#addAttractionHighlights').modal('hide');
                         window.location.reload();
                     }, 3000);
 
@@ -226,7 +288,64 @@ $(document).ready(function(){
                 }
             });
         });
+    $(document).on('click','#search',function(){ 
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });       
+        $.ajax({
+                url: "{{route('attractionhighlights.search')}}",
+                method: 'post',
+                data: {'search':$("#searchtext").val(),'type':'attraction'},
+                success: function(result){
+                if(result.status == true)
+                {
+                    var data = result.data;
+                    
+                    
+                    var findnorecord = $('#highlightstableData tr.norecord').length;
+                    if(findnorecord > 0){
+                        $('#highlightstableData tr.norecord').remove();
+                    }
+                    $("#highlightstableData tbody").html(data);
+                    $("#paging").hide();                   
+                }
+                else
+                {
+                    $('.statusMsg').html('<span style="color:red;">'+result.msg+'</span>');
+                }
+                }
+            });
     });
+    });
+function fnExcelReport(type)
+{
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('attractionhighlights.export')}}",
+        method: 'get',
+        data: {'search':search,'type':type},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "attractionhightlight",
+                filename: "attractionhightlight" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 </script>
 @endsection
 
@@ -239,7 +358,7 @@ $(document).ready(function(){
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
-                <form name="addAttractionHighlightsform" id="addAttractionHighlightsform" role="form" method="POST" enctype= "multipart/form-data">
+                <form name="addHighlightsform" id="addHighlightsform" role="form" method="POST" enctype= "multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-4">
@@ -261,12 +380,15 @@ $(document).ready(function(){
                         </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Attraction Name</label>
-                            <select name="common_id" id="commonname" class="form-control">
+                            <select name="attractionname" id="attractionname" class="form-control">
                                 <option value=""> -- Select One --</option>
                                 @foreach ($common_id as $common)
                                     <option value="{{ $common->id }}">{{ $common->attraction_name }}</option>
                                 @endforeach
                             </select>
+                            <span class="text-danger">
+                                <strong id="attractionname-error"></strong>
+                            </span>
                             <input type="hidden" value="attraction" name="type">
                         </div>
                     </div>

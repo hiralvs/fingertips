@@ -57,19 +57,24 @@ class CommonHighlightController extends Controller
             $direction='asc';
         }
 
-        if ($lastsegment == 'eventhighlights') {
+        if ($lastsegment == 'eventhighlights') 
+        {
             $return_data['title'] = trans('Event Highlights');
             $return_data['meta_title'] = trans('Event Highlights');
             $return_data['data'] = Highlights::select('highlights.*', 'event_name')->leftjoin('events', 'events.id', '=', 'highlights.common_id')->where('highlights.type', 'event')->orderBy($sort, $direction)->sortable()->paginate($perpage);
             $return_data['common_id'] = Events::select('id', 'event_name')->get();
             return View('admin.eventhighlights.index', $return_data)->render();
-        } elseif ($lastsegment == 'mallhighlights') {
+        } 
+        elseif ($lastsegment == 'mallhighlights') 
+        {
             $return_data['title'] = trans('Mall Highlights');
             $return_data['meta_title'] = trans('Mall Highlights');
             $return_data['data'] = Highlights::select('highlights.*', 'shopsandmalls.name as mallname')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'highlights.common_id')->where('highlights.type', 'malls')->orderBy($sort, $direction)->sortable()->paginate($perpage);
             $return_data['common_id'] = ShopsandMalls::select('id', 'name')->get();
             return View('admin.mallhighlights.index', $return_data)->render();
-        } elseif ($lastsegment == 'attractionhighlights') {
+        } 
+        elseif ($lastsegment == 'attractionhighlights') 
+        {
             $return_data['title'] = trans('Attraction Highlights');
             $return_data['meta_title'] = trans('Attraction Highlights');
             $return_data['data'] = Highlights::select('highlights.*', 'attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'highlights.common_id')->where('highlights.type', 'attraction')->orderBy($sort, $direction)->sortable()->paginate($perpage);
@@ -84,44 +89,34 @@ class CommonHighlightController extends Controller
         if ($request->type == 'malls') {
             $validator = Validator::make($request->all(), [
                 'mallname' => 'required',
-                'image_name' => 'required|image',
+                'title' => 'required',
             ]);
 
-            if ($validator->fails()) {
-                return Response()->json(['errors' => $validator->errors()]);
-            }
             $common_name =  $request->mallname;
         }
 
         if ($request->type == 'event') {
             $validator = Validator::make($request->all(), [
+                'eventname' => 'required',
                 'title' => 'required',
-                'common_id' => 'required',
             ]);
 
-            if ($validator->fails()) {
-                return Response()->json(['errors' => $validator->errors()]);
-            }
-            $common_name =  $request->event_name;
+            $common_name =  $request->eventname;
         }
 
         if ($request->type == 'attraction') {
             $validator = Validator::make($request->all(), [
+                'attractionname' => 'required',
                 'title' => 'required',
-                'common_id' => 'required',
             ]);
 
-            if ($validator->fails()) {
-                return Response()->json(['errors' => $validator->errors()]);
-            }
-            $common_name =  $request->attraction_name;
+            $common_name =  $request->attractionname;
         }
 
         if ($validator->fails()) {
             return Response()->json(['errors' => $validator->errors()]);
         }
         
-        $common_name = 'common_id';
         $user = Auth::user();
         $username = "";
         if (!empty($user)) {
@@ -130,8 +125,8 @@ class CommonHighlightController extends Controller
 
         $request->request->remove('_token');
         $input = array(
-            'unique_id' => get_unique_id("Highlights"),
-            'common_id'=>$request->common_id,
+            'unique_id' => get_unique_id("highlights"),
+            'common_id'=>$common_name,
             'type'=>  $request->type,
             'title'=>  $request->title,
             'start_date'=>$request->start_date,
@@ -147,13 +142,13 @@ class CommonHighlightController extends Controller
             
             $path = public_path('upload/highlights/' . $filename);
             
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['image'] = $filename;
         }
         Highlights::unguard();
         $check = Highlights::create($input)->id;
     
-        $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
+        $arr = array('msg' => 'Something goes to wrong. Please try again later', 'status' => false);
         if ($check) {
             $data = Highlights::find($check);
             $arr = array('msg' => 'Highlights Added Successfully', 'status' => true,'data'=> $data);
@@ -186,20 +181,27 @@ class CommonHighlightController extends Controller
         if ($request->type == 'malls') {
             $validator = Validator::make($request->all(), [
                 'mallname' => 'required',
+                'title' => 'required',
             ]);
+
             $common_name =  $request->mallname;
         }
+
         if ($request->type == 'event') {
             $validator = Validator::make($request->all(), [
+                'eventname' => 'required',
                 'title' => 'required',
-                // 'common_id' => 'required',
             ]);
-            $common_name =  $request->event_name;
+
+            $common_name =  $request->eventname;
         }
+
         if ($request->type == 'attraction') {
             $validator = Validator::make($request->all(), [
-            'attractionname' => 'required',
+                'attractionname' => 'required',
+                'title' => 'required',
             ]);
+
             $common_name =  $request->attractionname;
         }
 
@@ -211,7 +213,7 @@ class CommonHighlightController extends Controller
             return Response()->json(['errors' => $validator->errors()]);
         }
 
-        $highlights->common_id = $request->common_id ;
+        $highlights->common_id = $common_name ;
         $highlights->type = $request->type;
         $highlights->title = $request->title;
         $highlights->start_date = $request->start_date;
@@ -240,4 +242,172 @@ class CommonHighlightController extends Controller
         }
         return Response()->json($arr);
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+        $type = $request->type;;
+        if($type == 'attraction')
+        {
+            $highlights = Highlights::select('highlights.*', 'attraction_name as name')->leftjoin('attractions', 'attractions.id', '=', 'highlights.common_id')->where(function ($query) {
+                $query->where('highlights.type', 'attraction');
+                })->where(function ($query)   use ($search){
+                     $query->where('highlights.unique_id','=',"%{search}%")
+                    ->orWhere('highlights.title', 'LIKE',"%{$search}%")
+                    ->orWhere('attraction_name', 'LIKE',"%{$search}%");
+                })->paginate();
+        }
+        if($type == 'malls')
+        {
+            $highlights = Highlights::select('highlights.*', 'shopsandmalls.name as name')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'highlights.common_id')->where(function ($query) {
+                $query->where('highlights.type', 'malls');
+                })->where(function ($query)   use ($search){
+                    $query->where('highlights.unique_id','=',"%{search}%")
+                    ->orWhere('highlights.title', 'LIKE',"%{$search}%")
+                    ->orWhere('shopsandmalls.name', 'LIKE',"%{$search}%");
+                })->paginate();
+        }
+        if($type == 'event')
+        {
+            $highlights = Highlights::select('highlights.*', 'event_name as name')->leftjoin('events', 'events.id', '=', 'highlights.common_id')->where(function ($query) {
+                $query->where('highlights.type', 'event');
+                })->where(function ($query)   use ($search){
+                    $query->where('highlights.unique_id','=',"%{search}%")
+                    ->orWhere('highlights.title', 'LIKE',"%{$search}%")
+                    ->orWhere('event_name', 'LIKE',"%{$search}%");
+                })->paginate();
+        }        
+
+         if($highlights)
+         {
+            $data = $this->htmltoexportandsearch($highlights,$type,true);
+            $arr = array('status' => true,"data"=>$data);    
+         }
+         else{
+             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
+         }
+ 
+         return Response()->json($arr);
+    }
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $lastsegment = $request->type;
+        if ($lastsegment == 'event') 
+        {
+            $query = Highlights::select('highlights.*', 'event_name as name')->leftjoin('events', 'events.id', '=', 'highlights.common_id')->where('highlights.type', 'event');
+            if($request->search != "")
+            {
+                $query = $query->where('highlights.unique_id','=',"%{search}%")
+                    ->orWhere('highlights.title', 'LIKE',"%{$search}%")
+                    ->orWhere('event_name', 'LIKE',"%{$search}%");
+            }
+        } 
+        elseif ($lastsegment == 'malls') 
+        {
+            $query = Highlights::select('highlights.*', 'shopsandmalls.name as name')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'highlights.common_id')->where('highlights.type', 'malls');
+
+            if($request->search != "")
+            {
+                $query = $query->where('highlights.unique_id','=',"%{search}%")
+                    ->orWhere('highlights.title', 'LIKE',"%{$search}%")
+                    ->orWhere('shopsandmalls.name', 'LIKE',"%{$search}%");
+            }
+            
+        } 
+        elseif ($lastsegment == 'attraction') 
+        {
+           $query = Highlights::select('highlights.*', 'attraction_name as name')->leftjoin('attractions', 'attractions.id', '=', 'highlights.common_id')->where('highlights.type', 'attraction');
+            if($request->search != "")
+            {
+                $query = $query->where('highlights.unique_id','=',"%{search}%")
+                    ->orWhere('highlights.title', 'LIKE',"%{$search}%")
+                    ->orWhere('attraction_name', 'LIKE',"%{$search}%");
+            }
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata,$lastsegment);
+       
+    }
+
+    public function htmltoexportandsearch($finaldata,$type,$search=false)
+    {
+        if($type == 'malls')
+        {
+            $th = 'Shops and Malls Name';
+            $deleteroute = "mallhighlights.delete";
+        }
+        else if($type=='event')
+        {
+            $th = 'Event Name';
+            $deleteroute = "eventhighlights.delete";
+        }
+        elseif ($type == 'attraction') {
+             $th = 'Attraction Name';
+             $deleteroute = "attractionhighlights.delete";
+        }
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>'. $th.'</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+                if($search == true)
+                {
+                    if($value['image']!= null)
+                    {
+                        $path = asset('public/upload/highlights').'/'.$value['image'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['image'];
+                }
+                
+                $html .="<tr><td>".$value['unique_id']."</td><td>".$image ."</td><td>".$value['title']."</td><td>".$value['name']."</td>";
+                if($search == true)
+                {                    
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-id='".$value->id."' data-target='#editHighlights".$value->id."' ><i class='mdi mdi-table-edit'></i></a> 
+                          <a class='delete' onclick='return confirm('Are you sure you want to delete this Highlights?')' href='".route($deleteroute , $value->id)."'><i class='mdi mdi-delete'></i></a></td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="5">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
+    }
+
 }

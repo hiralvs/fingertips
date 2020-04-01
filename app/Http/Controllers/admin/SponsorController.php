@@ -73,7 +73,7 @@ class SponsorController extends Controller
 
             $path = public_path('upload/sponsors/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['image'] = $filename;
         }
         Sponsor::unguard();
@@ -117,7 +117,7 @@ class SponsorController extends Controller
 
             $path = public_path('upload/sponsors/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $sponsor->image = $filename;
         }
         Sponsor::unguard();

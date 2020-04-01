@@ -105,7 +105,7 @@ class UserController extends Controller
 
             $path = public_path('upload/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $input['profile_pic'] = $filename;
         }
         $check = User::create($input)->id;
@@ -162,7 +162,7 @@ class UserController extends Controller
 
             $path = public_path('upload/' . $filename);
 
-            Image::make($image->getRealPath())->resize(50, 50)->save($path);
+            Image::make($image->getRealPath())->save($path);
             $user->profile_pic = $filename;
         }
         $user->save();

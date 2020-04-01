@@ -268,7 +268,7 @@ $(document).ready(function(){
                     $('.statusMsg').html('<span style="color:green;">'+result.msg+'</p>');
                     setTimeout(function(){ 
                         $('#editBrand'+id).modal('hide');
-                        //window.location.reload();
+                        window.location.reload();
                     }, 3000);
                 }
                 else
