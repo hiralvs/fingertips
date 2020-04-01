@@ -15,7 +15,7 @@ use App\ShopsandMalls;
 use DB;
 use Validator;
 
-class CommonhighlightController extends Controller
+class CommonHighlightController extends Controller
 {
     
     /**

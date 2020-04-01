@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="col-sm-6">
-			<div class="d-flex align-items-center justify-content-md-end">
+			<div class="d-flex align-items-center justify-content-md-end">  
                 <div class="pr-1 mb-3 mb-xl-0">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -25,9 +25,12 @@
                 </div> 
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="clear16" class="btn btn-secondary" href="{{route('attractionhighlights')}}" tabindex="" >CLEAR</a>
+                </div> 
+                <div class="pr-1 mb-3 mb-xl-0">
+                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addAttractiondHighlights" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addAttractionHighlights" tabindex="">ADD NEW</a>
+                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
                     <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('attraction')"  tabindex="">EXPORT</a>
@@ -151,7 +154,6 @@
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- /edit.modal -->
-
                         @endforeach @else
                         <tr>
                         <td colspan="6">No Records Found</td>
@@ -232,7 +234,6 @@ $(document).ready(function(){
                 }
             });
         });
-
     $('#addAttractionHighlightsSubmit').click(function(e){
             var formData = new FormData($("#addHighlightsform")[0]);
             var message = CKEDITOR.instances['description'].getData();
@@ -275,7 +276,7 @@ $(document).ready(function(){
                         window.location.reload();
                     }, 3000);
 
-                    $("#addAttractionHighlightsform")[0].reset();
+                    $("#addHighlightsform")[0].reset();
                      window.location.reload();
                     
                     // $("#addMallBrandform")[0].reset();
@@ -349,7 +350,7 @@ function fnExcelReport(type)
 @endsection
 
 <!-- Modal HTML Markup -->
-<div id="addAttractionHighlights" class="modal fade">
+<div id="addAttractiondHighlights" class="modal fade">
     <div class="modal-dialog  modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">

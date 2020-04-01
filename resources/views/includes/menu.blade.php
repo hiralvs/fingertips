@@ -48,20 +48,21 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('orders')}}">Orders</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mapimage')}}">Map Image</a></li> --}}
                       </ul>
-                  </div>
-              </li>
-              <li class="nav-item">
-                  <a href="{{route('event')}}" class="nav-link">
-                    <i class="mdi mdi-finance menu-icon"></i>
-                    <span class="menu-title">Events</span>
-                    <i class="menu-arrow"></i>
-                  </a>
-                  <div class="submenu">
+                    </div>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{route('event')}}" class="nav-link">
+                      <i class="mdi mdi-finance menu-icon"></i>
+                      <span class="menu-title">Events</span>
+                      <i class="menu-arrow"></i>
+                    </a>
+                    <div class="submenu">
                       <ul class="submenu-item">
                         <li class="nav-item"><a class="nav-link" href="{{route('eventbrands')}}">Brands</a></li>   
                         <li class="nav-item"><a class="nav-link" href="{{route('eventslider')}}">Slider Image</a></li>   
                         <li class="nav-item"><a class="nav-link" href="{{route('eventphotos')}}">Photos</a></li>                 
                         <li class="nav-item"><a class="nav-link" href="{{route('eventhighlights')}}">Highlights</a></li>                 
+                        <li class="nav-item"><a class="nav-link" href="{{route('eventmapimage')}}">Map Image</a></li>
                       </ul>
                   </div>
               </li>
@@ -77,6 +78,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionslider')}}">Slider Image</a></li>   
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionphotos')}}">Photos</a></li>            
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionhighlights')}}">Highlights</a></li>            
+                        <li class="nav-item"><a class="nav-link" href="{{route('attractionmapimage')}}">Map Image</a></li>            
                       </ul>
                   </div>
               </li>
