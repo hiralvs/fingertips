@@ -338,7 +338,7 @@ $(document).ready(function(){
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.name+"</td>" +
                     "<td>"+data.category_id+"</td>"+
-                    "<td>"+data.shopmall_id+"</td>"+
+                    "<td>"+data.mallname+"</td>"+
                     "<td>"+data.floorname+"</td>" +
                     "<td>"+data.unit_number+"</td>" +
                     "<td>"+data.contact+"</td>" +
