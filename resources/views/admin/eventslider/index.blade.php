@@ -31,7 +31,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addEventSlider" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('event')" tabindex="">EXPORT</a>
                 </div>             
             </div>
         </div>
@@ -309,27 +309,32 @@ $(document).ready(function(){
             });
     }); 
 });
-function fnExcelReport()
+function fnExcelReport(type)
 {
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#brandstableData')); //Serialised table
-    var tF = 'report.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
     }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
-    }
-
-    $('thead tr').last().append('<th>Action</th>');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('eventsliderexport')}}",
+        method: 'get',
+        data: {'search':search,'type':type},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "eventslider",
+                filename: "eventslider" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
 }
 </script>
 @endsection

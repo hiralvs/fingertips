@@ -231,7 +231,7 @@ class CommonSliderController extends Controller
         $type = $request->input('type');
         if($type == 'attraction')
         {
-            $brandconnection = Slider::select('sliders.*', 'attraction_name')->leftjoin('attractions', 'attractions.id', '=', 'sliders.common_id')->where(function ($query) {
+            $sliderconnection = Slider::select('sliders.*', 'attraction_name as name')->leftjoin('attractions', 'attractions.id', '=', 'sliders.common_id')->where(function ($query) {
                 $query->where('sliders.type', 'attraction');
                 })->where(function ($query)   use ($search){
                     $query->orWhere('sliders.unique_id','=',"%{search}%")
@@ -240,7 +240,7 @@ class CommonSliderController extends Controller
         }
         if($type == 'malls')
         {
-            $brandconnection = Slider::select('sliders.*', 'shopsandmalls.name as mallname')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'sliders.common_id')->where(function ($query) {
+            $sliderconnection = Slider::select('sliders.*', 'shopsandmalls.name as name')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'sliders.common_id')->where(function ($query) {
                 $query->where('sliders.type', 'malls');
                 })->where(function ($query)   use ($search){
                     $query->where('sliders.unique_id','=',"%{search}%")
@@ -249,7 +249,7 @@ class CommonSliderController extends Controller
         }
         if($type == 'event')
         {
-            $brandconnection = Slider::select('sliders.*', 'event_name')->leftjoin('events', 'events.id', '=', 'sliders.common_id')->where(function ($query) {
+            $sliderconnection = Slider::select('sliders.*', 'event_name as name')->leftjoin('events', 'events.id', '=', 'sliders.common_id')->where(function ($query) {
                 $query->where('sliders.type', 'event');
                 })->where(function ($query)   use ($search){
                     $query->where('sliders.unique_id','=',"%{search}%")
@@ -257,9 +257,10 @@ class CommonSliderController extends Controller
                 })->paginate();
         }        
 
-         if($brandconnection)
+         if($sliderconnection)
          {
-             $arr = array('status' => true,"data"=>$brandconnection[0]);    
+             $data = $this->htmltoexportandsearch($sliderconnection,$type,true);
+             $arr = array('status' => true,"data"=>$data);    
          }
          else{
              $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
@@ -267,4 +268,134 @@ class CommonSliderController extends Controller
  
          return Response()->json($arr);
  	}
+
+
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $lastsegment = $request->type;
+        if ($lastsegment == 'event') 
+        {
+            $query =Slider::select('sliders.*', 'event_name as name')->leftjoin('events', 'events.id', '=', 'sliders.common_id')->where(function ($query) {
+                $query->where('sliders.type', 'event');
+                });
+            if($request->search != "")
+            {
+                $query = $query->where(function ($query)   use ($search){
+                    $query->where('sliders.unique_id','=',"%{search}%")
+                    ->orWhere('event_name', 'LIKE',"%{$search}%"); 
+                });
+            }
+        } 
+        elseif ($lastsegment == 'malls') 
+        {
+            $query = Slider::select('sliders.*', 'shopsandmalls.name as name')->leftjoin('shopsandmalls', 'shopsandmalls.id', '=', 'sliders.common_id')->where(function ($query) {  $query->where('sliders.type', 'malls');  });
+
+            if($request->search != "")
+            {
+                $query = $query->where(function ($query)   use ($search){
+                    $query->where('sliders.unique_id','=',"%{search}%")
+                    ->orWhere('shopsandmalls.name', 'LIKE',"%{$search}%");
+                     });
+            }
+            
+        } 
+        elseif ($lastsegment == 'attraction') 
+        {
+           $query = Slider::select('sliders.*', 'attraction_name as name')->leftjoin('attractions', 'attractions.id', '=', 'sliders.common_id')->where(function ($query) {
+                $query->where('sliders.type', 'attraction');
+                });
+            if($request->search != "")
+            {
+                $query = $query->where(function ($query)   use ($search){
+                    $query->orWhere('sliders.unique_id','=',"%{search}%")
+                    ->orWhere('attraction_name', 'LIKE',"%{$search}%");
+                     }); 
+            }
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata,$lastsegment);
+       
+    }
+
+    public function htmltoexportandsearch($finaldata,$type,$search=false)
+    {
+        if($type == 'malls')
+        {
+            $th = 'Shops and Malls Name';
+            $deleteroute = "mallslider.delete";
+        }
+        else if($type=='event')
+        {
+            $th = 'Event Name';
+            $deleteroute = "eventslider.delete";
+        }
+        elseif ($type == 'attraction') {
+             $th = 'Attraction Name';
+             $deleteroute = "attractionslider.delete";
+        }
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Slider Image</th>
+                            <th>Slider Image id</th>
+                            <th>'. $th.'</th>
+                            <th>Created On</th>
+                            <th>Created By</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+                if($search == true)
+                {
+                    if($value['slider_image_name']!= null)
+                    {
+                        $path = asset('public/upload/sliders').'/'.$value['slider_image_name'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['slider_image_name'];
+                }
+                
+                $html .="<tr><td>".$image."</td><td>".$value['unique_id']."</td><td>".$value['name']."</td><td>".date("d F Y",strtotime($value['created_at']))."</td><td>".$value['created_by'] ."</td>";
+                if($search == true)
+                { 
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-id='".$value->id."' data-target='#editMallSlider".$value->id."' ><i class='mdi mdi-table-edit'></i></a> 
+                          <a class='delete' onclick='return confirm('Are you sure you want to delete this Sldier?')' href='".route($deleteroute , $value->id)."'><i class='mdi mdi-delete'></i></a></td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="6">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
+    }
 }

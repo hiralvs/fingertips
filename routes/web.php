@@ -198,18 +198,24 @@ Route::post('/addMallSlider', 'admin\CommonSliderController@addCommonSlider')->n
 Route::post('mallsliderupdate', array('as' => 'mallslider.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@update'));
 Route::get('mallsliderdelete/{id}', array('as' => 'mallslider.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@delete'));
 Route::post('mallslidersearch', array('as' => 'mallslider.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@search'));
+Route::get('/mallsliderexport', 'admin\CommonSliderController@export')->name('mallsliderexport');
+
 
 Route::get('/eventslider', 'admin\CommonSliderController@index')->name('eventslider');
 Route::post('/addEventSlider', 'admin\CommonSliderController@addCommonSlider')->name('addEventSlider');
 Route::post('eventsliderupdate', array('as' => 'eventslider.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@update'));
 Route::get('eventsliderdelete/{id}', array('as' => 'eventslider.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@delete'));
 Route::post('eventslidersearch', array('as' => 'eventslider.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@search'));
+Route::get('/eventsliderexport', 'admin\CommonSliderController@export')->name('eventsliderexport');
+
 
 Route::get('/attractionslider', 'admin\CommonSliderController@index')->name('attractionslider');
 Route::post('/addAttractionSlider', 'admin\CommonSliderController@addCommonSlider')->name('addAttractionSlider');
 Route::post('attractionsliderupdate', array('as' => 'attractionslider.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@update'));
 Route::get('attractionsliderdelete/{id}', array('as' => 'attractionslider.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@delete'));
 Route::post('attractionslidersearch', array('as' => 'attractionslider.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonSliderController@search'));
+Route::get('/attractionsliderexport', 'admin\CommonSliderController@export')->name('attractionsliderexport');
+
 
 Route::get('/trending', 'admin\TrendingController@index')->name('trending');
 Route::post('/addTrending', 'admin\TrendingController@addTrending')->name('addTrending');

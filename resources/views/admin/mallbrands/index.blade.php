@@ -301,7 +301,7 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#brandstableData tr.norecord').remove();
                     }
-                     $("#brandstableData tbody").html(data);
+                    $("#brandstableData tbody").html(data);
                     $("#paging").hide();
                 else
                 {

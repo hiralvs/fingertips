@@ -31,7 +31,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addAttractionSlider" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('attraction')" tabindex="">EXPORT</a>
                 </div>             
             </div>
         </div>
@@ -276,29 +276,12 @@ $(document).ready(function(){
                 if(result.status == true)
                 {
                     var data = result.data;
-                    
-                    
+                                        
                     var findnorecord = $('#slidertableData tr.norecord').length;
                     if(findnorecord > 0){
                         $('#slidertableData tr.norecord').remove();
                     }
-                    var sliderpic = '';
-                    var imageurl = "{{asset('public/upload/sliders/')}}";
-                    if(data.slider_image_name != null)
-                    {
-                        sliderpic = "<img src="+imageurl+"/"+data.slider_image_name+">" ;
-                    }
-                    var deleteurl = '{{ route("attractionslider.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+sliderpic+"</td>" +
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.attraction_name+"</td>" +
-                    "<td>"+date(data.created_at)+"</td>" +
-                    "<td>"+data.created_by+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editAttractionSlider'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Slider?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#slidertableData tbody").html(tr_str);
+                    $("#slidertableData tbody").html(data);
                     $("#paging").hide();
                 }
                 else
@@ -309,27 +292,32 @@ $(document).ready(function(){
             });
     }); 
 });
-function fnExcelReport()
+function fnExcelReport(type)
 {
-    $('thead tr th').last().remove();
-    var tT = new XMLSerializer().serializeToString(document.querySelector('#brandstableData')); //Serialised table
-    var tF = 'report.xls'; //Filename
-    var tB = new Blob([tT]); //Blub
-    if(window.navigator.msSaveOrOpenBlob){
-        //Store Blob in IE
-        window.navigator.msSaveOrOpenBlob(tB, tF)
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
     }
-    else{
-        //Store Blob in others
-        var tA = document.body.appendChild(document.createElement('a'));
-        tA.href = URL.createObjectURL(tB);
-        tA.download = tF;
-        tA.style.display = 'none';
-        tA.click();
-        tA.parentNode.removeChild(tA)
-    }
-
-    $('thead tr').last().append('<th>Action</th>');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('attractionsliderexport')}}",
+        method: 'get',
+        data: {'search':search,'type':type},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "attractionslider",
+                filename: "attractionslider" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
 }
 </script>
 @endsection
