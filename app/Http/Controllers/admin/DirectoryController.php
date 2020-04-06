@@ -9,6 +9,7 @@ use Intervention\Image\Facades\Image;
 use App\Directory;
 use App\Category;
 use App\Settings;
+use App\ShopsandMalls;
 use DB;
 use Validator;
 
@@ -51,16 +52,21 @@ class DirectoryController extends Controller
         } else {
             $direction='asc';
         }
-        $return_data['data'] = Directory::select('directory.*', 'category.id as category_id', 'settings.value as floorname', 'category_name')->leftjoin('category', 'directory.category_id', '=', 'category.id')
 
+      $return_data['data'] = Directory::select('directory.*', 'category.id as category_id', 'shopsandmalls.name  as mallname', 'settings.value as floorname', 'category_name')
+        ->leftjoin('category', 'directory.category_id', '=', 'category.id')
+        ->leftjoin('shopsandmalls', 'directory.shopmall_id', '=', 'shopsandmalls.id')
         ->leftjoin('settings', 'settings.id', '=', 'directory.floor')
         ->orderBy($sort, $direction)->sortable()->paginate($perpage);
         $return_data['category_name'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
         $return_data['floor'] = Settings::where('type', 'floor')->orderBy('id', 'asc')->get();
-
-        $diretory = Directory::select('directory.*', 'category.category_name as category_id', 'settings.value as floorname', 'category_name')
-        ->leftjoin('category', 'directory.category_id', '=', 'category.id')
-        ->leftjoin('settings', 'settings.floor', '=', 'directory.floor');
+        
+        $return_data['shopmall_name'] = ShopsandMalls::select('id', 'name')->orderBy('name', 'asc')->get();        
+        
+        $diretory = Directory::select('directory.*', 'category.category_name as category_id', 'shopsandmalls.name as shopmall_id', 'settings.value as floorname', 'category_name')
+            ->leftjoin('category', 'directory.category_id', '=', 'category.category_name')
+            ->leftjoin('shopsandmalls', 'directory.shopmall_id', '=', 'shopsandmalls.name')
+            ->leftjoin('settings', 'settings.id', '=', 'directory.floor');
 
         // echo "<pre>";
         // print_r( $return_data['data']);
@@ -80,26 +86,18 @@ class DirectoryController extends Controller
             return Response()->json(['errors' => $validator->errors()]);
         }
 
-
-
         $user = Auth::user();
-        // $username = "";
-        // if (!empty($user)) {
-        //     $username = $user->name;
-        // }
         $request->request->remove('_token');
         $request->request->remove('desc');
         $input = $request->all();
         $input['unique_id'] =  get_unique_id("directory");
-        // $input['category_id'] =  implode(",", $input['category_id']);
-        // $input['created_by'] =  $username ;
+
         Directory::unguard();
         $check = Directory::create($input)->id;
 
         $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         if ($check) {
             $data = Directory::find($check);
-            // $data['propertyadmin'] = User::select('name as propertyadmin')->find($data['events']->property_admin_user_id);
         
             $arr = array('msg' => 'Directory Added Successfully', 'status' => true,'data'=> $data);
         }
@@ -151,15 +149,22 @@ class DirectoryController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
-     
-            $diretory = Directory::select('directory.*', 'category.category_name as category_id', 'settings.value as floorname', 'category_name')
-            ->leftjoin('category', 'directory.category_id', '=', 'category.id')
+             
+        $diretory = Directory::select('directory.*', 'category.category_name as category_id', 'shopsandmalls.name as shopmall_id', 'settings.value as floorname', 'category_name')
+            ->leftjoin('category', 'directory.category_id', '=', 'category.category_name')
+            ->leftjoin('shopsandmalls', 'directory.shopmall_id', '=', 'shopsandmalls.name')
             ->leftjoin('settings', 'settings.id', '=', 'directory.floor')
-            ->where('name','LIKE',"%{$search}%")
-            ->orWhere('unique_id', 'LIKE',"%{$search}%")
-            ->orWhere('openinghrs', 'LIKE',"%{$search}%")
-            ->orWhere('description', 'LIKE',"%{$search}%")
-            ->paginate(); 
+            ->where('directory.name', 'LIKE', "%{$search}%")
+            ->orWhere('directory.unique_id', 'LIKE', "%{$search}%")
+            ->orWhere('category_name', 'LIKE', "%{$search}%")
+            ->orWhere('shopsandmalls.name', 'LIKE', "%{$search}%")
+            ->orWhere('directory.openinghrs', 'LIKE', "%{$search}%")
+            ->orWhere('directory.description', 'LIKE', "%{$search}%")
+            ->paginate();
+
+
+
+
         if ($diretory) {
             $arr = array('status' => true,"data"=>$diretory[0]);
         } else {

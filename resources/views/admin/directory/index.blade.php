@@ -55,6 +55,7 @@
                             <th>@sortablelink('Id')</th>
                             <th>@sortablelink('Name')</th>
                             <th>@sortablelink('Category')</th>
+                            <th>@sortablelink('ShopMall Name')</th>
                             <th>@sortablelink('Floor Name')</th>
                             <th>@sortablelink('Unit Number')</th>
                             <th>@sortablelink('Contact Number')</th>
@@ -70,6 +71,7 @@
                             <td>{{$value->unique_id}}</td>
                             <td>{{$value->name}}</td>
                             <td>{{$value->category_name }}</td>
+                            <td>{{$value->mallname }}</td>
                             <td>{{$value->floorname}}</td>
                             <td>{{$value->unit_number}}</td>
                             <td>{{$value->contact}}</td>
@@ -83,7 +85,7 @@
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit Trending</h1>
+                                        <h1 class="modal-title">Edit Directory</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
@@ -107,20 +109,29 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-md-4 ">
-                                                    <label for="exampleInputName"> Floor </label>
-                                                    <select name="floor" id="floor" class="form-control floor">
+                                                <div class="form-group col-md-4">
+                                                    <label for="exampleInputStatus">ShopMall Name</label>
+                                                    <select name="shopmall_id" id="shopmall_name" class="form-control">
                                                         <option value=""> -- Select One --</option>
-                                                        @foreach ($floor as $values)
-                                                            <option value="{{$values->id}}" {{$value->floor == $values->id ? 'selected' : ''}}>{{ $values->value}}</option>
-                                                        @endforeach
+                                                        @foreach ($shopmall_name as $category)
+                                                            <option value="{{ $category->id }}"  {{ $value->shopmall_id ==$category->id ? 'selected' : ''}} >{{ $category->name}}</option>
+                                                        @endforeach 
                                                     </select>
-                                                    <span class="text-danger">
-                                                        <strong class="floor-error"></strong>
-                                                    </span>
                                                 </div>
                                             </div>
                                         <div class="row">
+                                            <div class="form-group col-md-4 ">
+                                                <label for="exampleInputName"> Floor </label>
+                                                <select name="floor" id="floor" class="form-control floor">
+                                                    <option value=""> -- Select One --</option>
+                                                    @foreach ($floor as $values)
+                                                        <option value="{{$values->id}}" {{$value->floor == $values->id ? 'selected' : ''}}>{{ $values->value}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span class="text-danger">
+                                                    <strong class="floor-error"></strong>
+                                                </span>
+                                            </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputName">Unit Number</label>
                                                 <input type="text" required class="form-control unit_number"  id="unit_number" value="{{$value->unit_number}}" name="unit_number">
@@ -132,13 +143,13 @@
                                             <div class="form-group col-md-4">
                                                 <label for="exampleSelectGender">Contact Number</label>
                                                 <input type="text" class="form-control contact" id="contact" value="{{$value->contact}}" name="contact" placeholder="Contact">
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="exampleInputPassword">Opening Hours</label>
-                                                <input type="text" class="form-control openinghrs" value="{{$value->openinghrs}}"  id="openinghrs" name="openinghrs" placeholder="Opening Houres">
                                             </div>                                            
                                         </div>
                                         <div class="row">
+                                            <div class="form-group col-md-4">
+                                                <label for="exampleInputPassword">Opening Hours</label>
+                                                <input type="text" class="form-control openinghrs" value="{{$value->openinghrs}}"  id="openinghrs" name="openinghrs" placeholder="Opening Houres">
+                                            </div>
                                             <div class="form-group col-md-4">
                                                 <label for="exampleInputPassword">Closing Hours</label>
                                                 <input type="text" class="form-control closinghrs" value="{{$value->closinghrs}}"  id="closinghrs" name="closinghrs" placeholder="Closing Houres">
@@ -327,6 +338,7 @@ $(document).ready(function(){
                     "<td>"+data.unique_id+"</td>" +
                     "<td>"+data.name+"</td>" +
                     "<td>"+data.category_id+"</td>"+
+                    "<td>"+data.mallname+"</td>"+
                     "<td>"+data.floorname+"</td>" +
                     "<td>"+data.unit_number+"</td>" +
                     "<td>"+data.contact+"</td>" +
@@ -377,19 +389,28 @@ $(document).ready(function(){
                             </select>
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="exampleInputName">Floor</label>
-                            <select name="floor" id="floor" class="form-control">
+                            <label for="exampleInputStatus">ShopMall Name</label>
+                            <select name="shopmall_id" id="shopmall_name" class="form-control">
                                 <option value=""> -- Select One --</option>
-                                @foreach ($floor as $floor)
-                                    <option value="{{ $floor->value }}"  {{ (isset($floor->id) || old('id'))? "":"selected" }}>{{ $floor->value }}</option>
+                                @foreach ($shopmall_name as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name}}</option>
                                 @endforeach 
                             </select>
-                            <span class="text-danger">
-                                <strong id="floor-error"></strong>
-                            </span>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="form-group col-md-4 ">
+                            <label for="exampleInputName"> Floor </label>
+                            <select name="floor" id="floor" class="form-control floor">
+                                <option value=""> -- Select One --</option>
+                                @foreach ($floor as $values)
+                                    <option value="{{$values->id}}" {{$value->floor == $values->id }}>{{ $values->value}}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger">
+                                <strong class="floor-error"></strong>
+                            </span>
+                        </div>
                         <div class="form-group col-md-4">
                             <label for="exampleInputName">Unit Number</label>
                             <input type="text" required class="form-control"  id="unit_number" name="unit_number" placeholder="Unit Number">
@@ -402,13 +423,13 @@ $(document).ready(function(){
                             <input type="text" class="form-control" id="contact" name="contact" placeholder="Contact">
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-md-4">
                             <label for="exampleInputPassword">Opening Hours</label>
                             <input type="text" class="form-control timepicker" id="openinghrs" name="openinghrs" placeholder="Opening Houres">
                             <span class="glyphicon glyphicon-user form-control-feedback"></span>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="form-group col-md-4">
                             <label for="exampleSelectGender">Closing Hours</label>
                             <input type="text" class="form-control timepicker" id="closinghrs" name="closinghrs" placeholder="Closing Hours">
