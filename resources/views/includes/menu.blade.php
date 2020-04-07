@@ -42,8 +42,9 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('mallslider')}}">Slider Image</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mallphotos')}}">Photos</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mallmapimage')}}">Map Image</a></li>
-                        {{-- <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li> --}}
                         <li class="nav-item"><a class="nav-link" href="{{route('mallhighlights')}}">Highlights</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('mallcategory')}}">Category</a></li>
+                        {{-- <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li> --}}
                         {{-- <li class="nav-item"><a class="nav-link" href="{{route('checkin')}}">Check In</a></li>
                         
                         <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>
@@ -65,6 +66,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('eventphotos')}}">Photos</a></li>                 
                         <li class="nav-item"><a class="nav-link" href="{{route('eventhighlights')}}">Highlights</a></li>                 
                         <li class="nav-item"><a class="nav-link" href="{{route('eventmapimage')}}">Map Image</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('eventcategory')}}">Category</a></li>
                       </ul>
                   </div>
               </li>
@@ -81,6 +83,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionphotos')}}">Photos</a></li>            
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionhighlights')}}">Highlights</a></li>            
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionmapimage')}}">Map Image</a></li>            
+                        <li class="nav-item"><a class="nav-link" href="{{route('attractioncategory')}}">Category</a></li>            
                       </ul>
                   </div>
               </li>
@@ -121,7 +124,7 @@
                   <div class="submenu">
                       <ul class="submenu-item">
                           <li class="nav-item"><a class="nav-link" href="{{route('banner')}}">Banner</a></li>
-                          <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li>
+                          {{-- <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li> --}}
                           <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Product Category</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('tax')}}">Tax</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('help')}}">Help</a></li>

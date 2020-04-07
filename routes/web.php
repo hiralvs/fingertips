@@ -89,11 +89,11 @@ Route::get('productvariant/delete/{id}', array('as' => 'productvariant.delete', 
 Route::get('/productvariantexport', 'admin\ProductController@variantexport')->name('productvariantexport');
 
 //category route
-Route::get('/emacategory', 'admin\CategoryController@index')->name('emacategory');
-Route::post('/addCategory', 'admin\CategoryController@addCategory')->name('addCategory');
-Route::get('categorydelete/{id}', array('as' => 'category.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
-Route::post('categoryupdate', array('as' => 'category.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
-Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
+// Route::get('/emacategory', 'admin\CategoryController@index')->name('emacategory');
+// Route::post('/addCategory', 'admin\CategoryController@addCategory')->name('addCategory');
+// Route::get('categorydelete/{id}', array('as' => 'category.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
+// Route::post('categoryupdate', array('as' => 'category.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
+
 
 // Area route
 Route::get('/area', 'admin\AreaController@index')->name('area');
@@ -280,6 +280,25 @@ Route::get('mallhighlightsdelete/{id}', array('as' => 'mallhighlights.delete', '
 Route::post('mallhighlightsupdate', array('as' => 'mallhighlights.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@update'));
 Route::post('mallhighlightssearch', array('as' => 'mallhighlights.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@search'));
 Route::get('mallhighlightsexport', array('as' => 'mallhighlights.export', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonhighlightController@export'));
+
+Route::get('/mallcategory', 'admin\CategoryController@index')->name('mallcategory');
+Route::post('/addMallCategory', 'admin\CategoryController@addCategory')->name('addCategory');
+Route::get('mallcategorydelete/{id}', array('as' => 'mallcategory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
+Route::post('mallcategoryupdate', array('as' => 'mallcategory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
+
+
+Route::get('/eventcategory', 'admin\CategoryController@index')->name('eventcategory');
+Route::post('/addEventCategory', 'admin\CategoryController@addCategory')->name('addCategory');
+Route::get('eventcategorydelete/{id}', array('as' => 'eventcategory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
+Route::post('eventcategoryupdate', array('as' => 'eventcategory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
+
+
+Route::get('/attractioncategory', 'admin\CategoryController@index')->name('attractioncategory');
+Route::post('/addAttractionCategory', 'admin\CategoryController@addCategory')->name('addCategory');
+Route::get('attractioncategorydelete/{id}', array('as' => 'attractioncategory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
+Route::post('attractioncategoryupdate', array('as' => 'attractioncategory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
+
+Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
 
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
 // Route::get('/orders', 'admin\LoginPrivacyController@index')->name('orders');
