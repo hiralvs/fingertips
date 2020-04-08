@@ -58,7 +58,7 @@
                             @endif
                             </td>
                           <td><a class="edit open_modal" data-toggle="modal" data-target="#editCategory{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
-                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Category?')" href="{{route('category.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
+                          <a class="delete" onclick="return confirm('Are you sure you want to delete this Mall Category?')" href="{{route('mallcategory.delete', $value->id)}}"><i class="mdi mdi-delete"></i></a> </td>
                         </tr>
                         <!-- Edit Modal HTML Markup -->
                         <div id="editCategory{{$value->id}}" class="modal fade">
@@ -76,7 +76,7 @@
                                                 <label for="exampleInputName">Category Name</label>
                                                 <input type="text" class="form-control category_name" required id="category_name" value="{{$value->category_name}}" name="category_name" placeholder="Name">
                                                 <input type="hidden" name="id" value="{{$value->id}}">
-                                                <input type="hidden" name="type" value="ema">
+                                                <input type="hidden" value="malls" name="type">
                                             <span class="text-danger">
                                                 <strong class="category_name-error"></strong>
                                             </span>
@@ -139,7 +139,7 @@ $(document).ready(function(){
                 }
             });
             $.ajax({
-                url: "{{ route('category.update') }}",
+                url: "{{ route('mallcategory.update') }}",
                 method: 'post',
                 cache: false,
                 contentType: false,
@@ -192,9 +192,6 @@ $(document).ready(function(){
                     if(result.errors.category_name){
                         $( '#category_name-error' ).html( result.errors.category_name[0] );
                     }
-                    if(result.errors.cat_image){
-                        $( '#cat_image-error' ).html( result.errors.cat_image[0] );
-                    }
                 }
                 if(result.status == true)
                 {
@@ -203,20 +200,25 @@ $(document).ready(function(){
                     setTimeout(function(){ 
                         $('.statusMsg').html('');
                         $('#addCategory').modal('hide');
+                         window.location.reload();
                     }, 3000);
-                    
+
+                    $("#addCategoryform")[0].reset();
+                     window.location.reload();
                     var findnorecord = $('#categorytableData tr.norecord').length;
                     if(findnorecord > 0)
                     {
                         $('#categorytableData tr.norecord').remove();
                     }
-                    
+                    $("#addCategoryform")[0].reset()
+
+
                     var catgorypic = '';
                     if(data.cat_image != null)
                     {
                         catgorypic = data.cat_image;
                     }
-                    var deleteurl = '{{ route("category.delete", ":id") }}';
+                    var deleteurl = '{{ route("mallcategory.delete", ":id") }}';
                     var imageurl = "{{asset('public/upload/category/')}}";
                     deleteurl = deleteurl.replace(':id', data.id);
                     var tr_str = "<tr>"+
@@ -255,7 +257,7 @@ $(document).ready(function(){
                     <div class="form-group col-md-6">
                         <label for="exampleInputName">Category Name</label>
                         <input type="text" required class="form-control" id="category_name" name="category_name" placeholder="Name">
-                        <input type="hidden" class="form-control" id="type" name="type" value='ema'>
+                        <input type="hidden" value="malls" name="type">
                         <span class="text-danger">
                             <strong id="category_name-error"></strong>
                         </span>
