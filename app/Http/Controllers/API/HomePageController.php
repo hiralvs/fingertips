@@ -16,6 +16,9 @@ use App\Brand;
 use App\Product;
 use App\Photos;
 use App\Map_images;
+use App\Area;
+use App\Category;
+
 //use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use DB;
@@ -156,7 +159,7 @@ class HomePageController extends Controller
     }
 
     /*Function Used to get featrued attraction*/
-    public function highlights(Request $request)
+    public function highlightsnflashsale(Request $request)
     {
         $url =env('APP_URL');
         $id = $request->route('id');
@@ -165,6 +168,8 @@ class HomePageController extends Controller
         if($type == 'event')
         {
             $highlights = Highlights::select('highlights.*','events.description','events.location','events.latitude','events.longitude',DB::raw("CONCAT('','$url/public/upload/highlights/',highlights.image) as image"))->leftjoin('events','events.id','=','highlights.common_id')->where(['common_id'=>$id,'type'=>$type])->get();
+
+            $flashsale = FlashSale::select('flash_sales.name','flash_sales.product_id','flash_sales.discount_percentage','flash_sales.start_date','flash_sales.end_date','flash_sales.start_time','flash_sales.end_time','flash_sales.total_revenue',DB::raw("CONCAT('','$url/public/upload/flashsale/',image) as image"))->leftjoin('products','products.id','=','flash_sales.product_id')->leftjoin('brands_connection','brands_connection.brand_id','=','products.brand_id')->where(['brands_connection.common_id'=>$id,'brands_connection.type'=>$type])->groupBy('flash_sales.id')->get();
         }
         if($type == 'malls')
         {
@@ -177,8 +182,9 @@ class HomePageController extends Controller
         
         if($highlights->count() > 0)
         {
-            unset($highlights[0]->deleted_at,$highlights[0]->updated_at);
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$highlights];
+            $success['highlights'] = $highlights;
+            $success['flashsale'] = $flashsale;
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
         }
         else
         {   
@@ -209,8 +215,11 @@ class HomePageController extends Controller
     public function homepagedetails(Request $request)
     {
         $url =env('APP_URL');
+        $filter_data = $request->getContent();
+        $filter = json_decode($filter_data,true);
+       
         $success = array();
-        $type = $request->route('type'); // type can be event, malls and attraction
+        $type = $request->type; // type can be event, malls and attraction
         $banners = Banner::select('banners.id','banners.type',DB::raw('IFNULL(banners.url , "" ) as url'),DB::raw('IFNULL(banners.ema , "" ) as ema'),DB::raw('IFNULL(banners.property_user_id , "" ) as property_user_id'),DB::raw("CONCAT('','$url/public/upload/banners/',bannerimage) as bannerimage"))->where('location',$type)->get();
         $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(["brands_connection.type"=>$type])->groupBy('products.id')->get();
         if($banners->count() > 0)
@@ -227,20 +236,69 @@ class HomePageController extends Controller
         }
         if($type == 'event')
         {
-            $featuredevents = Events::select('id','unique_id','event_image','event_name','start_time','end_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"))->where('featured_event','yes')->limit(20)->get();
-            $success['featuredevents'] =$featuredevents;
+            $startdate = date("Y-m-d");
+            // if($filter['type'] == 'today')
+            // {
+            //     $dateby = date("Y-m-d");   
+            // }
+            // else if($filter['type'] =='week')
+            // {
+            //     $dateby = date("Y-m-d", strtotime("+1 week"));
+            // }
+            // else if($filter['type'] == 'month')
+            // {
+            //     $dateby = date("Y-m-d", strtotime('+1 month'));
+            // }
+
+            $featuredevents = Events::select('events.id','events.unique_id','event_image','event_name','start_time','end_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'events.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,events.category_id)"),">",DB::raw("'0'"))->where('featured_event','yes')->groupBy("events.id")->limit(20);
+        
+            if(isset($filter['area']))
+            {
+                $featuredevents = $featuredevents->whereIn('area.area_name',$filter['area']);
+            }
+            if(isset($filter['categories']))
+            {
+                $featuredevents = $featuredevents->whereIn('category_name',$filter['categories']);
+            }
+            if(isset($dateby))
+            {
+                $featuredevents = $featuredevents->Where('event_start_date', '>=',$dateby);
+            }
+
+            $success['featuredevents'] =$featuredevents->get();
         }
         if($type == 'malls')
         {
-            $featuredShops = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','shop')->limit(20)->get();
-            $featuredmalls = ShopsandMalls::select('id','unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('featured_mall','yes')->where('type','mall')->limit(20)->get();
-            $success['featuredShops'] = $featuredShops;
-            $success['featuredmalls'] = $featuredmalls;
+            $featuredShops = ShopsandMalls::select('shopsandmalls.id','shopsandmalls.unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'shopsandmalls.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,shopsandmalls.category_id)"),">",DB::raw("'0'"))->where('featured_mall','yes')->where('shopsandmalls.type','shop')->limit(20)->groupBy("shopsandmalls.id");
+
+            $featuredmalls = ShopsandMalls::select('shopsandmalls.id','shopsandmalls.unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'shopsandmalls.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,shopsandmalls.category_id)"),">",DB::raw("'0'"))->where('featured_mall','yes')->where('shopsandmalls.type','mall')->limit(20)->groupBy("shopsandmalls.id");
+
+            if(isset($filter['area']))
+            {
+                $featuredShops = $featuredShops->whereIn('area.area_name',$filter['area']);
+            }
+            if(isset($filter['categories']))
+            {
+                $featuredmalls = $featuredmalls->whereIn('category_name',$filter['categories']);
+            }
+
+            $success['featuredShops'] = $featuredShops->get();
+            $success['featuredmalls'] = $featuredmalls->get();
         }
         if($type == 'attraction')
         {
-            $featuredAttraction = Attractions::select('id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"))->where('featured_mall','yes')->limit(20)->get();
-            $success['featuredAttraction'] =  $featuredAttraction ;
+           $featuredAttraction = Attractions::select('attractions.id','attractions.unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'attractions.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,attractions.category_id)"),">",DB::raw("'0'"))->groupBy("attractions.id")->where('featured_mall','yes')->groupBy("attractions.id")->limit(20);
+
+            if(isset($filter['area']))
+            {
+                $featuredAttraction = $featuredAttraction->whereIn('area.area_name',$filter['area']);
+            }
+            if(isset($filter['categories']))
+            {
+                $featuredAttraction = $featuredAttraction->whereIn('category_name',$filter['categories']);
+            }
+
+            $success['featuredAttraction'] =  $featuredAttraction->get();
         }
         // print_r( $success);
         // echo $success->count();
@@ -262,16 +320,16 @@ class HomePageController extends Controller
         $url =env('APP_URL');
         $id = $request->route('id'); // type can be event, malls and attraction
         $events = Events::select('events.*',DB::raw("CONCAT('','$url/public/upload/events/',event_image) as event_image"))->where('id',$id)->get();
-        $slider = Slider::select('sliders.*',DB::raw("CONCAT('','$url/public/upload/slider/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
+        $slider = Slider::select('sliders.id','sliders.unique_id','sliders.type','sliders.title','sliders.description','sliders.created_at',DB::raw("CONCAT('','$url/public/upload/sliders/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
         $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image',DB::raw("CONCAT('','$url/public/upload/brands/',brands.brand_image) as brand_image"))->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'event'])->get();
         $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'event'])->get();
-        $photos = Photos::select('photos.*',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
-         $floormap = Map_images::select('map_images.*',DB::raw("CONCAT('','$url/public/upload/map_images/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
+        $photos = Photos::select('photos.id','photos.unique_id','photos.type','photos.created_at',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
+        $floormap = Map_images::select('map_images.id','map_images.unique_id','map_images.type','map_images.created_at',DB::raw("CONCAT('','$url/public/upload/mall_image/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'event'])->get();
         if($events->count() > 0)
         {
-            unset($events[0]->deleted_at,$events[0]->updated_at,$floormap[0]->deleted_at,$floormap[0]->updated_at);
-            if($floormap->count() > 0)
-                unset($floormap[0]->deleted_at,$floormap[0]->updated_at);
+            unset($events[0]->deleted_at,$events[0]->updated_at);
+            // if($floormap->count() > 0)
+            //     unset($floormap[0]->deleted_at,$floormap[0]->updated_at);
             $success = $events[0];
             $success['slider'] =$slider;
             $success['brands'] =$featuredBrand;
@@ -295,17 +353,14 @@ class HomePageController extends Controller
         $url =env('APP_URL');
         $id = $request->route('id'); // type can be event, malls and attraction
         $malls = ShopsandMalls::select('shopsandmalls.*',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"))->where('id',$id)->get();
-        $slider = Slider::select('sliders.*',DB::raw("CONCAT('','$url/public/upload/slider/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
+        $slider = Slider::select('sliders.id','sliders.unique_id','sliders.type','sliders.created_at','sliders.title','sliders.description',DB::raw("CONCAT('','$url/public/upload/sliders/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
         $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image',DB::raw("CONCAT('','$url/public/upload/brands/',brands.brand_image) as brand_image"))->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'malls'])->get();
         $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->leftjoin('brands','products.brand_id','=','brands.id')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'malls'])->get();
-        $photos = Photos::select('photos.*',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
-        $floormap = Map_images::select('map_images.*',DB::raw("CONCAT('','$url/public/upload/map_images/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
+        $photos = Photos::select('photos.id','photos.unique_id','photos.type','photos.created_at',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
+        $floormap = Map_images::select('map_images.id','map_images.unique_id','map_images.type','map_images.created_at',DB::raw("CONCAT('','$url/public/upload/mall_image/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'malls'])->get();
         if($malls->count() > 0)
         {
-            unset($malls[0]->deleted_at,$malls[0]->updated_at);
-            if($floormap->count() > 0)
-                unset($floormap[0]->deleted_at,$floormap[0]->updated_at);
-            
+            unset($malls[0]->deleted_at,$malls[0]->updated_at);            
             $success = $malls[0];
             $success['slider'] =$slider;
             $success['brands'] =$featuredBrand;
@@ -329,16 +384,15 @@ class HomePageController extends Controller
         $url =env('APP_URL');
         $id = $request->route('id'); // type can be event, malls and attraction
         $attraction = Attractions::select('attractions.*',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"))->where('id',$id)->get();
-        $slider = Slider::select('sliders.*',DB::raw("CONCAT('','$url/public/upload/slider/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
+        $slider = Slider::select('sliders.id','sliders.unique_id','sliders.type','sliders.created_at','sliders.title','sliders.description',DB::raw("CONCAT('','$url/public/upload/sliders/',slider_image_name) as slider_image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
         $featuredBrand = Brand::select('brands.id as bid','brands.name','brands.brand_image',DB::raw("CONCAT('','$url/public/upload/brands/',brands.brand_image) as brand_image"))->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"type"=>'attraction'])->get();
         $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name','products.price','brands.id as bid','brands.name',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->leftjoin('brands','products.brand_id','=','brands.id')->leftjoin('brands_connection','brands_connection.brand_id','=','brands.id')->where(['common_id'=>$id,"brands_connection.type"=>'attraction'])->get();
-        $photos = Photos::select('photos.*',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
-        $floormap = Map_images::select('map_images.*',DB::raw("CONCAT('','$url/public/upload/map_images/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
+        $photos = Photos::select('photos.id','photos.unique_id','photos.type','photos.created_at',DB::raw("CONCAT('','$url/public/upload/photos/',image_name) as image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
+        $floormap = Map_images::select('map_images.id','map_images.unique_id','map_images.type','map_images.created_at',DB::raw("CONCAT('','$url/public/upload/mall_image/',map_image_name) as map_image_name"))->where(['common_id'=>$id,"type"=>'attraction'])->get();
         if($attraction->count() > 0)
         {
             unset($attraction[0]->deleted_at,$attraction[0]->updated_at);
-            if($floormap->count() > 0)
-                unset($floormap[0]->deleted_at,$floormap[0]->updated_at);
+            
             $success = $attraction[0];
             $success['slider'] =$slider;
             $success['brands'] =$featuredBrand;
@@ -354,6 +408,114 @@ class HomePageController extends Controller
         return response()->json($response);
     }
 
+    // /* Function used to search in whole database */
+    // public function search(Request $request)
+    // {
+    //     $url =env('APP_URL');
+    //     $search = $request->search;
+    //     $out = "";
+
+    //     $sql = "show tables";
+    //     $tables = DB::select('SHOW TABLES');
+    //     $success = array();
+    //     if(count($tables) > 0){
+    //         foreach($tables as $k=>$r)
+    //         {
+    //             $table = $r->Tables_in_fingertips;
+    //             //$out .= $table.";";
+    //             $sql_search = "select * from ".$table." where ";
+    //             $sql_search_fields = Array();
+    //             $sql2 = "SHOW COLUMNS FROM ".$table;
+    //             $rs2 = DB::select($sql2);
+    //             if(count($rs2) > 0){
+    //                 foreach($rs2 as $r2)
+    //                 {
+    //                     $colum = $r2->Field;
+    //                     $sql_search_fields[] = $colum." like('%".$search."%')";
+    //                 }
+    //             }
+    //             $sql_search .= implode(" OR ", $sql_search_fields);
+    //             $rs3 = DB::select($sql_search);
+
+    //             //$out .= count($rs3)."\n";
+    //             //echo "<pre>"; print_r($rs3);
+    //             if(count($rs3) >0)
+    //             {	
+    //             	foreach ($rs3 as $key => $finvalue) 
+    //             	{
+	   //              	if($table == 'events')
+	   //                  {
+	   //                      $finvalue->event_image =  $url.'/public/upload/events/'.$finvalue->event_image;
+	   //                  }
+	   //                  if($table == 'attractions')
+	   //                  {
+	   //                      $finvalue->attraction_image =  $url.'/public/upload/attractions/'.$finvalue->attraction_image;
+	   //                  }
+	   //                  if($table == 'shopsandmalls')
+	   //                  {
+	   //                      $finvalue->image =  $url.'/public/upload/malls/'.$finvalue->image;
+	   //                  }
+	   //                  if($table == 'highlights')
+	   //                  {
+	   //                      $finvalue->image =  $url.'/public/upload/highlights/'.$finvalue->image;
+	   //                  }
+	   //                  if($table == 'users')
+	   //                  {
+	   //                      $finvalue->profile_pic =  $url.'/public/upload/'.$finvalue->profile_pic;
+	   //                  }
+	   //                  if($table == 'sliders')
+	   //                  {
+	   //                      $finvalue->slider_image_name =  $url.'/public/upload/sliders/'.$finvalue->slider_image_name;
+	   //                  }
+	   //                  if($table == 'products')
+	   //                  {
+	   //                      $finvalue->product_image =  $url.'/public/upload/products/'.$finvalue->product_image;
+	   //                  }
+	   //                  if($table == 'photos')
+	   //                  {
+	   //                      $finvalue->image_name =  $url.'/public/upload/photos/'.$finvalue->image_name;
+	   //                  }
+	   //                  if($table == 'map_images')
+	   //                  {
+	   //                      $finvalue->map_image_name =  $url.'/public/upload/mall_image/'.$finvalue->map_image_name;
+	   //                  }
+	   //                  if($table == 'flash_sales')
+	   //                  {
+	   //                      $finvalue->image =  $url.'/public/upload/flashsale/'.$finvalue->image;
+	   //                  }
+	   //                  if($table == 'brands')
+	   //                  {
+	   //                      $finvalue->brand_image =  $url.'/public/upload/brands/'.$finvalue->brand_image;
+	   //                  }
+	   //                  if($table == 'banners')
+	   //                  {
+	   //                      $finvalue->bannerimage =  $url.'/public/upload/banners/'.$finvalue->bannerimage;
+	   //                  }
+    //                 	unset($finvalue->deleted_at,$finvalue->updated_at);
+    //             		$success[$table][] = $finvalue;
+    //             	}
+                   
+    //                 //$success[$table] = $rs3;
+    //                 $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
+    //             }
+    //             else
+	   //          {
+	   //          	$response = ['success' => false,'status' => 404,'message' => 'Data Not Found.','data'=>$success];
+	   //          }
+                
+    //         }
+            
+            
+    //     }
+    //     else
+    //     {
+    //         $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
+    //     }
+    //     //return $out;
+    //     return response()->json($response);
+
+    // }
+
     /* Function used to search in whole database */
     public function search(Request $request)
     {
@@ -361,89 +523,68 @@ class HomePageController extends Controller
         $search = $request->search;
         $out = "";
 
-        $sql = "show tables";
-        $tables = DB::select('SHOW TABLES');
-       
-        if(count($tables) > 0){
-            foreach($tables as $k=>$r)
-            {
-                $table = $r->Tables_in_fingertips;
-                //$out .= $table.";";
-                $sql_search = "select * from ".$table." where ";
+        $tables = ['events','attractions','shopsandmalls','products','brands'];
+        $success = array();
+
+        foreach ($tables as $key => $tables) 
+        {
+               // echo $sql_search = "select *, GROUP_CONCAT(category_name ORDER BY category.id) as category_name from ".$tables." leftjoin category ON FIND_IN_SET(category.id, ".$tables.".category_id) > 0 GROUP BY ".$tables.".id where ";
+                $sql_search = DB::table($tables)
+                     ->select($tables.'.*',DB::raw("GROUP_CONCAT(category_name) as category_name"))
+                     ->leftjoin('category', DB::raw("FIND_IN_SET(category.id,".$tables.".category_id)"),">",DB::raw("'0'"))
+                     ->groupBy($tables.'.id');
+
                 $sql_search_fields = Array();
-                $sql2 = "SHOW COLUMNS FROM ".$table;
+                $sql2 = "SHOW COLUMNS FROM ".$tables;
                 $rs2 = DB::select($sql2);
                 if(count($rs2) > 0){
+                    $sql_search = $sql_search->where('category_name','LIKE',"%{$search}%");
                     foreach($rs2 as $r2)
                     {
                         $colum = $r2->Field;
-                        $sql_search_fields[] = $colum." like('%".$search."%')";
+                        $sql_search = $sql_search->orWhere($tables.'.'.$colum,'LIKE',"%{$search}%");
+                        //$sql_search_fields[] = $colum." like('%".$search."%')";
                     }
                 }
-                $sql_search .= implode(" OR ", $sql_search_fields);
-                $rs3 = DB::select($sql_search);
-
+                //$sql_search .= implode(" OR ", $sql_search_fields);
+                $rs3 = $sql_search->get();
                 //$out .= count($rs3)."\n";
-                if(count($rs3) >0)
-                {
-                    if($table == 'events')
+                //echo "<pre>"; print_r($rs3);
+                if($rs3->count() >0)
+                {   
+                    foreach ($rs3 as $key => $finvalue) 
                     {
-                        $rs3[0]->event_image =  $url.'public/upload/events/'.$rs3[0]->event_image;
+                        if($tables == 'events')
+                        {
+                            $finvalue->event_image =  $url.'/public/upload/events/'.$finvalue->event_image;
+                        }
+                        if($tables == 'attractions')
+                        {
+                            $finvalue->attraction_image =  $url.'/public/upload/attractions/'.$finvalue->attraction_image;
+                        }
+                        if($tables == 'shopsandmalls')
+                        {
+                            $finvalue->image =  $url.'/public/upload/malls/'.$finvalue->image;
+                        }
+                        if($tables == 'products')
+                        {
+                            $finvalue->product_image =  $url.'/public/upload/products/'.$finvalue->product_image;
+                        }
+                       
+                        unset($finvalue->deleted_at,$finvalue->updated_at);
+                        $success[$tables][] = $finvalue;
                     }
-                    if($table == 'attractions')
-                    {
-                        $rs3[0]->attraction_image =  $url.'public/upload/attractions/'.$rs3[0]->attraction_image;
-                    }
-                    if($table == 'shopsandmalls')
-                    {
-                        $rs3[0]->image =  $url.'public/upload/malls/'.$rs3[0]->image;
-                    }
-                    if($table == 'highlights')
-                    {
-                        $rs3[0]->image =  $url.'public/upload/highlights/'.$rs3[0]->image;
-                    }
-                    if($table == 'users')
-                    {
-                        $rs3[0]->profile_pic =  $url.'public/upload/'.$rs3[0]->profile_pic;
-                    }
-                    if($table == 'sliders')
-                    {
-                        $rs3[0]->slider_image_name =  $url.'public/upload/sliders/'.$rs3[0]->slider_image_name;
-                    }
-                    if($table == 'products')
-                    {
-                        $rs3[0]->product_image =  $url.'public/upload/products/'.$rs3[0]->product_image;
-                    }
-                    if($table == 'photos')
-                    {
-                        $rs3[0]->image_name =  $url.'public/upload/photos/'.$rs3[0]->image_name;
-                    }
-                    if($table == 'map_images')
-                    {
-                        $rs3[0]->map_image_name =  $url.'public/upload/map_images/'.$rs3[0]->map_image_name;
-                    }
-                    if($table == 'flash_sales')
-                    {
-                        $rs3[0]->map_image_name =  $url.'public/upload/flashsale/'.$rs3[0]->map_image_name;
-                    }
-                    if($table == 'brands')
-                    {
-                        $rs3[0]->brand_image =  $url.'public/upload/brands/'.$rs3[0]->brand_image;
-                    }
-                    if($table == 'banners')
-                    {
-                        $rs3[0]->bannerimage =  $url.'public/upload/banners/'.$rs3[0]->bannerimage;
-                    }
-                    unset($rs3[0]->deleted_at,$rs3[0]->updated_at);
-                    $success[$table] = $rs3;
+                   
+                    //$success[$table] = $rs3;
+                    $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
                 }
+                else
+                {
+                    $response = ['success' => false,'status' => 404,'message' => 'Data Not Found.','data'=>$success];
+                }
+                
             }
-            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];
-        }
-        else
-        {
-            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
-        }
+            
         //return $out;
         return response()->json($response);
 
@@ -480,10 +621,190 @@ class HomePageController extends Controller
             $response = ['success' => false,'status'=> 404,'message' => 'No Data Found']; 
         }
         return response()->json($response);
+    }
+
+    /* Function used to get nearby ESMA*/
+    public function nearbyESMA(Request $request)
+    {
+        $lat = $request->lat;
+        $long = $request->long;
+
+        $tables = ['events','attractions','shopsandmalls'];
+        foreach ($tables as $key => $tables) {
+           // $sql_search = "SELECT latitude,longitude, (((acos(sin((".$lat." * pi() / 180)) * sin(( `latitude` * pi() / 180)) + cos((".$lat." * pi() /180 )) * cos(( `latitude` * pi() / 180)) * cos(((".$long." - `longitude`) * pi()/180)))) * 180/pi()) * 60 * 1.1515 * 1.609344) AS distance_in_km FROM ".$tables." ORDER BY distance_in_km ASC";
+            $sql_search = "SELECT latitude,longitude,111.045 * DEGREES(ACOS(COS(RADIANS(".$lat."))
+                     * COS(RADIANS(latitude))
+                     * COS(RADIANS(longitude) - RADIANS(".$long."))
+                     + SIN(RADIANS(".$lat."))
+                     * SIN(RADIANS(latitude))))
+                     AS distance_in_km FROM ".$tables." HAVING distance_in_km <10000 ORDER BY distance_in_km ASC";
+            $rs3 = DB::select($sql_search);
+            $success[$tables] = $rs3;            
+        }
+        if($success)
+            {
+                $response = ['success' => true,'status' => 200,'message' => 'Data Found Successfully.','data'=>$success];    
+            }
+            else
+            {
+                $response = ['success' => false,'status' => 404,'message' => 'Data Not Found.','data'=>[]];
+            }
+            return response()->json($response);
 
     }
 
+     /* Function used to filter event*/
+    public function eventFilter(Request $request)
+    {
+        $url =env('APP_URL'); 
 
+        $filter_data = $request->getContent();
+        $eventfilter = json_decode($filter_data,true);
+
+        $startdate = date("Y-m-d");
+        if($eventfilter['type'] == 'today')
+        {
+            $dateby = date("Y-m-d");   
+        }
+        else if($eventfilter['type'] =='week')
+        {
+            $dateby = date("Y-m-d", strtotime("+1 week"));
+        }
+        else if($eventfilter['type'] == 'month')
+        {
+            $dateby = date("Y-m-d", strtotime('+1 month'));
+        }
+
+        $query = Events::select('events.id','unique_id','event_image','event_name','start_time','end_time','location','latitude','longitude','event_start_date',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as event_image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'events.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,events.category_id)"),">",DB::raw("'0'"))->groupBy("events.id");
+        if(isset($eventfilter['area']))
+        {
+            $query = $query->whereIn('area.area_name',$eventfilter['area']);
+        }
+        if(isset($eventfilter['categories']))
+        {
+            $query = $query->whereIn('category_name',$eventfilter['categories']);
+        }
+        if(isset($dateby))
+        {
+            $query = $query->Where('event_start_date', '>=',$dateby);
+        }
+
+        $events = $query->get();
+        if($events->count() >0)
+        {
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found Successfully.','data'=>$events];    
+        }
+        else
+        {
+            $response = ['success' => false,'status' => 404,'message' => 'Data Not Found.','data'=>[]];
+        }
+        return response()->json($response);
+    }
+
+
+     /* Function used to filter attraction*/
+    public function attractionFilter(Request $request)
+    {
+        $url =env('APP_URL'); 
+
+        $filter_data = $request->getContent();
+        $attractionfilter = json_decode($filter_data,true);
+
+        $query = Attractions::select('attractions.id','unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'attractions.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,attractions.category_id)"),">",DB::raw("'0'"))->groupBy("attractions.id");
+       
+        if(isset($attractionfilter['area']))
+        {
+            $query = $query->whereIn('area.area_name',$attractionfilter['area']);
+        }
+        if(isset($attractionfilter['categories']))
+        {
+            $query = $query->whereIn('category_name',$attractionfilter['categories']);
+        }
+
+        $attractions = $query->get();
+        if($attractions->count() >0)
+        {
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found Successfully.','data'=>$attractions];    
+        }
+        else
+        {
+            $response = ['success' => false,'status' => 404,'message' => 'Data Not Found.','data'=>[]];
+        }
+        return response()->json($response);
+    }
+
+
+     /* Function used to filter shopmall*/
+    public function shopmallFilter(Request $request)
+    {
+        $url =env('APP_URL'); 
+
+        $filter_data = $request->getContent();
+        $shopmallfilter = json_decode($filter_data,true);
+
+        $query = ShopsandMalls::select('shopsandmalls.id','unique_id','image','name','openinghrs','closinghrs','shopsandmalls.type','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'shopsandmalls.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,shopsandmalls.category_id)"),">",DB::raw("'0'"))->groupBy("shopsandmalls.id");
+       
+        if(isset($shopmallfilter['area']))
+        {
+            $query = $query->whereIn('area.area_name',$shopmallfilter['area']);
+        }
+        if(isset($shopmallfilter['categories']))
+        {
+            $query = $query->whereIn('category_name',$shopmallfilter['categories']);
+        }
+         if(isset($shopmallfilter['type']))
+        {
+            $query = $query->whereIn('shopsandmalls.type',$shopmallfilter['type']);
+        }
+
+        $shopmall = $query->get();
+        if($shopmall->count() >0)
+        {
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found Successfully.','data'=>$shopmall];    
+        }
+        else
+        {
+            $response = ['success' => false,'status' => 404,'message' => 'Data Not Found.','data'=>[]];
+        }
+        return response()->json($response);
+    }
+
+    public function filters(Request $request)
+    {
+        $type = $request->type;
+        if($type == 'event')
+        {
+            $events = ['today'=>'Today','week'=>'This Week','month'=>'This Month'];
+            $area = Area::select('area.id','area_name')->join('events', 'area.id', '=', 'events.area_id')->groupby('area.id')->get();
+            $category = Category::select('category.id','category_name')->join('events', DB::raw("FIND_IN_SET(category.id,events.category_id)"),">",DB::raw("'0'"))->groupby('category.id')->get();
+            $success['other'] = $events;
+        }
+        else if($type == 'malls')
+        {
+            $area = Area::select('area.id','area_name')->join('shopsandmalls', 'area.id', '=', 'shopsandmalls.area_id')->groupby('area.id')->get();
+            $category = Category::select('category.id','category_name')->join('shopsandmalls', DB::raw("FIND_IN_SET(category.id,shopsandmalls.category_id)"),">",DB::raw("'0'"))->groupby('category.id')->get();
+             $success['other'] = ['shop'=>'Shops','mall'=>'Malls'];
+        }
+        else if($type == 'attraction')
+        {
+            $area = Area::select('area.id','area_name')->join('attractions', 'area.id', '=', 'attractions.area_id')->groupby('area.id')->get();
+            $category = Category::select('category.id','category_name')->join('attractions', DB::raw("FIND_IN_SET(category.id,attractions.category_id)"),">",DB::raw("'0'"))->groupby('category.id')->get();
+        }
+
+        $success['area'] = $area;
+        $success['category'] = $category;
+        if($success)
+        {
+            $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','data'=>$success];    
+        }
+        else
+        {
+            $response = ['success' => false,'status' => 404,'message' => 'Data Not Found.','data'=>[]];
+        }
+        
+        return response()->json($response);
+
+    }
 
 
 }

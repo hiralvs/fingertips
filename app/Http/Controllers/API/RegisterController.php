@@ -172,7 +172,7 @@ class RegisterController extends Controller
 	                // // }
 	                
 	                /* Add rewards for signup*/
-                    $point = Settings::where('type','Signup')->get();
+                    $point = Settings::where('title','Signup')->get();
                     $rewards = array();
                     $rewards['user_id'] = $user->id;
                     $rewards['earned'] = $point[0]->value;
@@ -238,27 +238,38 @@ class RegisterController extends Controller
         }
         else
         {
-            if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-                $user = Auth::user();
-                unset($user->email_verified_at,$user->deleted_at);
-                $user->dob = is_null($user->dob) ? "":$user->dob;
-                $user->gender = is_null($user->gender) ? "":$user->gender;
-                $user->mobile = is_null($user->mobile) ? "":$user->mobile;
-                $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
-                $user->customer_id = (is_null($user->customer_id) || $user->customer_id == "") ? "":$user->customer_id;
-                $response = [
-                    'success' => true,
-                    'token' => $user->createToken('MyApp')-> accessToken,
-                    'data'    => $user,
-                    'message' => 'User login successfully.',
-                    'status' => 200,
-                ];
-            } 
+            $user = User::where(['email'=>$request->email])->first(); 
+            if(!empty($user))
+            {
+                if ((Hash::check(request('password'), $user->password)) == false) {
+                     $response = [
+                        'status' => 404,
+                        'success' => false,
+                        'message' => 'Email or password is incorrect',
+                    ];
+                } 
+                else if((Hash::check(request('password'), $user->password)) == true)
+                {
+                    unset($user->email_verified_at,$user->deleted_at);
+                    $user->dob = is_null($user->dob) ? "":$user->dob;
+                    $user->gender = is_null($user->gender) ? "":$user->gender;
+                    $user->mobile = is_null($user->mobile) ? "":$user->mobile;
+                    $user->profile_pic = (is_null($user->profile_pic) || $user->profile_pic == "") ? "":env('APP_URL').'public/upload/'.$user->profile_pic;
+                    $user->customer_id = (is_null($user->customer_id) || $user->customer_id == "") ? "":$user->customer_id;
+                    $response = [
+                        'success' => true,
+                        'token' => $user->createToken('MyApp')-> accessToken,
+                        'data'    => $user,
+                        'message' => 'User login successfully.',
+                        'status' => 200,
+                    ];
+                }
+            }
             else{ 
                 $response = [
                     'status' => 404,
                     'success' => false,
-                    'message' => 'The email or password is incorrect, please try again',
+                    'message' => 'Email id is not registered with us.',
                 ];
             } 
         }      
@@ -432,6 +443,53 @@ class RegisterController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $input = $request->all();
+        $rules = array(
+            'otp' => 'required',
+            'new_password' => 'required|min:6',
+            'confirm_password' => 'required|same:new_password',
+        );
+        $validator = Validator::make($input, $rules);
+
+        if ($validator->fails()) {
+            $arr = array("status" => 400, "message" => $validator->errors()->first());
+        } else { 
+            try {
+                $user = User::where('email',$request->email)->first();
+                if(!empty($user))
+                {
+                   if($user->otp != $request->otp)
+                    {
+                        $arr = array("status" => 400, "message" => "Otp is incorrect");
+                    }
+                    else if ((Hash::check(request('new_password'), $user->password)) == true) {
+                       $arr = array("status" => 400, "message" => "Please enter a password which is not similar then current password.");
+                    } else {
+                        $userid = $user->id;
+                        $user = User::where('id', $userid)->update(['password' => bcrypt($input['new_password']),'otp'=>null]);
+                        $arr = array("status" => 200, "message" => "Password updated successfully.",);
+                    }
+                }
+                else
+                {
+                    $arr = array("status" => 400, "message" => 'No data exist with this email id', "data" => array());
+                }
+            } catch (\Exception $ex) {
+                if (isset($ex->errorInfo[2])) {
+                    echo "if";
+                    $msg = $ex->errorInfo[2];
+                } else {
+                    echo "wlsw";
+                    $msg = $ex->getMessage();
+                }
+                $arr = array("status" => 400, "message" => $msg, "data" => array());
+            }
+        }
+       return \Response::json($arr);
     }
 }
 ?>

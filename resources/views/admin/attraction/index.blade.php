@@ -31,7 +31,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addAttractions" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()" tabindex="">EXPORT</a>
                 </div>             
             </div>
         </div>
@@ -74,7 +74,7 @@
                           <td><img src="{{asset('public/upload/attractions/')}}/{{$value->attraction_image}}" alt=""></td>
                           <td>{{$value->attraction_name}}</td>
                           <td>{{$value->location}}</td>
-                          <td>{{$value->property_admin_user_id}}</td>
+                          <td>{{$value->propertyadmin}}</td>
                           <td>{{$value->booking_allowed}}</td>
                           <td>{{$value->cost}}</td>
                           <td>{{$value->description}}</td>
@@ -443,34 +443,7 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#attractionstableData tr.norecord').remove();
                         }
-                    
-                    var attraction_image = '';
-                    if(data.attraction_image != null)
-                    {
-                        attraction_image = data.attraction_image;
-                    }
-                    if(data.created_at)
-                    {
-                        var cdate = date(data.created_at);
-                    }
-                    var deleteurl = '{{ route("attraction.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var imageurl = "{{asset('public/upload/attractions')}}";
-                    var tr_str = "<tr>"+
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td><img src="+imageurl+"/"+attraction_image+"></td>" +
-                    "<td>"+data.attraction_name+"</td>" +
-                    "<td>"+data.location+"</td>"+
-                    "<td>"+data.property_admin_user_id+"</td>" +
-                    "<td>"+data.booking_allowed+"</td>" +
-                    "<td>"+data.cost+"</td>" +
-                    "<td>"+data.description+"</td>" +
-                    "<td>"+data.created_at+"</td>" +
-                    "<td>"+data.created_by+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editAttractions'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Attractions?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    console.log(tr_str);
-                    $("#attractionstableData tbody").html(tr_str);
+                    $("#attractionstableData tbody").html(data);
                     $("#paging").hide();
                 }
                 else
@@ -481,7 +454,33 @@ $(document).ready(function(){
             });
     });
 });
-
+function fnExcelReport()
+{
+   var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('attractionexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "attraction",
+                filename: "attraction" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 </script>
 @endsection
 

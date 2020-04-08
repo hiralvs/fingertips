@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="_token" content="{{csrf_token()}}" />
-    <title>Kapella Bootstrap Admin Dashboard Template</title>
+    <title>Fingertips</title>
     <!-- base:css -->
     <link rel="stylesheet" href="{{asset('/public/vendors/mdi/css/materialdesignicons.min.css')}}">
     <link rel="stylesheet" href="{{asset('/public/vendors/base/vendor.bundle.base.css')}}">

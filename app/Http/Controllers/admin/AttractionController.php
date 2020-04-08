@@ -178,10 +178,10 @@ class AttractionController extends Controller
         return Response()->json($arr);
     }
     /* Function user to search attraction data */
-     public function search(Request $request)
-     {
+    public function search(Request $request)
+    {
         $search = $request->input('search');
-     
+
         $attraction = Attractions::where('attraction_name','LIKE',"%{$search}%")
          ->orWhere('unique_id', 'LIKE',"%{$search}%")
          ->orWhere('location', 'LIKE',"%{$search}%")
@@ -191,16 +191,109 @@ class AttractionController extends Controller
          ->orWhere('featured_mall', 'LIKE',"%{$search}%")
          ->orWhere('created_at', 'LIKE',"%{$search}%")
          ->paginate();
- 
+
         if($attraction)
-         {
-             $arr = array('status' => true,"data"=>$attraction[0]);    
-         }
-         else{
-             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
-         }
- 
-         return Response()->json($arr);
- 
-     }
+        {
+            $data = $this->htmltoexportandsearch($attraction,true);
+            $arr = array('status' => true,"data"=>$data);    
+        }
+        else{
+            $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
+        }
+
+        return Response()->json($arr);
+    }
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $query = Attractions::select('attractions.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'attractions.property_admin_user_id', '=', 'users.id');
+
+        if($request->search != "")
+        {
+            $query = $query->where('attraction_name','LIKE',"%{$search}%")
+                     ->orWhere('attractions.unique_id', 'LIKE',"%{$search}%")
+                     ->orWhere('location', 'LIKE',"%{$search}%")
+                     ->orWhere('opening_time', 'LIKE',"%{$search}%")
+                     ->orWhere('closing_time', 'LIKE',"%{$search}%")
+                     ->orWhere('area_id', 'LIKE',"%{$search}%")
+                     ->orWhere('featured_mall', 'LIKE',"%{$search}%")
+                     ->orWhere('attractions.created_at', 'LIKE',"%{$search}%");
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata);       
+    }
+
+    public function htmltoexportandsearch($finaldata,$search=false)
+    {
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Property Admin</th>
+                            <th>Booking Allowed</th>
+                            <th>Cost</th>
+                            <th>Description</th>
+                            <th>Created on</th>
+                            <th>Created By</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+                if($search == true)
+                {
+                    if($value['attraction_image']!= null)
+                    {
+                        $path = asset('public/upload/attractions').'/'.$value['attraction_image'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['attraction_image'];
+                }
+                
+                $cdate = date('d F Y',strtotime($value['created_at']));
+                $html .="<tr><td>".$value['unique_id']."</td><td>".$image."</td><td>".$value['attraction_name'] ."</td><td>".$value['location']."</td><td>".$value['propertyadmin']."</td><td>".$value['booking_allowed']."</td><td>".$value['cost']."</td><td>".$value['description']."</td><td>".$cdate."</td><td>".$value['created_by']."</td>";
+                if($search == true)
+                {
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-id='".$value->id."' data-target='#editAttractions".$value->id."' ><i class='mdi mdi-table-edit'></i></a> 
+                          <a class='delete' onclick='return confirm('Are you sure you want to delete this Attraction?')' href='".route('attraction.delete', $value->id)."'><i class='mdi mdi-delete'></i></a> 
+                          </td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="11">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
+    }
 }

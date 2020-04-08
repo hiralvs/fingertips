@@ -28,7 +28,7 @@ if (!function_exists('get_unique_id')) {
         $subject = $data['SUBJECT'];
         $to_email = strtolower( trim( $data['TO'] ) );
         Mail::send($objDemo->view, $data, function($message) use($to_email,$subject)
-        {
+        {      
             $message->from('hiral.devtsree@gmail.com','Fingertips');
             $message->to($to_email , 'HTML Email' )
             ->subject( $subject);

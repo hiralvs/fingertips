@@ -30,7 +30,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addEventMapImage" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport('event')" tabindex="">EXPORT</a>
                 </div>
             </div>
         </div>
@@ -242,17 +242,7 @@ $(document).ready(function(){
                     if(findnorecord > 0){
                         $('#mapimagetableData tr.norecord').remove();
                     }
-                    
-                    var deleteurl = '{{ route("eventmapimage.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var tr_str = "<tr>"+
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td>"+data.common_id+"</td>" +
-                    "<td>"+data.event_name+"</td>" +
-                    "<td>"+data.created_at+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editMapImage'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this EventMapImage?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    $("#mapimagetableData tbody").html(tr_str);
+                     $("#mapimagetableData tbody").html(data);
                     $("#paging").hide();
                 }
                 else
@@ -263,6 +253,33 @@ $(document).ready(function(){
             });
         }); 
 });
+function fnExcelReport(type)
+{
+    var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('eventmapimageexport')}}",
+        method: 'get',
+        data: {'search':search,'type':type},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "eventmapimage",
+                filename: "eventmapimage" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
 </script>
 @endsection
 

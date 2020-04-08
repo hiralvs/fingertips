@@ -22,9 +22,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','unique_id','gender','role','profile_pic','status','dob','mobile','created_at','email_verification_token','email_verified'
+        'name', 'email', 'password','unique_id','gender','role','profile_pic','status','dob','mobile','created_at','email_verification_token','email_verified','otp'
     ];
-    public $sortable = ['profile_pic','unique_id','name', 'email', 'gender','role','status','created_at'];
+    public $sortable = ['profile_pic','unique_id','name', 'email', 'gender','role','status','created_at','otp'];
 
     /**
      * The attributes that should be hidden for arrays.

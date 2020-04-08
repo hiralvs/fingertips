@@ -224,7 +224,7 @@ class ShopsandMallsController extends Controller
          if($shopmalls)
          {
             $data = $this->htmltoexportandsearch($shopmalls,true);
-             $arr = array('status' => true,"data"=>$data);    
+            $arr = array('status' => true,"data"=>$data);    
          }
          else{
              $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
@@ -234,7 +234,7 @@ class ShopsandMallsController extends Controller
  
      }
 
-      public function export(Request $request)
+    public function export(Request $request)
     {
         $search = (isset($request->search) && $request->search !="") ? $request->search : "";
         $query = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id');

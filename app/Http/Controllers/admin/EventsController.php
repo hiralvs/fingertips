@@ -204,10 +204,10 @@ class EventsController extends Controller
         return Response()->json($arr);
     }
     /* Function user to search user data */
-     public function search(Request $request)
-     {
+    public function search(Request $request)
+    {
         $search = $request->input('search');
-     
+
         $events = Events::where('event_name','LIKE',"%{$search}%")
          ->orWhere('unique_id', 'LIKE',"%{$search}%")
          ->orWhere('location', 'LIKE',"%{$search}%")
@@ -219,17 +219,107 @@ class EventsController extends Controller
         //  ->orWhere('featured_event', 'LIKE',"%{$search}%")
          ->paginate();
 
-        
- 
         if($events)
-         {
-             $arr = array('status' => true,"data"=>$events[0]);    
-         }
-         else{
-             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
-         }
- 
-         return Response()->json($arr);
- 
-     }
+        {
+            $data = $this->htmltoexportandsearch($events,true);
+            $arr = array('status' => true,"data"=>$data);    
+        }
+        else{
+         $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
+        }
+
+        return Response()->json($arr);
+
+    }
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search) && $request->search !="") ? $request->search : "";
+        $query = Events::select('events.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'events.property_admin_user_id', '=', 'users.id');
+
+        if($request->search != "")
+        {
+            $query = $query->where('event_name','LIKE',"%{$search}%")
+                 ->orWhere('events.unique_id', 'LIKE',"%{$search}%")
+                 ->orWhere('location', 'LIKE',"%{$search}%")
+                 ->orWhere('event_start_date', 'LIKE',"%{$search}%")
+                 ->orWhere('start_time', 'LIKE',"%{$search}%")
+                 ->orWhere('description', 'LIKE',"%{$search}%")
+                 ->orWhere('events.created_at', 'LIKE',"%{$search}%");
+        }
+
+        $finaldata = $query->get();
+        $this->htmltoexportandsearch($finaldata);       
+    }
+
+    public function htmltoexportandsearch($finaldata,$search=false)
+    {
+        $html = "";
+        if(!empty($finaldata) && $finaldata->count() > 0)
+        {   
+            if($search==false)
+            {
+                  $html .='<table class="table table-hover" id="brandData">
+                      <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Opening Date</th>
+                            <th>Starting Time</th>
+                            <th>Description</th>
+                            <th>Created on</th>
+                            <th>Created By</th>
+                        </tr>
+                      </thead>
+                      <tbody>';  
+            } 
+            
+            foreach ($finaldata as $key => $value) 
+            {
+                if($search == true)
+                {
+                    if($value['event_image']!= null)
+                    {
+                        $path = asset('public/upload/events').'/'.$value['event_image'];
+                        $image = '<img src="'.$path.'" alt="">';
+                    }
+                    else
+                    {
+                        $image = "";
+                    }
+                                     
+                }
+                else
+                {
+                    $image = $value['event_image'];
+                }
+                
+                $cdate = date('d F Y',strtotime($value['created_at']));
+                $html .="<tr><td>".$value['unique_id']."</td><td>".$image."</td><td>".$value['event_name'] ."</td><td>".$value['location']."</td><td>".$value['event_start_date']."</td><td>".$value['start_time']."</td><td>".$value['description']."</td><td>".$cdate."</td><td>".$value['created_by']."</td>";
+                if($search == true)
+                {
+                    $html .="<td><a class='edit open_modal' data-toggle='modal' data-id='".$value->id."' data-target='#editEvents".$value->id."' ><i class='mdi mdi-table-edit'></i></a> 
+                          <a class='delete' onclick='return confirm('Are you sure you want to delete this Events?')' href='".route('events.delete', $value->id)."'><i class='mdi mdi-delete'></i></a> 
+                          </td>";
+                }
+                $html.="</tr>";
+            }
+        }
+        else
+        {
+            $html .= '<tr><td colspan="11">No Records Found</td></tr>';
+        }
+        if($search==false)
+        {
+            $html .= '</tbody></table>';
+            echo $html;
+        }
+        else
+        {
+            return $html;
+        }
+        
+    }
 }

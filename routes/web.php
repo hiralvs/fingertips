@@ -32,7 +32,7 @@ Route::post('/postlogin', array('as' => 'postlogin', 'routegroup' => 'login', 'u
  // Password Reset Routes...
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('forgotpassword');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
+Route::get('/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.reset');
 Route::get('/home', 'HomeController@index')->name('dashboard');
 
@@ -121,6 +121,7 @@ Route::post('/addEvents', 'admin\EventsController@addEvents')->name('addEvents')
 Route::post('eventsupdate', array('as' => 'events.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@update'));
 Route::get('eventsdelete/{id}', array('as' => 'events.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@delete'));
 Route::post('eventssearch', array('as' => 'events.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@search'));
+Route::get('/eventexport', 'admin\EventsController@export')->name('eventexport');
 
 Route::get('/rewards', 'admin\RewardsController@index')->name('rewards');
 Route::get('rewardsdelete/{id}', array('as' => 'rewards.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardsController@delete'));
@@ -138,6 +139,8 @@ Route::post('/addAttractions', 'admin\AttractionController@addAttractions')->nam
 Route::post('attractionsupdate', array('as' => 'attraction.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@update'));
 Route::get('attractionsdelete/{id}', array('as' => 'attraction.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@delete'));
 Route::post('attractionssearch', array('as' => 'attraction.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@search'));
+Route::get('/attractionexport', 'admin\AttractionController@export')->name('attractionexport');
+
 
 Route::get('/notifications', 'admin\NotificationController@index')->name('notifications');
 Route::get('notificationsdelete/{id}', array('as' => 'notifications.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\NotificationController@delete'));
@@ -246,6 +249,7 @@ Route::post('/addMallPhotos', 'admin\CommonPhotosController@addPhotos')->name('a
 Route::get('mallphotosdelete/{id}', array('as' => 'mallphotos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
 Route::post('mallphotosupdate', array('as' => 'mallphotos.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@update'));
 
+
 Route::get('/eventphotos', 'admin\CommonPhotosController@index')->name('eventphotos');
 Route::post('/addEventPhotos', 'admin\CommonPhotosController@addPhotos')->name('addEventPhotos');
 Route::get('eventphotosdelete/{id}', array('as' => 'eventphotos.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonPhotosController@delete'));
@@ -261,18 +265,24 @@ Route::post('/addEventmapimage', 'admin\CommonMapImageController@addMapImage')->
 Route::get('eventmapimagedelete/{id}', array('as' => 'eventmapimage.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@delete'));
 Route::post('eventmapimageupdate', array('as' => 'eventmapimage.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@update'));
 Route::post('eventmapimagesearch', array('as' => 'eventmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
+Route::get('/eventmapimageexport', 'admin\CommonMapImageController@export')->name('eventmapimageexport');
+
 
 Route::get('/attractionmapimage', 'admin\CommonMapImageController@index')->name('attractionmapimage');
 Route::get('/addAttractionmapimage', 'admin\CommonMapImageController@addMapImage')->name('addAttractionmapimage');
 Route::get('attractionmapimagedelete/{id}', array('as' => 'attractionmapimage.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@delete'));
 Route::post('attractionmapimageupdate', array('as' => 'attractionmapimage.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@update'));
 Route::post('attractionmapimagesearch', array('as' => 'attractionmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
+Route::get('/attractionmapimageexport', 'admin\CommonMapImageController@export')->name('attractionmapimageexport');
+
 
 Route::get('/mallmapimage', 'admin\CommonMapImageController@index')->name('mallmapimage');
 Route::Post('/addMallmapimage', 'admin\CommonMapImageController@addMapImage')->name('addMallmapimage');
 Route::get('mallmapimagedelete/{id}', array('as' => 'mallmapimage.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@delete'));
 Route::post('mallmapimageupdate', array('as' => 'mallmapimage.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@update'));
 Route::post('mallmapimagesearch', array('as' => 'mallmapimage.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CommonMapImageController@search'));
+Route::get('/mallmapimageexport', 'admin\CommonMapImageController@export')->name('mallmapimageexport');
+
 
 Route::get('/eventhighlights', 'admin\CommonhighlightController@index')->name('eventhighlights');
 Route::post('/addEventHighlights', 'admin\CommonhighlightController@addHighlights')->name('addHighlights');

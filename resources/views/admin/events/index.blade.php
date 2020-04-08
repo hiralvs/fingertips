@@ -31,7 +31,7 @@
                     <a id="addnew15" class="btn btn-primary" data-toggle="modal" data-target="#addEvents" tabindex="">ADD NEW</a>
                 </div>
                 <div class="pr-1 mb-3 mb-xl-0">
-                    <a id="export14" class="btn btn-secondary" href="{{route('user.csv')}}" tabindex="">EXPORT</a>
+                    <a id="export14" class="btn btn-secondary" onclick="fnExcelReport()"  tabindex="">EXPORT</a>
                 </div>             
             </div>
         </div>
@@ -64,8 +64,6 @@
                             <th>@sortablelink('location')</th>
                             <th>@sortablelink('event_start_date','Opening Date')</th>
                             <th>@sortablelink('start_time','Starting Time')</th>
-                            {{-- <th>@sortablelink('event_end_date','Ending Date')</th>
-                            <th>@sortablelink('end_time','Ending Time')</th> --}}
                             <th>@sortablelink('description','Description')</th>
                             <th>@sortablelink('created_at','Created On')</th>
                             <th>@sortablelink('','Created By')</th>
@@ -81,9 +79,7 @@
                           <td>{{$value->event_name}}</td>
                           <td>{{$value->location}}</td>
                           <td>{{$value->event_start_date}}</td>
-                          {{-- <td>{{$value->event_end_date}}</td> --}}
                           <td>{{$value->start_time}}</td>
-                          {{-- <td>{{$value->end_time}}</td> --}}
                           <td>{{$value->description}}</td>
                           <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                           <td>{{$value->created_by}}</td>
@@ -498,33 +494,9 @@ $(document).ready(function(){
                         $('#eventstableData tr.norecord').remove();
                         }
                     
-                        var event_image = '';
-                    if(data.event_image != null)
-                    {
-                        event_image = data.event_image;
-                    }
-                    if(data.created_at)
-                    {
-                        var cdate = date(data.created_at);
-                    }
-                    var deleteurl = '{{ route("events.delete", ":id") }}';
-                    deleteurl = deleteurl.replace(':id', data.id);
-                    var imageurl = "{{asset('public/upload/events')}}";
-                    var tr_str = "<tr>"+
-                    "<td>"+data.unique_id+"</td>" +
-                    "<td><img src="+imageurl+"/"+event_image+"></td>" +
-                    "<td>"+data.event_name+"</td>" +
-                    "<td>"+data.location+"</td>"+
-                    "<td>"+data.event_start_date+"</td>" +
-                    "<td>"+data.start_time+"</td>" +
-                    "<td>"+data.description+"</td>" +
-                    "<td>"+data.created_at+"</td>" +
-                    "<td>"+data.created_by+"</td>" +
-                    "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editShopsandmalls'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Mall?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    "</tr>";
-                    console.log(tr_str);
-                    $("#eventstableData tbody").html(tr_str);
+                    $("#eventstableData tbody").html(data);
                     $("#paging").hide();
+                    
                 }
                 else
                 {
@@ -534,7 +506,34 @@ $(document).ready(function(){
             });
     });
 });
-
+function fnExcelReport()
+{
+   var search = "";
+    if($("#searchtext").val() != null || $("#searchtext").val() != "")
+    {
+        search = $("#searchtext").val();
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    }); 
+    $.ajax({
+        url: "{{route('eventexport')}}",
+        method: 'get',
+        data: {'search':search},
+        success: function(result){
+            $(result).table2excel({
+                // exclude CSS class
+                exclude: ".noExl",
+                name: "events",
+                filename: "events" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls", //do not include extension
+                fileext: ".xls" // file extension
+              }); 
+        }
+    });
+}
+</script>
 </script>
 @endsection
 

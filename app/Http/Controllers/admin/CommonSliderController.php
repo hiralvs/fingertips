@@ -76,6 +76,7 @@ class CommonSliderController extends Controller
         	$validator = Validator::make($request->all(), [
 	            'mallname' => 'required',
 	            'image' => 'required|image',
+                'title' => 'required'
 	        ]);
 
 	        if($validator->fails()){
@@ -89,6 +90,7 @@ class CommonSliderController extends Controller
         	$validator = Validator::make($request->all(), [
 	            'eventname' => 'required',
 	            'image' => 'required|image',
+                'title' => 'required'
 	        ]);
 
 	        if($validator->fails()){
@@ -102,6 +104,7 @@ class CommonSliderController extends Controller
         	$validator = Validator::make($request->all(), [
 	            'attractionname' => 'required',
 	            'image' => 'required|image',
+                'title' => 'required'
 	        ]);
 
 	        if($validator->fails()){
@@ -119,6 +122,8 @@ class CommonSliderController extends Controller
         $input = array(
         	'unique_id' => get_unique_id("sliders"),
         	'common_id'=>$common_name,
+            'title'=>$request->title,
+            'description'=>$request->description,
         	'type'=>  $request->type,
         	'created_by'=>$username ,
 
@@ -203,6 +208,8 @@ class CommonSliderController extends Controller
 
         $slider->common_id = $common_name ;
         $slider->type = $request->type;
+        $slider->title = $request->title;
+        $slider->description =$request->description;
           if ($request->hasFile('image')) {
 
             $image = $request->File('image');
@@ -268,8 +275,6 @@ class CommonSliderController extends Controller
  
          return Response()->json($arr);
  	}
-
-
 
     public function export(Request $request)
     {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Password;
 use Auth;
 use App\User;
+use Illuminate\Support\Facades\Config;
 
 
 class ForgotPasswordController extends Controller
@@ -34,23 +35,36 @@ class ForgotPasswordController extends Controller
         }
         else {
             try {
-                $user = User::where('email',$request->email);
-                if($user->count() > 0)
+                $user = User::where('email',$request->email)->first();
+                if(!empty($user))
                 { 
-                    $response = Password::sendResetLink($request->only('email'), function (Message $message) {
-                        //$message->from('hiral.devstree@gmail.com');
-                        $message->subject('Reset Password');
-                    });
-                    switch ($response) {
-                        case Password::RESET_LINK_SENT:
-                            return \Response::json(array('success' => true,"status" => 200, "message" => trans($response), "data" => array()));
-                        case Password::INVALID_USER:
-                            return \Response::json(array('success' => false,"status" => 400, "message" => trans($response), "data" => array()));
+                    $otp = rand(100000,999999);
+                    $user->otp = $otp;
+                    User::unguard();
+
+                    $user->save(); 
+                    $data['TO'] = $user->email;
+                    $data['FROM'] =  Config::get('constants.SMTP_FROM'); 
+                    $data['SITE_NAME'] = Config::get('constants.SITE_NAME');
+                    $data['SUBJECT'] = 'Fingertips-Your verification code';
+                    $data['VIEW'] = 'mails.forgototp';
+                    $data['PARAM'] = array('name' => $user->name, 'otp' => $otp);
+                    $data['name'] = $user->name;
+                    $data['otp'] = $otp;
+                    $send_mail = send($data);
+
+                    if($send_mail)
+                    {
+                        return \Response::json(array('success' => true,"status" => 200, "message" => trans('Otp Send Successfully for forgot password'), "data" => array()));
+                    }
+                    else
+                    {
+                        return \Response::json(array('success' => true,"status" => 200, "message" => trans('Otp not send'), "data" => array()));
                     }
                 }
                 else
                 {
-                    return \Response::json(array('success' => false,"status" => 400, "message" => 'The email provided is incorrect, please try again.', "data" => array()));
+                    return \Response::json(array('success' => false,"status" => 400, "message" => 'Email id is not registered with us.', "data" => array()));
                 }
             } catch (\Swift_TransportException $ex) {
                 $arr = array('success' => false,"status" => 400, "message" => $ex->getMessage(), "data" => []);

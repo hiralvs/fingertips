@@ -116,6 +116,21 @@
                                                         <strong class="common_id-error"></strong>
                                                     </span>
                                                 </div> 
+                                                 <div class="form-group col-md-4">
+                                                    <label for="exampleInputName">Title</label>
+                                                    <input type="text" required class="form-control"  id="title" name="title" value="{{$value->title}}" placeholder="Title">
+                                                     <span class="text-danger">
+                                                        <strong class="title-error"></strong>
+                                                    </span>
+                                                </div> 
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-12">
+                                                      <textarea class="form-control ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
+                                                     <span class="text-danger">
+                                                        <strong class="desc-error"></strong>
+                                                    </span>
+                                                </div>
                                             </div>
                                             <button type="button" class="btn btn-primary mr-2 editEventSliderSubmit" data-id="{{$value->id}}" id="editSliderSubmit">Submit</button>
                                             <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
@@ -165,10 +180,11 @@ $(document).ready(function(){
 
             $( '.common_id-error' ).html( "" );
             $( '.image-error' ).html( "" ); 
+            $( '.title-error' ).html( "" ); 
         
-        // var message = CKEDITOR.instances['description'+id].getData();
+        var message = CKEDITOR.instances['description'+id].getData();
 
-        // formData.append('description',message);
+        formData.append('description',message);
         var id = $(this).data('id');
             e.preventDefault();
             $.ajaxSetup({
@@ -189,9 +205,12 @@ $(document).ready(function(){
                     if(result.errors.eventname){
                         $( '.common_id-error' ).html( result.errors.eventname[0] );
                     }                    
-                    if(result.errors.status){
-                        $( '.image-error' ).html( result.errors.status[0] );
-                    }                    
+                    if(result.errors.image){
+                        $( '.image-error' ).html( result.errors.image[0] );
+                    } 
+                    if(result.errors.title){
+                        $( '.title-error' ).html( result.errors.title[0] );
+                    }                   
                 }
                 if(result.status == true)
                 {
@@ -210,10 +229,11 @@ $(document).ready(function(){
         });
     $('#addEventSliderSubmit').click(function(e){
             var formData = new FormData($("#addEventSliderform")[0]);
-            
+            var message = CKEDITOR.instances['description'].getData();
+            formData.append('description',message);
             $( '#common_id-error' ).html( "" );
             $( '#image-error' ).html( "" );    
-
+            $( '#title-error' ).html( "" );    
             e.preventDefault();
             $.ajaxSetup({
                 headers: {
@@ -235,7 +255,10 @@ $(document).ready(function(){
                             }                  
                         if(result.errors.image){
                                 $( '#image-error' ).html( result.errors.image[0] );
-                            }                  
+                            }  
+                        if(result.errors.title){
+                                $( '#title-error' ).html( result.errors.title[0] );
+                            }                   
                     }
                     if(result.status == true)
                     {
@@ -354,7 +377,7 @@ function fnExcelReport(type)
                         
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="exampleSelectPhoto">Slider Image</label>
                             <input type="file" name="image" id="image" class="file-upload-default">
                             <div class="input-group col-xs-12">
@@ -369,7 +392,7 @@ function fnExcelReport(type)
                             </span>
                             <input type="hidden" value="event" name="type">
                         </div>   
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="exampleInputStatus">Malls and Shops</label>
                             <select name="eventname" id="eventname" class="form-control">
                                 <option value=""> -- Select One --</option>
@@ -381,6 +404,21 @@ function fnExcelReport(type)
                                 <strong id="common_id-error"></strong>
                             </span>
                         </div>  
+                        <div class="form-group col-md-4">
+                            <label for="exampleInputName">Title</label>
+                            <input type="text" required class="form-control"  id="title" name="title" placeholder="Title">
+                             <span class="text-danger">
+                                <strong id="title-error"></strong>
+                            </span>
+                        </div> 
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <textarea class="form-control ckeditor" id="description" name="desc"></textarea>
+                             <span class="text-danger">
+                                <strong id="desc-error"></strong>
+                            </span>
+                        </div>
                     </div>
                     <button type="button" class="btn btn-primary mr-2" id="addEventSliderSubmit">Submit</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   
