@@ -103,7 +103,7 @@ class ColorController extends Controller
         $area = Color::find($request->id);
         $area->color = $request->color;
 
-        Area::unguard();
+        Color::unguard();
         $area->save();
        
         if (!empty($area)) {

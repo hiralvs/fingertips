@@ -224,7 +224,7 @@ $(document).ready(function(){
     <div class="modal-dialog  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add Notification</h1>
+                <h1 class="modal-title">Add Photos</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
