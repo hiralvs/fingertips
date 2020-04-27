@@ -322,6 +322,11 @@ Route::post('/addAttractionCategory', 'admin\CategoryController@addCategory')->n
 Route::get('attractioncategorydelete/{id}', array('as' => 'attractioncategory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
 Route::post('attractioncategoryupdate', array('as' => 'attractioncategory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
 
+Route::get('/brandcategory', 'admin\CategoryController@index')->name('brandcategory');
+Route::post('/addBrandCategory', 'admin\CategoryController@addCategory')->name('addCategory');
+Route::get('brandcategorydelete/{id}', array('as' => 'brandcategory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
+Route::post('brandcategoryupdate', array('as' => 'brandcategory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
+
 Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
 
 // Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');

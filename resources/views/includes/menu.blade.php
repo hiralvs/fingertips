@@ -13,6 +13,11 @@
                     <span class="menu-title">Brands</span>
                     <i class="menu-arrow"></i>
                   </a>
+                  <div class="submenu">
+                    <ul class="submenu-item">
+                      <li class="nav-item"><a class="nav-link" href="{{route('brandcategory')}}">Category</a></li>
+                    </ul>
+                  </div>
               </li>
               <li class="nav-item">
                   <a href="{{route('products')}}" class="nav-link">
