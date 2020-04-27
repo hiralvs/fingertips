@@ -59,7 +59,7 @@ class LoginController extends Controller
         $email = $request->email;
         $password = $request->password;
         if($email && $password){
-            if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            if (Auth::attempt(['email' => $email, 'password' => $password])) { echo "if0";
                 $users = Auth::user(); 
                 if(empty($users->deleted_at)){
                     if($users->status == "0"){ 

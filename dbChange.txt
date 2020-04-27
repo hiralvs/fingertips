@@ -40,3 +40,24 @@ ALTER TABLE `sliders` CHANGE `image_id` `unique_id` INT(20) NOT NULL;
 
 ALTER TABLE `photos` CHANGE `image_id` `unique_id` INT(20) NOT NULL;
 
+ALTER TABLE `attractions` ADD `layer` INT(11) NULL DEFAULT NULL AFTER `attraction_name`;
+
+
+
+select product_id,(CASE WHEN brands_connection.type ='event' THEN 'events' ELSE 'attractions' END)  AS 'tmptable' from orders join products on products.id=orders.product_id join brands_connection on brands_connection.brand_id=products.brand_id LEFT join @tmptable on tmptable.id=brands_connection.common_id
+
+
+select product_id,(CASE WHEN brands_connection.type ='event' THEN 'events' ELSE 'attractions' END)  AS 'tmptable' from orders join products on products.id=orders.product_id join brands_connection b where exists (select 1 from events e where e.id = b.common_id)
+    or exists (select 1 from attractions s  where s.id = b.common_id)
+
+
+select *
+  from USER u
+ where exists (select 1 from EMPLOYEE e where e.user_id = u.user_id)
+    or exists (select 1 from STUDENT s  where s.user_id = u.user_id)
+
+
+
+    select COUNT(orders.product_id), (CASE WHEN b.type ='event' THEN (select location from events e where e.id = b.common_id) ELSE (select location from attractions s  where s.id = b.common_id) END)  AS 'location' from orders join products on products.id=orders.product_id join brands_connection b  on b.brand_id=products.brand_id
+
+ALTER TABLE `category` CHANGE `type` `type` ENUM('ema','product','event','malls','attraction','brand') CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;

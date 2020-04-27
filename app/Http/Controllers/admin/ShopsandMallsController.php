@@ -27,12 +27,13 @@ class ShopsandMallsController extends Controller
     }
 
     /* Function used to display shops and malls */
-    public function index(Request $request) {
+    public function index(Request $request) 
+    {
+        $lastsegment = request()->segment(count(request()->segments()));
+
 		$auth = Auth::user();
         $return_data = array();
-        $return_data['title'] = trans('Malls');
-        $return_data['meta_title'] = trans('Malls');
-
+       
         if($request->per_page)
         {
             $perpage = $request->per_page;
@@ -60,10 +61,22 @@ class ShopsandMallsController extends Controller
             $direction='desc';
         }
 
-        $return_data['data'] = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id')->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        if($lastsegment == 'malls')
+        {
+            $type = 'mall';
+            $return_data['title'] = trans('Malls');
+            $return_data['meta_title'] = trans('Malls');
+        }
+        else if($lastsegment == 'shops')
+        {
+            $type = 'shop';
+            $return_data['title'] = trans('Shops');
+            $return_data['meta_title'] = trans('Shops');
+        }
+        $return_data['data'] = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id')->where('type',$type)->orderBy($sort,$direction)->sortable()->paginate($perpage);
         
         $return_data['property_admin'] = User::select('id', 'name')->where('role','property_admin')->get();
-        $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name','asc')->get();
+        $return_data['category'] = Category::select('id', 'category_name')->where('type','malls')->orderBy('category_name','asc')->get();
         $return_data['area'] = Area::select('id', 'area_name')->orderBy('area_name','asc')->get();
         
         return View('admin.malls.index',$return_data)->render();
@@ -207,32 +220,32 @@ class ShopsandMallsController extends Controller
         return Response()->json($arr);
     }
 
-     /* Function user to search user data */
-     public function search(Request $request)
-     {
-         $search = $request->input('search');
- 
-         $shopmalls = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id')->where('shopsandmalls.name','LIKE',"%{$search}%")
-         ->orWhere('users.name','LIKE',"%{$search}%")
-         ->orWhere('shopsandmalls.unique_id', 'LIKE',"%{$search}%")
-         ->orWhere('location', 'LIKE',"%{$search}%")
-         ->orWhere('type', 'LIKE',"%{$search}%")
-         ->orWhere('openinghrs', 'LIKE',"%{$search}%")
-         ->orWhere('contact', 'LIKE',"%{$search}%")
-         ->orWhere('featured_mall', 'LIKE',"%{$search}%")->paginate();
- 
-         if($shopmalls)
-         {
-            $data = $this->htmltoexportandsearch($shopmalls,true);
-            $arr = array('status' => true,"data"=>$data);    
-         }
-         else{
-             $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
-         }
- 
-         return Response()->json($arr);
- 
-     }
+    /* Function user to search user data */
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        $shopmalls = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id')->where('shopsandmalls.name','LIKE',"%{$search}%")
+        ->orWhere('users.name','LIKE',"%{$search}%")
+        ->orWhere('shopsandmalls.unique_id', 'LIKE',"%{$search}%")
+        ->orWhere('location', 'LIKE',"%{$search}%")
+        ->orWhere('type', 'LIKE',"%{$search}%")
+        ->orWhere('openinghrs', 'LIKE',"%{$search}%")
+        ->orWhere('contact', 'LIKE',"%{$search}%")
+        ->orWhere('featured_mall', 'LIKE',"%{$search}%")->paginate();
+
+        if($shopmalls)
+        {
+        $data = $this->htmltoexportandsearch($shopmalls,true);
+        $arr = array('status' => true,"data"=>$data);    
+        }
+        else{
+         $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
+        }
+
+        return Response()->json($arr);
+
+    }
 
     public function export(Request $request)
     {

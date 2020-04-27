@@ -219,8 +219,15 @@
                                                         <strong id="status-error{{$value->id}}"></strong>
                                                     </span>
                                                 </div>
-                                                <div class="form-group col-md-12"> 
-                                                    <textarea class="description ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
+                                                <div class="row">  
+                                                    <div class="form-group col-md-6"> 
+                                                        <label for="exampleInputName">Descripton</label>
+                                                        <textarea class="description ckeditor" id="description{{$value->id}}" name="desc">{{$value->description}}</textarea>
+                                                    </div>
+                                                    <div class="form-group col-md-6"> 
+                                                        <label for="exampleInputName">Return Policy</label>
+                                                        <textarea class="returnpolicy ckeditor" id="rtnpolicy{{$value->id}}" name="rtnpolicy">{{$value->return_policy}}</textarea>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <button type="button" class="btn btn-primary mr-2 editProductSubmit" data-id="{{$value->id}}" id="editProductSubmit">Save</button>
@@ -277,8 +284,9 @@ $(document).ready(function(){
         var id = $(this).data('id');
         var formData = new FormData($("#editproductform"+id)[0]);
         var message = CKEDITOR.instances['description'+id].getData();
-
+        var policy = CKEDITOR.instances['rtnpolicy'+id].getData();
         formData.append('description',message);
+        formData.append('return_policy',policy);
         $( '#skuid-error'+id ).html( "" );
         $( '#brand-error'+id ).html( "" );
         $( '#category-error'+id ).html( "" );
@@ -339,6 +347,7 @@ $(document).ready(function(){
     $('#addProductSubmit').click(function(e){
         var formData = new FormData($("#addproductform")[0]);
         var message = CKEDITOR.instances['desc'].getData();
+        var policy = CKEDITOR.instances['rtnpolicy'].getData();
         $( '#skuid-error' ).html( "" );
         $( '#brand-error' ).html( "" );
         $( '#category-error' ).html( "" );
@@ -346,7 +355,7 @@ $(document).ready(function(){
         $( '#price-error' ).html( "" );
         $( '#status-error' ).html( "" );
         
-
+            formData.append('return_policy',policy);
             formData.append('description',message);
             e.preventDefault();
             $.ajaxSetup({
@@ -585,8 +594,15 @@ function fnExcelReport()
                     </div>
                   
                 </div>
-                <div class="form-group col-md-12"> 
-                    <textarea class="description ckeditor" id="desc" name="desc"></textarea>
+                <div class="row">  
+                    <div class="form-group col-md-6"> 
+                        <label for="exampleInputName">Descripton</label>
+                        <textarea class="description ckeditor" id="desc" name="desc"></textarea>
+                    </div>
+                    <div class="form-group col-md-6"> 
+                        <label for="exampleInputName">Return Policy</label>
+                        <textarea class="returnpolicy ckeditor" id="rtnpolicy" name="rtnpolicy"></textarea>
+                    </div>
                 </div>
                 <button type="button" class="btn btn-primary mr-2" id="addProductSubmit">Submit</button>
                 <button type="button" class="btn btn-light" data-dismiss="modal">Close</button> 

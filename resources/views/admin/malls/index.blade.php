@@ -93,7 +93,7 @@
                             <div class="modal-dialog  modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit Malls</h1>
+                                        <h1 class="modal-title">Edit {{$title}}</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
@@ -605,32 +605,6 @@ $(document).ready(function(){
                         $('#mallstableData tr.norecord').remove();
                         }
                     $("#mallstableData tbody").html(data);
-                    //     var image = '';
-                    // if(data.image != null)
-                    // {
-                    //     image = data.image;
-                    // }
-                    // if(data.created_at)
-                    // {
-                    //     var cdate = date(data.created_at);
-                    // }
-                    // var deleteurl = '{{ route("shopsmalls.delete", ":id") }}';
-                    // deleteurl = deleteurl.replace(':id', data.id);
-                    // var imageurl = "{{asset('public/upload/malls')}}";
-                    // var tr_str = "<tr>"+
-                    // "<td>"+data.unique_id+"</td>" +
-                    // "<td><img src="+imageurl+"/"+image+"></td>" +
-                    // "<td>"+data.name+"</td>" +
-                    // "<td>"+data.location+"</td>"+
-                    // "<td>"+data.openinghrs+"</td>" +
-                    // "<td>"+data.contact+"</td>" +
-                    // "<td>"+data.type+"</td>" +
-                    // "<td>"+data.propertyadmin+"</td>" +
-                    // "<td>"+cdate+"</td>" +
-                    // "<td>"+data.created_by+"</td>" +
-                    // "<td><a class='edit open_modal' data-toggle='modal' data-target="+'#editShopsandmalls'+data.id+"><i class='mdi mdi-table-edit'></i></a><a class='delete' onclick='return confirm('Are you sure you want to delete this Mall?')' href="+deleteurl+"><i class='mdi mdi-delete'></i></a></td>"+
-                    // "</tr>";
-                    // $("#mallstableData tbody").html(tr_str);
                     $("#paging").hide();
                 }
                 else
@@ -676,7 +650,7 @@ function fnExcelReport()
     <div class="modal-dialog  modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add Malls</h1>
+                <h1 class="modal-title">Add {{$title}}</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>

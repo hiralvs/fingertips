@@ -64,7 +64,7 @@ class EventsController extends Controller
         $return_data['data'] = Events::select('events.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'events.property_admin_user_id', '=', 'users.id')->orderBy($sort,$direction)->sortable()->paginate($perpage);
         
         $return_data['property_admin'] = User::select('id', 'name')->where('role','property_admin')->get();
-        $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name','asc')->get();
+        $return_data['category'] = Category::select('id', 'category_name')->where('type','event')->orderBy('category_name','asc')->get();
         $return_data['area'] = Area::select('id', 'area_name')->orderBy('area_name','asc')->get();
         // $return_data['property_user_id'] = User::select('id', 'name')->where('role', 'property_admin')->get();
 

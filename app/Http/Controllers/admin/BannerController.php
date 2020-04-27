@@ -38,20 +38,14 @@ class BannerController extends Controller
             $perpage = 10;
         }
         $return_data['data'] = Banner::orderBy('id','desc')->sortable()->paginate($perpage);
-        // $return_data['category_id'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
+    
         $return_data['property_user_id'] = User::select('id', 'name')->where('role', 'property_admin')->get();
-        // echo "<pre>";
-        // print_r($return_data['property_user_id']);
-        // exit;
-
-              //  return view('products',compact('products'));
         
         return View('admin.banner.index', $return_data)->render();
     }
     public function addBanner(Request $request)
     {
                 $input = $request->all();
-
         $validator = Validator::make($request->all(), [
             'location' => 'required',
             'bannerimage' => 'required',

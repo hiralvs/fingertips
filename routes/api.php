@@ -28,7 +28,12 @@ Route::middleware('auth:api')->group(function () {
     Route::post('addToCart','API\ProductController@addToCart');
     Route::post('updateCart','API\ProductController@updateCart');
     Route::post('deleteCart','API\ProductController@deleteCart');
-    //Route::put('updateProfileId/{id}','API\RegisterController@updateProfile');
+    Route::post('createcard','API\StripePaymentController@stripeCard');
+    Route::get('retrieveCustomer','API\StripePaymentController@retrieveStripeCustomer');
+    Route::post('deleteCard','API\StripePaymentController@deleteCard');
+    Route::post('stripeCharge','API\StripePaymentController@stripeCharge');
+    Route::post('deleteNotification','API\NotificationController@deleteNotification');
+    Route::get('getCart','API\ProductController@getCart');
 });
 
 
@@ -43,9 +48,9 @@ Route::post('resetPassword', 'API\RegisterController@resetPassword');
 
 Route::get('dashboard', 'API\DashboardController@dashboard');
 Route::get('notification','API\NotificationController@notification');
-Route::get('events', 'API\HomePageController@eventListing');
-Route::get('malls', 'API\HomePageController@mallListing');
-Route::get('attractions', 'API\HomePageController@attractionListing');
+Route::post('events', 'API\HomePageController@eventListing');
+Route::post('malls', 'API\HomePageController@mallListing');
+Route::post('attractions', 'API\HomePageController@attractionListing');
 Route::get('featuredEvents', 'API\HomePageController@featuredEvents');
 Route::get('featuredShops', 'API\HomePageController@featuredShops');
 Route::get('featuredMalls', 'API\HomePageController@featuredMalls');
@@ -71,6 +76,7 @@ Route::post('eventFilter','API\HomePageController@eventFilter');
 Route::post('shopmallFilter','API\HomePageController@shopmallFilter');
 Route::post('attractionFilter','API\HomePageController@attractionFilter');
 Route::get('filters', 'API\HomePageController@filters');
+Route::get('retrievefaq','API\NotificationController@faq');
 
 
 

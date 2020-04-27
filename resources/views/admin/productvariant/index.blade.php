@@ -132,14 +132,25 @@
                                                     <label for="exampleInputName">Stock</label>
                                                     <input type="text" required class="form-control" id="stock" value="{{$value->stock}}" name="stock" placeholder="stock">
                                                 </div>
+
                                                 <div class="form-group col-md-4">
-                                                    <label for="exampleInputStatus">size</label>
+                                                    <label for="exampleInputStatus">Size</label>
                                                     <select class="form-control"  name="size" id="size">
-                                                    <option value="S">Small</option>
-                                                    <option value="M">Medium</option>
-                                                    <option value="L">Large</option>
-                                                    <option value="XL">XL</option>
-                                                    <option value="XXl">XXL</option>
+                                                         @if(!empty($size) && $size->count() > 0)
+                                                            @foreach($size as $key => $sizeval)
+                                                      <option value="{{$sizeval->id}}" {{ $value->sid ==$sizeval->id ? 'selected' : ''}}>{{$sizeval->size}}</option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="exampleInputStatus">Color</label>
+                                                    <select class="form-control"  name="color" id="color">
+                                                         @if(!empty($color) && $color->count() > 0)
+                                                            @foreach($color as $key => $colorval)
+                                                      <option value="{{$colorval->id}}" {{ $value->cid ==$colorval->id ? 'selected' : ''}}>{{$colorval->color}}</option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </div>
                                             </div>
@@ -400,13 +411,23 @@ function fnExcelReport()
                         </span>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="exampleInputStatus">size</label>
+                        <label for="exampleInputStatus">Size</label>
                         <select class="form-control"  name="size" id="size">
-                        <option value="S">Small</option>
-                        <option value="M">Medium</option>
-                        <option value="L">Large</option>
-                        <option value="XL">XL</option>
-                        <option value="XXl">XXL</option>
+                             @if(!empty($size) && $size->count() > 0)
+                                @foreach($size as $key => $sizeval)
+                          <option value="{{$sizeval->id}}">{{$sizeval->size}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="exampleInputStatus">Color</label>
+                        <select class="form-control"  name="color" id="color">
+                             @if(!empty($color) && $color->count() > 0)
+                                @foreach($color as $key => $colorval)
+                          <option value="{{$colorval->id}}">{{$colorval->color}}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                 </div>
