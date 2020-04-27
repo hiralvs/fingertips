@@ -12,9 +12,6 @@ use App\Events;
 use App\Attractions;
 use App\User;
 use App\Brand;
-use Datatables;
-use Excel;
-use App\Exports\UserExport;
 use Validator;
 
 class CommonBrandsController extends Controller

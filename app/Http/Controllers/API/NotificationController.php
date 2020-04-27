@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller as Controller;
 use Illuminate\Http\Request;
 use App\Notification;
 use Illuminate\Support\Facades\Auth;
+use DB;
+use App\Faq;
 
 
 class NotificationController extends Controller
@@ -23,6 +25,66 @@ class NotificationController extends Controller
         {
             unset($notification[0]->deleted_at);
             $response = ['success' => true,'status' => 200,'message' => 'Data Found successfully.','total'=> $totalrecords,"total_page"=> $totalpage,"page"=> $page,"limit"=> $offset,'data'=>$notification];
+        }
+        else
+        {   
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
+        }
+        return response()->json($response);
+    }
+
+    public function deleteNotification(Request $request)
+    {
+        $cart_data = $request->getContent();
+        $data = json_decode($cart_data,true);
+       
+        $id = $data['id'];
+        if(!empty($data['id']))
+        {
+            $affectedRows = Notification::whereIn('id', $id)->delete();     
+        }
+        else
+        { 
+            $affectedRows = DB::table('notifications')->delete();
+        }
+        
+        if($affectedRows)
+        {
+            $response = ['success' => true,'status' => 200,'message' => 'Notification Deleted Successfully.'];
+        }
+        else
+        {   
+            $response = ['success' => false,'status'=> 404,'message' => 'No Data Found'];  
+        }
+        return response()->json($response);
+    }
+
+    public function faq(Request $request)
+    {
+        $faq = Faq::select('id','unique_id','category','title','description','created_by','created_at','updated_at')->get();
+
+        if($faq->count()>0)
+        {
+            $tmp = array();
+            foreach($faq as $value)
+            {
+                $tmp[$value->category]['category'] = $value->category;
+                $tmp[$value->category]['questions'][] = array(
+                        'id' =>  $value->id,
+                        'title' =>  $value->title,
+                        'description'=> $value->description,
+                        'unique_id' =>$value->unique_id,
+                        'created_by' =>$value->created_by,
+                        'created_at' =>$value->created_at
+                    );
+            }
+            $final_tmp = array();
+            foreach ($tmp as $value) 
+            {
+                $final_tmp[] = $value;
+            }
+           
+            $response = ['success' => true,'status' => 200,'message' => 'Faq Data Found Successfully.','data'=>$final_tmp];
         }
         else
         {   

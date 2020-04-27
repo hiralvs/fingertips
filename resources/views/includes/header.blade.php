@@ -3,10 +3,11 @@
                     $id = '';
                     $default_img = config('constants.NO_IMG');
                     $path = URL::to('/public/img/');
+                    $url =env('APP_URL');
                     $profilepic = $path . '/' . $default_img;
                     $name = '';
-                    if(!empty($user->profilepic) && $user->profilepic != 'null'){
-                        $profilepic = $uploadpath.$user->profilepic;
+                    if(!empty($user->profile_pic) && $user->profile_pic != 'null'){
+                      $profilepic = $url.'public/upload/'.$user->profile_pic;
                     }
                     if(!empty($user->id)){
                         $id = $user->id;
@@ -27,7 +28,7 @@
                   <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
                     <span class="nav-profile-name">{{ $name}}</span>
                     <span class="online-status"></span>
-                    <img src="{{asset('/public/images/faces/face28.png')}}" alt="profile"/>
+                    <img src="{{$profilepic}}" alt="profile"/>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
                       <a class="dropdown-item" href="{{url('/logout')}}"> 

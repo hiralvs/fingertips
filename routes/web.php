@@ -29,10 +29,11 @@ Auth::routes();
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::post('/postlogin', array('as' => 'postlogin', 'routegroup' => 'login', 'uses' => 'Auth\LoginController@postLogin'));
 
- // Password Reset Routes...
-Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('forgotpassword');
+ // Password Reset Routes...    <tr class="clickable " data-toggle="collapse" id="row1" data-target=".row1">
+
+Route::get('forgotpassword', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('forgotpassword');
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::get('/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
+Route::get('/password/reset', 'Auth\ResetPasswordController@showResetForm')->name('password.reset.token');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.reset');
 Route::get('/home', 'HomeController@index')->name('dashboard');
 
@@ -71,6 +72,13 @@ Route::get('/brandexport', 'admin\BrandController@export')->name('brandexport');
 
 
 Route::get('/dashboard', 'admin\DashboardController@index')->name('dashboard');
+Route::get('user/chart','admin\DashboardController@customerchart');
+Route::get('user/shopchart','admin\DashboardController@shopchart');
+Route::get('user/mallchart','admin\DashboardController@mallchart');
+Route::get('user/eventchart','admin\DashboardController@eventchart');
+Route::get('user/attractionchart','admin\DashboardController@attractionchart');
+Route::get('user/purchasechart','admin\DashboardController@purchasechart');
+
 
 //Product route
 Route::get('/products', 'admin\ProductController@index')->name('products');
@@ -91,8 +99,8 @@ Route::get('/productvariantexport', 'admin\ProductController@variantexport')->na
 //category route
 // Route::get('/emacategory', 'admin\CategoryController@index')->name('emacategory');
 // Route::post('/addCategory', 'admin\CategoryController@addCategory')->name('addCategory');
-// Route::get('categorydelete/{id}', array('as' => 'category.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
-// Route::post('categoryupdate', array('as' => 'category.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
+Route::get('categorydelete/{id}', array('as' => 'category.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
+Route::post('categoryupdate', array('as' => 'category.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
 
 
 // Area route
@@ -102,12 +110,16 @@ Route::get('areadelete/{id}', array('as' => 'area.delete', 'routegroup' => 'grp_
 Route::post('areaupdate', array('as' => 'area.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AreaController@update'));
 
 // Shops and malls route
-Route::get('/shopsandmalls', 'admin\ShopsandMallsController@index')->name('shopsmalls');
+Route::get('/malls', 'admin\ShopsandMallsController@index')->name('malls');
+Route::get('/shops', 'admin\ShopsandMallsController@index')->name('shops');
 Route::post('/addShopsandMalls', 'admin\ShopsandMallsController@addShopsandMalls')->name('addShopsandMalls');
 Route::get('shopsmallsdelete/{id}', array('as' => 'shopsmalls.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@delete'));
 Route::post('shopsmallsupdate', array('as' => 'shopsmalls.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@update'));
 Route::post('shopsmallssearch', array('as' => 'shopsmalls.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@search'));
 Route::get('/shopmallexport', 'admin\ShopsandMallsController@export')->name('shopmallexport');
+Route::get('/mallcheckin', 'admin\CommonCheckinController@index')->name('mallcheckin');
+Route::post('/checkinsearch', 'admin\CommonCheckinController@search')->name('checkinsearch');
+Route::get('/checkinexport', 'admin\CommonCheckinController@export')->name('checkinexport');
 
 //Banner Route
 Route::get('/banner', 'admin\BannerController@index')->name('banner');
@@ -122,6 +134,15 @@ Route::post('eventsupdate', array('as' => 'events.update', 'routegroup' => 'grp_
 Route::get('eventsdelete/{id}', array('as' => 'events.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@delete'));
 Route::post('eventssearch', array('as' => 'events.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@search'));
 Route::get('/eventexport', 'admin\EventsController@export')->name('eventexport');
+Route::get('/eventcheckin', 'admin\CommonCheckinController@index')->name('eventcheckin');
+
+
+Route::get('/flashsale', 'admin\FlashsaleController@index')->name('flashsale');
+Route::post('/addFlashsale', 'admin\FlashsaleController@addflashsale')->name('addFlashsale');
+Route::post('flashsaleupdate', array('as' => 'flashsale.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FlashsaleController@update'));
+Route::get('flashsaledelete/{id}', array('as' => 'flashsale.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FlashsaleController@delete'));
+Route::post('flashsalesearch', array('as' => 'flashsale.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FlashsaleController@search'));
+Route::get('/flashsaleexport', 'admin\FlashsaleController@export')->name('flashsaleexport');
 
 Route::get('/rewards', 'admin\RewardsController@index')->name('rewards');
 Route::get('rewardsdelete/{id}', array('as' => 'rewards.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\RewardsController@delete'));
@@ -140,6 +161,7 @@ Route::post('attractionsupdate', array('as' => 'attraction.update', 'routegroup'
 Route::get('attractionsdelete/{id}', array('as' => 'attraction.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@delete'));
 Route::post('attractionssearch', array('as' => 'attraction.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@search'));
 Route::get('/attractionexport', 'admin\AttractionController@export')->name('attractionexport');
+Route::get('/attractioncheckin', 'admin\CommonCheckinController@index')->name('attractioncheckin');
 
 
 Route::get('/notifications', 'admin\NotificationController@index')->name('notifications');
@@ -339,7 +361,17 @@ Route::post('sizeupdate', array('as' => 'size.update', 'routegroup' => 'grp_admi
 
 Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
 
-// Route::get('/checkin', 'admin\LoginPrivacyController@index')->name('checkin');
-// Route::get('/orders', 'admin\LoginPrivacyController@index')->name('orders');
-// Route::get('/sliderimage', 'admin\LoginPrivacyController@index')->name('sliderimage');
-// Route::get('/mapimage', 'admin\LoginPrivacyController@index')->name('mapimage');
+Route::get('/orders', 'admin\OrderController@index')->name('orders');
+
+//Banner Route
+Route::get('/faq', 'admin\FaqController@index')->name('faq');
+Route::post('/addFaq', 'admin\FaqController@addFaq')->name('addFaq');
+Route::post('faqupdate', array('as' => 'faq.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FaqController@update'));
+Route::get('faqdelete/{id}', array('as' => 'faq.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\FaqController@delete'));
+
+Route::get('/checkinNotification','HomeController@checkinNotification');
+
+Route::get('/order','OrderController@index');
+Route::post('ordersearch', array('as' => 'order.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\OrderController@search'));
+Route::get('orderexport', array('as' => 'order.export', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\OrderController@export'));
+Route::post('orderstatus', array('as' => 'order.changestatus', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\OrderController@status'));
