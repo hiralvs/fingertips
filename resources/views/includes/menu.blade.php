@@ -27,10 +27,12 @@
                     <i class="menu-arrow"></i>
                   </a>
                   <div class="submenu">
-                    <ul class="submenu-item">
+                  <ul class="submenu-item">
                     <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Category</a></li>
-                    </ul>
-                  </div>
+                    <li class="nav-item"><a class="nav-link" href="{{route('color')}}">Color</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('size')}}">Size</a></li>
+                  </ul>
+                </div>
               </li>
               <li class="nav-item">
                   <a href="{{route('usermanagement')}}" class="nav-link">

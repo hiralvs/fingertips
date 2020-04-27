@@ -349,6 +349,16 @@ Route::post('/addBrandCategory', 'admin\CategoryController@addCategory')->name('
 Route::get('brandcategorydelete/{id}', array('as' => 'brandcategory.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@delete'));
 Route::post('brandcategoryupdate', array('as' => 'brandcategory.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\CategoryController@update'));
 
+Route::get('/color', 'admin\ColorController@index')->name('color');
+Route::post('/addColor', 'admin\ColorController@addColor')->name('addColor');
+Route::get('colordelete/{id}', array('as' => 'color.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ColorController@delete'));
+Route::post('colorupdate', array('as' => 'color.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ColorController@update'));
+
+Route::get('/size', 'admin\SizeController@index')->name('size');
+Route::post('/addSize', 'admin\SizeController@addSize')->name('addSize');
+Route::get('sizedelete/{id}', array('as' => 'size.delete', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SizeController@delete'));
+Route::post('sizeupdate', array('as' => 'size.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\SizeController@update'));
+
 Route::get('/productcategory', 'admin\CategoryController@productcategory')->name('productcategory');
 
 Route::get('/orders', 'admin\OrderController@index')->name('orders');
