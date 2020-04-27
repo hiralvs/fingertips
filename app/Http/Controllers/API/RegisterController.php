@@ -456,7 +456,7 @@ class RegisterController extends Controller
         $validator = Validator::make($input, $rules);
 
         if ($validator->fails()) {
-            $arr = array("status" => 400, "message" => $validator->errors()->first());
+            $arr = array( 'success' => false,"status" => 400, "message" => $validator->errors()->first());
         } else { 
             try {
                 $user = User::where('email',$request->email)->first();
@@ -464,29 +464,27 @@ class RegisterController extends Controller
                 {
                    if($user->otp != $request->otp)
                     {
-                        $arr = array("status" => 400, "message" => "Otp is incorrect");
+                        $arr = array('success' => false,"status" => 400, "message" => "Otp is incorrect");
                     }
                     else if ((Hash::check(request('new_password'), $user->password)) == true) {
-                       $arr = array("status" => 400, "message" => "Please enter a password which is not similar then current password.");
+                       $arr = array('success' => false,"status" => 400, "message" => "Please enter a password which is not similar then current password.");
                     } else {
                         $userid = $user->id;
                         $user = User::where('id', $userid)->update(['password' => bcrypt($input['new_password']),'otp'=>null]);
-                        $arr = array("status" => 200, "message" => "Password updated successfully.",);
+                        $arr = array('success' => true,"status" => 200, "message" => "Password updated successfully.",);
                     }
                 }
                 else
                 {
-                    $arr = array("status" => 400, "message" => 'No data exist with this email id', "data" => array());
+                    $arr = array('success' => false,"status" => 400, "message" => 'No data exist with this email id', "data" => array());
                 }
             } catch (\Exception $ex) {
                 if (isset($ex->errorInfo[2])) {
-                    echo "if";
                     $msg = $ex->errorInfo[2];
                 } else {
-                    echo "wlsw";
                     $msg = $ex->getMessage();
                 }
-                $arr = array("status" => 400, "message" => $msg, "data" => array());
+                $arr = array('success' => false,"status" => 400, "message" => $msg, "data" => array());
             }
         }
        return \Response::json($arr);

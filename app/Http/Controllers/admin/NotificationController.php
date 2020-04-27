@@ -119,8 +119,10 @@ class NotificationController extends Controller
         
         $notification->title =  $request->title;
         $notification->description =  $request->description;
-
-
+        $notification->type =  $request->type;
+        $notification->url =  $request->url;
+        $notification->ema =  $request->ema;
+        $notification->inboundtext =  $request->inboundtext;
         Notification::unguard();
         $notification->save();
        

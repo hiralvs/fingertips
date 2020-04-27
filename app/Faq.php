@@ -3,14 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kyslik\ColumnSortable\Sortable;
 
-class Order extends Model
+class Faq extends Model
 {
     use Sortable;
     use SoftDeletes;
+    protected $table="faq";
 
-    public $sortable = ['order_id', 'product_id','order_bill_no','amount','created_at'];
+    public $sortable = ['unique_id','title', 'created_at','description','created_by'];
+
 }

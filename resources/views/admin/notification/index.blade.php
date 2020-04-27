@@ -99,6 +99,33 @@
                                                     </span>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="exampleInputStatus type">Type</label>
+                                                    <select class="form-control type" name="type" data-id="{{$value->id}}">
+                                                        <option value="">Select</option>
+                                                        <option value="inbound" {{ $value->type == 'inbound' ? 'selected' : ''}}>Inbound</option>
+                                                        <option value="outbound" {{ $value->type == 'outbound' ? 'selected' : ''}}>Outbound</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-4 url" id="url{{$value->id}}" style="display:{{ $value->type == 'outbound' ? 'block' : 'none'}}">
+                                                    <label for="exampleInputName">URL</label>
+                                                    <input type="text" value="{{ $value->url != null ? $value->url : ''}}" required class="form-control url" name="url">
+                                                </div>
+                                                <div class="form-group col-md-4 ema" id="ema{{$value->id}}" style="display:{{ $value->type == 'inbound' ? 'block' : 'none'}}">
+                                                    <label for="exampleInputStatus">EMA</label>
+                                                    <select class="form-control ema" name="ema">
+                                                        <option value="">EMA</option>
+                                                        <option value="event" {{ $value->ema == 'event' ? 'selected' : ''}}>Event</option>
+                                                        <option value="mall" {{ $value->ema == 'mall' ? 'selected' : ''}}>Mall</option>
+                                                        <option value="attraction" {{ $value->ema == 'attraction' ? 'selected' : ''}}>Attraction</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-4 inboundtext" id="inboundtext{{$value->id}}" style="display:{{ $value->type == 'inbound' ? 'block' : 'none'}}">
+                                                    <label for="exampleInputName url">EMA Text</label>
+                                                    <input type="text" class="form-control" id="inboundtext" name="inboundtext" placeholder="Inboundtext" value="{{$value->inboundtext}}">
+                                                </div> 
+                                            </div>
                                         <button type="button" class="btn btn-primary mr-2 editNotificationsSubmit" data-id="{{$value->id}}" id="editAreaSubmit">Submit</button>
                                         <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
                                         </form>
@@ -107,6 +134,11 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- edit /.modal -->
                         @endforeach
+                        @else
+                        <tr>
+                            <td colspan="5">No records found</td>
+                        </tr>
+
                         @endif
                       </tbody>
                     </table>
@@ -268,7 +300,33 @@ $(document).ready(function(){
                 }
             });
         });
+    $("#type").change(function () {
+            var id = $(this).data('id');
+            if ($(this).val() == 'inbound') {
+                $("#ema").show();
+                $("#inboundtext").show();
+                $("#url").hide();
+            }else if ($(this).val() == 'outbound'){
+                $("#ema").hide();
+                $("#inboundtext").hide();
+                $("#url").show();
+            } 
+        });
     });
+    $(".type").change(function () {
+            var id = $(this).data('id');
+
+            // alert($(this).val());
+            if ($(this).val() == 'inbound') {
+                $("#ema"+id).show();
+                $("#inboundtext"+id).show();
+                $("#url"+id).hide();
+            }else if ($(this).val() == 'outbound'){
+                $("#ema"+id).hide();
+                $("#inboundtext"+id).hide();
+                $("#url"+id).show();
+            }
+        });
 </script>
 @endsection
 
@@ -298,6 +356,36 @@ $(document).ready(function(){
                                 <strong id="description-error"></strong>
                             </span>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label for="exampleInputStatus type">Type</label>
+                            <select class="form-control type" id="type" name="type">
+                                <option value="">--Select--</option>
+                                <option value="inbound">Inbound</option>
+                                <option value="outbound">Outbound</option>
+                            </select>
+                            <span class="text-danger">
+                                <strong id="type-error"></strong>
+                            </span>
+                        </div>
+                        <div class="form-group col-md-4 ema" id="ema" style="display:none;">
+                            <label for="exampleInputStatus ema">EMA</label>
+                            <select class="form-control" id="ema" name="ema">
+                                <option value="" selected="">EMA</option>
+                                <option value="0">Event</option>
+                                <option value="1">Mall</option>
+                                <option value="2">Attraction</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4 inboundtext" id="inboundtext" style="display:none;">
+                            <label for="exampleInputName url">EMA Text</label>
+                            <input type="text" class="form-control" id="inboundtext" name="inboundtext" placeholder="Inboundtext">
+                        </div> 
+                        <div class="form-group col-md-4 url" id="url" style="display:none;">
+                            <label for="exampleInputName url">URL</label>
+                            <input type="text" class="form-control" id="url" name="url" placeholder="url">
+                        </div> 
                     </div>
                     <button type="button" class="btn btn-primary mr-2" id="addNotificationSubmit">Submit</button>
                     <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>   

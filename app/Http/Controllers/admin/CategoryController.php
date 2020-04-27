@@ -151,7 +151,10 @@ public function addCategory(Request $request)
         {
             $lastsegment = 'brandcategory';
         }
-
+        if($lastsegment[0] == 'categorydelete')
+        {
+            $lastsegment = 'productcategory';
+        }
 
         $query = Category::where('id',$request->id);
         $query->delete();
@@ -168,8 +171,6 @@ public function addCategory(Request $request)
         if ($validator->fails()) {
             return Response()->json(['errors' => $validator->errors()]);
         }
-
-        
 
         $category = Category::find($request->id);
         $category->category_name = $request->category_name;
@@ -188,7 +189,7 @@ public function addCategory(Request $request)
         $category->save();
         if (!empty($category)) {
             $data = Category::find($request->id);
-            $arr = array('msg' => '$category Updated Successfully', 'status' => true,'data'=> $data);
+            $arr = array('msg' => 'Category Updated Successfully', 'status' => true,'data'=> $data);
         } else {
             $arr = array('msg' => 'Something goes to wrong. Please try again latr', 'status' => false);
         }
@@ -196,43 +197,43 @@ public function addCategory(Request $request)
     }
 
     // /* Function used to display ema category */
-    // public function productCategory(Request $request) {
-	// 	$auth = Auth::user();
-    //     $return_data = array();
-    //     $this->data['title'] = trans('Product Category');
-    //     $this->data['meta_title'] = trans('Product Category');
+    public function productCategory(Request $request) {
+		$auth = Auth::user();
+        $return_data = array();
+        $this->data['title'] = trans('Product Category');
+        $this->data['meta_title'] = trans('Product Category');
 
-    //     if($request->per_page)
-    //     {
-    //         $perpage = $request->per_page;
-    //     }
-    //     else
-    //     {
-    //         $perpage = 3;
-    //     }
+        if($request->per_page)
+        {
+            $perpage = $request->per_page;
+        }
+        else
+        {
+            $perpage = 10;
+        }
 
-    //     if($request->sort)
-    //     {
-    //         $sort=$request->sort;
-    //     }
-    //     else
-    //     {
-    //         $sort='id';
-    //     }
+        if($request->sort)
+        {
+            $sort=$request->sort;
+        }
+        else
+        {
+            $sort='id';
+        }
 
-    //     if($request->direction)
-    //     {
-    //         $direction=$request->direction;
-    //     }
-    //     else
-    //     {
-    //         $direction='desc';
-    //     }
+        if($request->direction)
+        {
+            $direction=$request->direction;
+        }
+        else
+        {
+            $direction='desc';
+        }
 
-    //     $return_data['data'] = Category::where('type','product')->orderBy($sort,$direction)->sortable()->paginate($perpage);
-    //           //  return view('products',compact('products'));
+        $return_data['data'] = Category::where('type','product')->orderBy($sort,$direction)->sortable()->paginate($perpage);
+              //  return view('products',compact('products'));
         
-    //     return View('admin.productcategory.index', array_merge($this->data, $return_data))->render();
-    // }
+        return View('admin.productcategory.index', array_merge($this->data, $return_data))->render();
+    }
 
 }

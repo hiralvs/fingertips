@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>FingerTips | Login</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- base:css -->
   <link rel="stylesheet" href="{{asset('/public/vendors/mdi/css/materialdesignicons.min.css')}}">
   <link rel="stylesheet" href="{{asset('/public/vendors/base/vendor.bundle.base.css')}}">
@@ -68,7 +69,7 @@
                   </div>
                   <div class="my-2 d-flex justify-content-between align-items-center">
                     
-                    <a href="{{ route('forgotpassword') }}" class="auth-link text-black">Forgot password?</a>
+                    <a href="{{ route('password.reset') }}" class="auth-link text-black">Forgot password?</a>
                   </div>
                 </form>
               </div>

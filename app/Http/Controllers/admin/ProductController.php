@@ -56,7 +56,7 @@ class ProductController extends Controller
         }
         //DB::raw("FIND_IN_SET(tags.id,myposts.tags)");
         $return_data['data'] = Product::select('products.*',DB::raw("GROUP_CONCAT(category_name) as category_name"),DB::raw("(SELECT COUNT(product_variant.id) FROM product_variant WHERE product_variant.product_id = products.id) as productvariantcount"))->leftjoin('category',DB::raw("FIND_IN_SET(category.id,products.category_id)"),">",DB::raw("'0'"))->groupBy("products.id")->orderBy($sort,$direction)->sortable()->paginate($perpage);
-        $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name', 'asc')->get();
+        $return_data['category'] = Category::select('id', 'category_name')->where('type','product')->orderBy('category_name', 'asc')->get();
         $return_data['brands'] = Brand::select('id', 'name')->get();
         
         return View('admin.product.index', $return_data)->render();
@@ -89,7 +89,8 @@ class ProductController extends Controller
             'type' =>  isset($request->type) ? $request->type :'' ,
             'color' =>  isset($request->color) ? $request->color :'' ,
             'status' =>  $request->status,
-            'description' => isset($request->description) ? $request->description : ''
+            'description' => isset($request->description) ? $request->description : '',
+            'return_policy' => isset($request->return_policy) ? $request->return_policy : ''
         );  
 
         if ($request->hasFile('product_image')) {
@@ -150,7 +151,7 @@ class ProductController extends Controller
         $product->color = isset($request->color) ? $request->color : '';
         $product->status = $request->status;
         $product->description = isset($request->description) ? $request->description : '';
-    
+        $product->return_policy =isset($request->return_policy) ? $request->return_policy : '';
         if ($request->hasFile('product_image')) {
 
             $image = $request->File('product_image');
@@ -310,7 +311,7 @@ class ProductController extends Controller
         if ($request->sort) {
             $sort=$request->sort;
         } else {
-            $sort='id';
+            $sort='product_variant.id';
         }
         if ($request->direction) {
             $direction=$request->direction;
@@ -319,7 +320,9 @@ class ProductController extends Controller
         }
         $return_data['id'] =  $id;
         //DB::raw("FIND_IN_SET(tags.id,myposts.tags)");
-        $return_data['data'] = ProductVariant::where('product_id',$id)->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['data'] = ProductVariant::select('product_variant.*','colors.id as cid','size.id as sid')->leftjoin('colors','colors.id','=','product_variant.color')->leftjoin('size','size.id','=','product_variant.size')->where('product_id',$id)->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['color'] = DB::table('colors')->get();
+        $return_data['size'] = DB::table('size')->get();
        //echo "<pre>"; print_r($return_data['data']);
         return View('admin.productvariant.index', $return_data)->render();
     }
@@ -334,6 +337,7 @@ class ProductController extends Controller
             'price' =>  $request->price,
             'stock' =>  isset($request->stock) ? $request->stock : '',
             'size'=> isset($request->size) ? $request->size : '',
+            'color'=> isset($request->color) ? $request->color : '',
         );  
 
         if ($request->hasFile('variant_image')) {
@@ -377,6 +381,7 @@ class ProductController extends Controller
         $productvar->price = $request->price;
         $productvar->stock = isset($request->stock) ? $request->stock : '';
         $productvar->size = isset($request->size) ? $request->size : '';
+        $productvar->color = isset($request->color) ? $request->color : '';
 
         if ($request->hasFile('variant_image')) {
 

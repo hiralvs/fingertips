@@ -60,7 +60,6 @@
     <!-- End plugin js for this page -->
     <script src="{{asset('/public/vendors/chart.js/Chart.min.js')}}"></script>
     <script src="{{asset('/public/vendors/progressbar.js/progressbar.min.js')}}"></script>
-		<script src="{{asset('/public/vendors/chartjs-plugin-datalabels/chartjs-plugin-datalabels.js')}}"></script>
 		<script src="{{asset('/public/vendors/justgage/raphael-2.1.4.min.js')}}"></script>
 		<script src="{{asset('/public/vendors/justgage/justgage.js')}}"></script>
     <!-- Custom js for this page-->

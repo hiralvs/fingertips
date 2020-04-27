@@ -63,7 +63,7 @@ class AttractionController extends Controller
         }
         $return_data['data'] = Attractions::select('attractions.*', 'users.id as userid', 'users.name as propertyadmin')->leftjoin('users', 'attractions.property_admin_user_id', '=', 'users.id')->orderBy($sort, $direction)->sortable()->paginate($perpage);
         $return_data['property_admin'] = User::select('id', 'name')->where('role','property_admin')->get();
-        $return_data['category'] = Category::select('id', 'category_name')->orderBy('category_name','asc')->get();
+        $return_data['category'] = Category::select('id', 'category_name')->where('type','attraction')->orderBy('category_name','asc')->get();
         $return_data['area'] = Area::select('id', 'area_name')->orderBy('area_name','asc')->get();        
         return View('admin.attraction.index',$return_data)->render();
     }

@@ -16,6 +16,7 @@
                   <div class="submenu">
                     <ul class="submenu-item">
                       <li class="nav-item"><a class="nav-link" href="{{route('brandcategory')}}">Category</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sales</a></li>
                     </ul>
                   </div>
               </li>
@@ -27,6 +28,7 @@
                   </a>
                   <div class="submenu">
                   <ul class="submenu-item">
+                    <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Category</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{route('color')}}">Color</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{route('size')}}">Size</a></li>
                   </ul>
@@ -40,13 +42,14 @@
                   </a>
               </li>
               <li class="nav-item">
-                  <a href="{{route('shopsmalls')}}" class="nav-link">
+                  <a href="{{route('malls')}}" class="nav-link">
                     <i class="mdi mdi-basket menu-icon"></i>
                     <span class="menu-title">Shops & Malls</span>
                     <i class="menu-arrow"></i>
                   </a>
                   <div class="submenu">
                       <ul class="submenu-item">
+                        <li class="nav-item"><a class="nav-link" href="{{route('shops')}}">Shops</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('floor')}}">Floor</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('directory')}}">Directory</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mallbrands')}}">Brands</a></li>                      
@@ -55,12 +58,11 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('mallmapimage')}}">Map Image</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mallhighlights')}}">Highlights</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('mallcategory')}}">Category</a></li>
-                        {{-- <li class="nav-item"><a class="nav-link" href="{{route('highlights')}}">Highlights</a></li> --}}
-                        {{-- <li class="nav-item"><a class="nav-link" href="{{route('checkin')}}">Check In</a></li>
-                        
+                        <li class="nav-item"><a class="nav-link" href="{{route('mallcheckin')}}">Check In</a></li>
+                     {{--    
                         <li class="nav-item"><a class="nav-link" href="{{route('flashsale')}}">Flash Sale</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('orders')}}">Orders</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{route('mapimage')}}">Map Image</a></li> --}}
+                        --}}
                       </ul>
                     </div>
                   </li>
@@ -78,6 +80,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('eventhighlights')}}">Highlights</a></li>                 
                         <li class="nav-item"><a class="nav-link" href="{{route('eventmapimage')}}">Map Image</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{route('eventcategory')}}">Category</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{route('eventcheckin')}}">Check In</a></li>
                       </ul>
                   </div>
               </li>
@@ -95,6 +98,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionhighlights')}}">Highlights</a></li>            
                         <li class="nav-item"><a class="nav-link" href="{{route('attractionmapimage')}}">Map Image</a></li>            
                         <li class="nav-item"><a class="nav-link" href="{{route('attractioncategory')}}">Category</a></li>            
+                        <li class="nav-item"><a class="nav-link" href="{{route('attractioncheckin')}}">Check In</a></li>
                       </ul>
                   </div>
               </li>
@@ -102,6 +106,13 @@
                   <a href="{{route('rewards')}}" class="nav-link">
                     <i class="mdi mdi mdi-paper-cut-vertical menu-icon"></i>
                     <span class="menu-title">Rewards</span>
+                    <i class="menu-arrow"></i>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{route('orders')}}" class="nav-link">
+                    <i class="mdi mdi-truck menu-icon"></i>
+                    <span class="menu-title">Orders</span>
                     <i class="menu-arrow"></i>
                   </a>
               </li>
@@ -136,11 +147,12 @@
                       <ul class="submenu-item">
                           <li class="nav-item"><a class="nav-link" href="{{route('banner')}}">Banner</a></li>
                           {{-- <li class="nav-item"><a class="nav-link" href="{{route('emacategory')}}">EMA Category</a></li> --}}
-                          <li class="nav-item"><a class="nav-link" href="{{route('productcategory')}}">Product Category</a></li>
+                          
                           <li class="nav-item"><a class="nav-link" href="{{route('tax')}}">Tax</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('help')}}">Help</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('privacy')}}">Privacy</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('area')}}">Area</a></li>
+                          <li class="nav-item"><a class="nav-link" href="{{route('faq')}}">Faq</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('rewardsetting')}}">Reward Setting</a></li>
                           <li class="nav-item"><a class="nav-link" href="{{route('loginprivacy')}}">Login Privacy</a></li>
                       </ul>
