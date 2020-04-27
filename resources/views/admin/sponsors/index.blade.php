@@ -76,7 +76,7 @@
                             <div class="modal-dialog  modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit Trending</h1>
+                                        <h1 class="modal-title">Edit Sponsers</h1>
                                     </div>
                                     <div class="modal-body">
                                     <p class="statusMsg"></p>
@@ -334,7 +334,7 @@ function fnExcelReport()
     <div class="modal-dialog  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add Trending</h1>
+                <h1 class="modal-title">Add Sponsers</h1>
             </div>
             <div class="modal-body">
             <p class="statusMsg"></p>
