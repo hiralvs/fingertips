@@ -82,6 +82,14 @@ class CategoryController extends Controller
             // $return_data['common_id'] = ShopsandMalls::select('id', 'name')->get();
             return View('admin.attractioncategory.index', $return_data)->render();
         }
+        else if($lastsegment == 'brandcategory')
+        {
+            $return_data['title'] = trans('Brand Category');
+            $return_data['meta_title'] = trans('Brand Category');
+            $return_data['data'] = Category::where('type','brand')->orderBy($sort, $direction)->sortable()->paginate($perpage);
+            // $return_data['common_id'] = ShopsandMalls::select('id', 'name')->get();
+            return View('admin.brandcategory.index', $return_data)->render();
+        }
         // $return_data['data'] = Category::where('type','malls')->orderBy($sort,$direction)->sortable()->paginate($perpage);        
         // return View('admin.mallcategory.index', array_merge($this->data, $return_data))->render();
     }
@@ -138,6 +146,10 @@ public function addCategory(Request $request)
         if($lastsegment[0] == 'attractioncategorydelete')
         {
             $lastsegment = 'attractioncategory';
+        }
+        if($lastsegment[0] == 'brandcategorydelete')
+        {
+            $lastsegment = 'brandcategory';
         }
 
 
