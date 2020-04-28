@@ -117,6 +117,8 @@ Route::get('shopsmallsdelete/{id}', array('as' => 'shopsmalls.delete', 'routegro
 Route::post('shopsmallsupdate', array('as' => 'shopsmalls.update', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@update'));
 Route::post('shopsmallssearch', array('as' => 'shopsmalls.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@search'));
 Route::get('/shopmallexport', 'admin\ShopsandMallsController@export')->name('shopmallexport');
+Route::post('updatebanner', array('as' => 'shopandmall.updatebanner', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\ShopsandMallsController@updatebanner'));
+
 Route::get('/mallcheckin', 'admin\CommonCheckinController@index')->name('mallcheckin');
 Route::post('/checkinsearch', 'admin\CommonCheckinController@search')->name('checkinsearch');
 Route::get('/checkinexport', 'admin\CommonCheckinController@export')->name('checkinexport');
@@ -135,7 +137,7 @@ Route::get('eventsdelete/{id}', array('as' => 'events.delete', 'routegroup' => '
 Route::post('eventssearch', array('as' => 'events.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@search'));
 Route::get('/eventexport', 'admin\EventsController@export')->name('eventexport');
 Route::get('/eventcheckin', 'admin\CommonCheckinController@index')->name('eventcheckin');
-
+Route::post('eventupdatebanner', array('as' => 'events.updatebanner', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\EventsController@updatebanner'));
 
 Route::get('/flashsale', 'admin\FlashsaleController@index')->name('flashsale');
 Route::post('/addFlashsale', 'admin\FlashsaleController@addflashsale')->name('addFlashsale');
@@ -162,6 +164,7 @@ Route::get('attractionsdelete/{id}', array('as' => 'attraction.delete', 'routegr
 Route::post('attractionssearch', array('as' => 'attraction.search', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@search'));
 Route::get('/attractionexport', 'admin\AttractionController@export')->name('attractionexport');
 Route::get('/attractioncheckin', 'admin\CommonCheckinController@index')->name('attractioncheckin');
+Route::post('attractionupdatebanner', array('as' => 'attraction.updatebanner', 'routegroup' => 'grp_admin_user', 'uses' => 'admin\AttractionController@updatebanner'));
 
 
 Route::get('/notifications', 'admin\NotificationController@index')->name('notifications');

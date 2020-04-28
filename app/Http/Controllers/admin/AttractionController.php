@@ -296,4 +296,24 @@ class AttractionController extends Controller
         }
         
     }
+
+    public function updatebanner(Request $request)
+    {
+        $val = $request->chk;
+        $id = $request->id;
+        $banner = Attractions::find($id);
+        $banner->set_as_banner = $val;
+        Attractions::unguard();
+        $affectedrow =  $banner->save();
+
+        if($affectedrow)
+        {
+            $arr = array('status' => true,"msg"=>'Attractions is updated for banner');    
+        }
+        else{
+         $arr = array('status' => false,"msg"=>"Attractions is not updated for banner","data"=>[]);    
+        }
+
+        return Response()->json($arr);
+    }
 }

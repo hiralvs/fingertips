@@ -336,22 +336,20 @@ class HomePageController extends Controller
 
         $success = array();
         $type = $request->type; // type can be event, malls and attraction
-        $banners = Banner::select('banners.id','banners.type',DB::raw('IFNULL(banners.url , "" ) as url'),DB::raw('IFNULL(banners.ema , "" ) as ema'),DB::raw('IFNULL(banners.property_user_id , "" ) as property_user_id'),DB::raw("CONCAT('','$url/public/upload/banners/',bannerimage) as bannerimage"))->where('location',$type)->get();
+
         $deals = Product::select('products.id as pid','products.unique_id as puniqueid','products.product_image','products.name as productname','products.price','brands.id as bid','brands.name as brandname',DB::raw("CONCAT('','$url/public/upload/products/',products.product_image) as product_image"))->join('brands','products.brand_id','=','brands.id')->join('brands_connection','brands_connection.brand_id','=','brands.id')->where(["brands_connection.type"=>$type])->groupBy('products.id')->get();
-        if($banners->count() > 0)
-        {
-            // $banners[0]->url = is_null($banners[0]->url) ? "":$banners[0]->url;
-            // $banners[0]->ema = is_null($banners[0]->ema) ? "":$banners[0]->ema;
-            // $banners[0]->property_user_id = is_null($banners[0]->property_user_id) ? "":$banners[0]->property_user_id;
-            // unset($banners[0]->deleted_at,$banners[0]->updated_at);
-            $success['banners'] = $banners;
-        }
+       
         if($deals->count()>0)
         {
             $success['deals'] =  $deals ;
         }
         if($type == 'event')
         {
+            $banners = Events::select('events.id','events.unique_id','event_name as bannername','start_time','end_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/events/',events.event_image) as banner_image"))->where('set_as_banner','1')->get();
+            if($banners->count() > 0)
+            {
+                $success['banners'] = $banners;
+            }
             $startdate = date("Y-m-d");
             if(isset($filter['dtype']) && $filter['dtype'] == 'Today')
             {
@@ -385,6 +383,11 @@ class HomePageController extends Controller
         }
         if($type == 'malls')
         {
+            $banners = ShopsandMalls::select('shopsandmalls.id','shopsandmalls.unique_id','image','name as bannername','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as banner_image"))->where('set_as_banner','1')->get();
+            if($banners->count() > 0)
+            {
+                $success['banners'] = $banners;
+            }
             $featuredShops = ShopsandMalls::select('shopsandmalls.id','shopsandmalls.unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'shopsandmalls.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,shopsandmalls.category_id)"),">",DB::raw("'0'"))->where('featured_mall','yes')->where('shopsandmalls.type','shop')->limit(20)->groupBy("shopsandmalls.id");
 
             $featuredmalls = ShopsandMalls::select('shopsandmalls.id','shopsandmalls.unique_id','image','name','openinghrs','closinghrs','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/malls/',image) as image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'shopsandmalls.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,shopsandmalls.category_id)"),">",DB::raw("'0'"))->where('featured_mall','yes')->where('shopsandmalls.type','mall')->limit(20)->groupBy("shopsandmalls.id");
@@ -403,6 +406,11 @@ class HomePageController extends Controller
         }
         if($type == 'attraction')
         {
+            $banners = Attractions::select('attractions.id','attractions.unique_id','attraction_name as bannername','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as banner_image"))->where('set_as_banner','1')->get();
+            if($banners->count() > 0)
+            {
+                $success['banners'] = $banners;
+            }
            $featuredAttraction = Attractions::select('attractions.id','attractions.unique_id','attraction_image','attraction_name','opening_time','closing_time','location','latitude','longitude',DB::raw("CONCAT('','$url/public/upload/attractions/',attraction_image) as attraction_image"),'area.area_name as area_name',DB::raw("GROUP_CONCAT(category_name) as category_name"))->leftjoin('area', 'area.id', '=', 'attractions.area_id')->leftjoin('category', DB::raw("FIND_IN_SET(category.id,attractions.category_id)"),">",DB::raw("'0'"))->groupBy("attractions.id")->where('featured_mall','yes')->groupBy("attractions.id")->limit(20);
 
             if(isset($filter['area']))

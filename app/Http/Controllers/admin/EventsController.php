@@ -322,4 +322,24 @@ class EventsController extends Controller
         }
         
     }
+
+    public function updatebanner(Request $request)
+    {
+        $val = $request->chk;
+        $id = $request->id;
+        $events = Events::find($id);
+        $events->set_as_banner = $val;
+        Events::unguard();
+        $affectedrow =  $events->save();
+
+        if($affectedrow)
+        {
+            $arr = array('status' => true,"msg"=>'Event is updated for banner');    
+        }
+        else{
+         $arr = array('status' => false,"msg"=>"Event is not updated for banner","data"=>[]);    
+        }
+
+        return Response()->json($arr);
+    }
 }

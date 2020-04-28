@@ -61,6 +61,7 @@
                             <th>@sortablelink('Booking Allowed')</th>
                             <th>@sortablelink('Cost')</th>
                             <th>@sortablelink('description','Description')</th>
+                            <th>@sortablelink('','Set as banner')</th>
                             <th>@sortablelink('created_at','Created On')</th>
                             <th>@sortablelink('','Created By')</th>
                             <th>Action</th>
@@ -78,6 +79,12 @@
                           <td>{{$value->booking_allowed}}</td>
                           <td>{{$value->cost}}</td>
                           <td>{{$value->description}}</td>
+                          <td>@if($value->set_as_banner == 1)
+                                <input type="checkbox" name="banner" class="bannerclass" checked id="banner" data-id="{{$value->id}}" value="{{$value->set_as_banner}}">
+                            @else
+                                <input type="checkbox" name="banner"  class="bannerclass" id="banner" data-id="{{$value->id}}" value="{{$value->set_as_banner}}">
+                            @endif
+                            </td>
                           <td>{{date("d F Y",strtotime($value->created_at))}}</td>
                           <td>{{$value->created_by}}</td>
                           <td><a class="edit open_modal" data-toggle="modal" data-id="{{$value->id}}" data-target="#editAttractions{{$value->id}}" ><i class="mdi mdi-table-edit"></i></a> 
@@ -265,6 +272,38 @@
    
 $(document).ready(function(){
     
+    $(".bannerclass").click(function(){
+        var chk;
+        var id = $(this).data('id');
+        if($(this).is(':checked'))
+        {
+            chk = 1;   
+        }
+        else
+        {
+            chk = 0;
+        }
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
+            });
+        $.ajax({
+            url: "{{ route('attraction.updatebanner') }}",
+            method: 'post',
+            data: {'chk':chk,'id':id},
+            success: function(result){
+                if(result.status == true)
+                {
+                    $('.box-header').html('<h4 class="mess" style="text-align: center; color: green;">'+result.msg+'</h4>');
+                }
+                else
+                {
+                    $('.box-header').html('<h4 class="mess" style="text-align: center; color: green;">'+result.msg+'</h4>');
+                }
+            }
+        });
+    });
     $(".edit").click(function(){
         var sid = $(this).data('id');
 

@@ -364,9 +364,9 @@ $(function () {
                         <select class="form-control " name="location" id="location">
                             <option value="" selected="">Location</option>
                             <option value="home">Home</option>
-                            <option value="event">Event</option>
+                          <!--   <option value="event">Event</option>
                             <option value="malls">Mall</option>
-                            <option value="attraction">Attraction</option>
+                            <option value="attraction">Attraction</option> -->
                         </select>
                         <span class="text-danger">
                             <strong id="location-error"></strong>

@@ -61,3 +61,9 @@ select *
     select COUNT(orders.product_id), (CASE WHEN b.type ='event' THEN (select location from events e where e.id = b.common_id) ELSE (select location from attractions s  where s.id = b.common_id) END)  AS 'location' from orders join products on products.id=orders.product_id join brands_connection b  on b.brand_id=products.brand_id
 
 ALTER TABLE `category` CHANGE `type` `type` ENUM('ema','product','event','malls','attraction','brand') CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL;
+
+ALTER TABLE `events` ADD `set_as_banner` ENUM('0','1') NOT NULL DEFAULT '0' AFTER `description`;
+
+ALTER TABLE `attractions` ADD `set_as_banner` ENUM('0','1') NOT NULL DEFAULT '0' AFTER `description`;
+
+ALTER TABLE `shopsandmalls` ADD `set_as_banner` ENUM('0','1') NOT NULL DEFAULT '0' AFTER `description`
