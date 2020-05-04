@@ -6,15 +6,14 @@ use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
-use App\ShopsandMalls;
 use App\User;
+use App\ShopsandMalls;
 use App\Category;
 use App\Area;
 use Validator;
 
 class ShopsandMallsController extends Controller
 {
-    
     /**
      * Create a new controller instance.
      *
@@ -23,17 +22,14 @@ class ShopsandMallsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $user = Auth::user();
+
     }
-
-    /* Function used to display shops and malls */
-    public function index(Request $request) 
-    {
-        $lastsegment = request()->segment(count(request()->segments()));
-
+     public function index(Request $request) {
 		$auth = Auth::user();
         $return_data = array();
-       
+        $this->data['title'] = trans('ShopsandMalls');
+        $this->data['meta_title'] = trans('ShopsandMalls');
+
         if($request->per_page)
         {
             $perpage = $request->per_page;
@@ -49,7 +45,7 @@ class ShopsandMallsController extends Controller
         }
         else
         {
-            $sort='shopsandmalls.id';
+            $sort='id';
         }
 
         if($request->direction)
@@ -61,31 +57,25 @@ class ShopsandMallsController extends Controller
             $direction='desc';
         }
 
-        if($lastsegment == 'malls')
+        if($request->role)
         {
-            $type = 'mall';
-            $return_data['title'] = trans('Malls');
-            $return_data['meta_title'] = trans('Malls');
+            $return_data['type'] = $request->type;
         }
-        else if($lastsegment == 'shops')
+        else
         {
-            $type = 'shop';
-            $return_data['title'] = trans('Shops');
-            $return_data['meta_title'] = trans('Shops');
+            $return_data['type'] = 'mall';
         }
-        $return_data['data'] = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id')->where('type',$type)->orderBy($sort,$direction)->sortable()->paginate($perpage);
-        
-        $return_data['property_admin'] = User::select('id', 'name')->where('role','property_admin')->get();
-        $return_data['category'] = Category::select('id', 'category_name')->where('type','malls')->orderBy('category_name','asc')->get();
-        $return_data['area'] = Area::select('id', 'area_name')->orderBy('area_name','asc')->get();
-        
-        return View('admin.malls.index',$return_data)->render();
-    }
+        $return_data['malldata'] = ShopsandMalls::where('type','mall')->orderBy($sort,$direction)->sortable()->paginate($perpage);
+        $return_data['shopdata'] = ShopsandMalls::where('type','shop')->orderBy($sort,$direction)->sortable()->paginate($perpage);
 
-    /* Function used to add shops */
-    public function addShopsandMalls(Request $request)
+        $return_data['property_admin'] = User::select('id', 'name')->where('role', 'property_admin')->get();
+        $return_data['category'] = Category::select('id', 'category_name')->where('type', 'malls')->orderBy('category_name', 'asc')->get();
+        $return_data['area'] = Area::select('id', 'area_name')->orderBy('area_name', 'asc')->get();
+        
+        return View('admin.malls.index', array_merge($this->data, $return_data))->render();
+    }
+        public function addShopsandMalls(Request $request)
     {
-        $user = Auth::user();
         $validator = Validator::make($request->all(), [
             'image' => 'required|image',
             'name' => 'required|max:255',
@@ -122,7 +112,7 @@ class ShopsandMallsController extends Controller
             'contact' => $request->contact ,
             'featured_mall' => $request->featured_mall ,
             'type' => $request->layer ,
-            'category_id' => implode(",",$request->filter),
+            'category_id' => implode(",", $request->filter),
             'created_by' => $username,
             'property_admin_user_id' =>  $request->property_admin ,
             'area_id' =>  $request->area ,
@@ -134,7 +124,7 @@ class ShopsandMallsController extends Controller
             $image = $request->File('image');
             $filename = time() . '.' . $image->getClientOriginalExtension();
 
-            $path = public_path('upload/malls/' . $filename);
+            $path = public_path('upload/malls' . $filename);
 
             Image::make($image->getRealPath())->save($path);
             $input['image'] = $filename;
@@ -144,27 +134,25 @@ class ShopsandMallsController extends Controller
 
         $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         if($check){ 
-        $data['malls'] = ShopsandMalls::find($check);
-        $data['propertyadmin'] = User::select('name as propertyadmin')->find($data['malls']->property_admin_user_id);
+        $data = ShopsandMalls::find($check);
         
-        $arr = array('msg' => 'Mall Added Successfully', 'status' => true,'data'=> $data);
+        $arr = array('msg' => 'User Added Successfully', 'status' => true,'data'=> $data);
         }
         return Response()->json($arr);
     }
-
-    /* Function used to delete shops */
-    public function delete(Request $request)
-    {
+        public function delete(Request $request){
         $query = ShopsandMalls::where('id',$request->id);
         $query->delete();
-        return redirect()->route('shopsmalls')->with('success', 'Malls Deleted Successfully');
+        return redirect()->route('malls')->with('success', 'Mall Deleted Successfully');
     }
-
-    /* Function used to update shops */
+    public function edit(Request $request){
+        $query = ShopsandMalls::where('id',$request->id);
+        return View('admin.malls.edit',$query)->render();
+    }
+    
+    /* Function user to update user data */
     public function update(Request $request)
     {
-        $malls = ShopsandMalls::find($request->id);
-
         $validator = Validator::make($request->all(), [
             'image' => 'image',
             'name' => 'required|max:255',
@@ -177,14 +165,11 @@ class ShopsandMallsController extends Controller
             'featured_mall' => 'required',
         ]);
 
-        if ($malls->notHavingImageInDb()){
-            $rules['image'] = 'required|image';
-        }
-
         if($validator->fails()){
             return Response()->json(['errors' => $validator->errors()]);      
         }
-        $categoryid = implode(",",$request->filter);
+        $malls = ShopsandMalls::find($request->id);
+        $categoryid = implode(",", $request->filter);
         $malls->name =  $request->name;
         $malls->location =  $request->location;
         $malls->latitude =  $request->latitude;
@@ -198,6 +183,8 @@ class ShopsandMallsController extends Controller
         $malls->featured_mall =  $request->featured_mall;
         $malls->type =  $request->layer;
         $malls->description =  $request->description;
+
+        
         if ($request->hasFile('image')) {
 
             $image = $request->File('image');
@@ -214,69 +201,55 @@ class ShopsandMallsController extends Controller
         if (!empty($malls)) {
             $data = ShopsandMalls::find($request->id);
             $arr = array('msg' => 'Malls Updated Successfully', 'status' => true,'data'=> $data);
+            //return redirect()->route('user.edit', array('id' => $user->id))->with('success', trans('common.profile_update'));
         } else {
+//           return redirect()->route('dashboard');
             $arr = array('msg' => 'Something goes to wrong. Please try again lator', 'status' => false);
         }
         return Response()->json($arr);
     }
-
-    /* Function user to search user data */
     public function search(Request $request)
     {
         $search = $request->input('search');
+        $role = $request->type;
 
-        $shopmalls = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id')->where('shopsandmalls.name','LIKE',"%{$search}%")
-        ->orWhere('users.name','LIKE',"%{$search}%")
-        ->orWhere('shopsandmalls.unique_id', 'LIKE',"%{$search}%")
+        $shopmall = ShopsandMalls::where('type',$role)->where('name','LIKE',"%{$search}%")
+        ->orWhere('unique_id', 'LIKE',"%{$search}%")
         ->orWhere('location', 'LIKE',"%{$search}%")
-        ->orWhere('type', 'LIKE',"%{$search}%")
-        ->orWhere('openinghrs', 'LIKE',"%{$search}%")
-        ->orWhere('contact', 'LIKE',"%{$search}%")
         ->orWhere('featured_mall', 'LIKE',"%{$search}%")->paginate();
-
-        if($shopmalls)
+        if($shopmall)
         {
-        $data = $this->htmltoexportandsearch($shopmalls,true);
-        $arr = array('status' => true,"data"=>$data);    
+            $data = $this->htmltoexportandsearch($shopmall,true);
+            $arr = array('status' => true,"data"=> $data);    
         }
         else{
-         $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
+            $arr = array('status' => false,"msg"=>"Data Not Found","data"=>[]);    
         }
 
         return Response()->json($arr);
 
     }
-
     public function export(Request $request)
     {
+        $type = $request->type;
         $search = (isset($request->search) && $request->search !="") ? $request->search : "";
-        $query = ShopsandMalls::select('shopsandmalls.*','users.id as userid','users.name as propertyadmin')->leftjoin('users', 'shopsandmalls.property_admin_user_id', '=', 'users.id');
+        $query = ShopsandMalls::where('type',$type);
 
         if($request->search != "")
         {
-            $query = $query->where('shopsandmalls.name','LIKE',"%{$search}%")
-         ->orWhere('users.name','LIKE',"%{$search}%")
-         ->orWhere('shopsandmalls.unique_id', 'LIKE',"%{$search}%")
-         ->orWhere('location', 'LIKE',"%{$search}%")
-         ->orWhere('type', 'LIKE',"%{$search}%")
-         ->orWhere('openinghrs', 'LIKE',"%{$search}%")
-         ->orWhere('contact', 'LIKE',"%{$search}%")
-         ->orWhere('featured_mall', 'LIKE',"%{$search}%");
+            $query = $query->where('name','LIKE',"%{$search}%")
+        ->orWhere('unique_id', 'LIKE',"%{$search}%");
         }
 
         $finaldata = $query->get();
         $this->htmltoexportandsearch($finaldata);
-       
     }
-
     public function htmltoexportandsearch($finaldata,$search=false)
     {
         $html = "";
-        if(!empty($finaldata) && $finaldata->count() > 0)
-        {   
-            if($search==false)
-            {
-                  $html .='<table class="table table-hover" id="brandData">
+        if (!empty($finaldata) && $finaldata->count() > 0) {
+            if ($search==false) {
+                $html .='<table class="table table-hover" id="brandData">
                       <thead>
                         <tr>
                             <th>Id</th>
@@ -291,33 +264,35 @@ class ShopsandMallsController extends Controller
                             <th>Created By</th>
                         </tr>
                       </thead>
-                      <tbody>';  
-            } 
+                      <tbody>';
+            }
             
-            foreach ($finaldata as $key => $value) 
-            {
-                if($search == true)
-                {
-                    if($value['image']!= null)
-                    {
+            foreach ($finaldata as $key => $value) {
+                if ($search == true) {
+                    if ($value['image']!= null) {
                         $path = asset('public/upload/malls').'/'.$value['image'];
                         $image = '<img src="'.$path.'" alt="">';
-                    }
-                    else
-                    {
+                    } else {
                         $image = "";
                     }
-                                     
-                }
-                else
-                {
+                } else {
                     $image = $value['image'];
                 }
-                
-                $cdate = date('d F Y',strtotime($value['created_at']));
-                $html .="<tr><td>".$value['unique_id']."</td><td>".$image."</td><td>".$value['name'] ."</td><td>".$value['location']."</td><td>".$value['openinghrs']."</td><td>".$value['contact']."</td><td>".$value['type']."</td><td>".$value['propertyadmin']."</td><td>".$cdate."</td><td>".$value['created_by']."</td>";
-                if($search == true)
-                {
+
+                $cdate = date('d F Y', strtotime($value['created_at']));
+                $html .="<tr>
+                <td>".$value['unique_id']."</td>
+                    <td>".$image."</td>
+                    <td>".$value['name']."</td>
+                    <td>".$value['location']."</td>
+                    <td>".$value['openinghrs']."</td>
+                    <td>".$value['contact']."</td>
+                    <td>".$value['type']."</td>
+                    <td>".$value['propertyadmin']."</td>
+                    <td>".$cdate."</td>
+                    <td>".$value['created_by']."</td>";
+
+                if ($search == true) {
                     $vcount = $value->productvariantcount > 1 ? '1' : '0';
                     $checked =  $value->productvariantcount > 1 ? 'checked' : '' ;
                     $style = $value->productvariantcount > 1 ? 'display: block;' : 'display: none';
@@ -328,10 +303,10 @@ class ShopsandMallsController extends Controller
                 }
                 $html.="</tr>";
             }
-        }
+        }   
         else
         {
-            $html .= '<tr><td colspan="11">No Records Found</td></tr>';
+            $html .= '<tr><td colspan="9">No Records Found</td></tr>';
         }
         if($search==false)
         {
@@ -342,6 +317,5 @@ class ShopsandMallsController extends Controller
         {
             return $html;
         }
-        
     }
 }
